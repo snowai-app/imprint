@@ -1,0 +1,15 @@
+{
+  "_comment": "Identifiers, not secrets. Imprint keeps its books in the family's database (public.imprint_books, imprint_chapters, imprint_sources). It calls Ask for every idea, outline and chapter draft, Reader (snowai-app/extract) for the words of a PDF source, and Render (snowai-app/render) for the Word and PDF files, with the shared capability key, read by its compute role at runtime. It holds nothing protected, so it has no KMS key of its own (T-1751).",
+  "region": "us-east-1",
+  "database": {
+    "clusterArn": "arn:aws:rds:us-east-1:294060270317:cluster:snowai-database-cluster-t7jpudariu6c",
+    "secretArn": "arn:aws:secretsmanager:us-east-1:294060270317:secret:rds!cluster-4f948197-6cbd-4545-a6cb-a315f81e171a-Hyf0QZ",
+    "name": "snowai"
+  },
+  "capabilities": {
+    "keySecret": "snowai/capability-key",
+    "ask": "https://ask.snowai.app",
+    "read": "https://reader.snowai.app",
+    "render": "https://render.snowai.app"
+  }
+}

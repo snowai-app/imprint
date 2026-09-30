@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  The IAM role Imprint's Amplify app runs its server code as (snowai-app/imprint):
+  read the one shared capability key (to call Ask, Reader and Render), and read
+  and write books, chapters and sources in the family's database over the Data
+  API. Imprint holds nothing protected, so it has no KMS key of its own, and
+  (unlike Byline) it publishes nowhere, so it reads no SSM parameter. A book is
+  its author's alone. No access key anywhere. Stack snowai-imprint-compute.
+  (T-1751)
+
+Parameters:
+  CapabilityKeySecretName:
+    Type: String
+    Default: snowai/capability-key
+  # The snowai-database stack's outputs, as in snowai-app/byline's role. They
+  # are identifiers, not secrets. DatabaseKeyArn encrypts the database secret.
+  DatabaseClusterArn:
+    Type: String
+    Default: arn:aws:rds:us-east-1:294060270317:cluster:snowai-database-cluster-t7jpudariu6c
+  DatabaseSecretArn:
+    Type: String
+    Default: arn:aws:secretsmanager:us-east-1:294060270317:secret:rds!cluster-4f948197-6cbd-4545-a6cb-a315f81e171a-Hyf0QZ
+  DatabaseKeyArn:
+    Type: String
+    Default: arn:aws:kms:us-east-1:294060270317:key/8146f6da-851c-40cf-8237-a3b17aec350b
+
+Resources:
+  ComputeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: snowai-imprint-compute
+      Description: Server-side code of Imprint's Amplify app (snowai-app/imprint)
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: amplify.amazonaws.com }
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: imprint
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: TheSharedKey
+                Effect: Allow
+                Action: [secretsmanager:GetSecretValue]
+                Resource: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${CapabilityKeySecretName}-*"
+              - Sid: TheDatabase
+                Effect: Allow
+                Action: [rds-data:ExecuteStatement, rds-data:BeginTransaction, rds-data:CommitTransaction, rds-data:RollbackTransaction]
+                Resource: !Ref DatabaseClusterArn
+              - Sid: TheDatabaseSecret
+                Effect: Allow
+                Action: [secretsmanager:GetSecretValue]
+                Resource: !Ref DatabaseSecretArn
+              # Not a key of Imprint's own: the database secret is encrypted with
+              # the database's key, and reading it needs this, only through
+              # Secrets Manager (the same statement as Byline's role).
+              - Sid: DecryptTheDatabaseSecret
+                Effect: Allow
+                Action: [kms:Decrypt]
+                Resource: !Ref DatabaseKeyArn
+                Condition:
+                  StringEquals:
+                    kms:ViaService: !Sub "secretsmanager.${AWS::Region}.amazonaws.com"
+      Tags:
+        - { Key: Entity, Value: SnowAI }
+        - { Key: Product, Value: Imprint }
+
+Outputs:
+  RoleArn:
+    Value: !GetAtt ComputeRole.Arn

@@ -1,0 +1,44 @@
+# The build spec lives here, in the repository, on purpose (copied from
+# snowai-app/forms; change one, change the others).
+#
+# Amplify will otherwise auto-detect a spec and keep it in the console, where
+# it can be hand-edited by anyone and read by nobody. That cost docubase an
+# afternoon: two console edits, invisible in every diff, on the one app of four
+# that would not build.
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        # NOTHING IS WRITTEN INTO .env.production HERE, DELIBERATELY. The
+        # settings Imprint needs at runtime are named in next.config.ts's `env`
+        # block, and only a name that has a value is compiled in. Imprint needs
+        # none to run: aws/outputs.json holds its identifiers, and the one
+        # secret (the capability key) is read by the compute role at runtime.
+        #
+        # A TRAILING SPACE IN A VARIABLE NAME COST 9 SEPTEMBER 2026 ITS MORNING.
+        # When a setting is present in the console and absent in the app, read
+        # the NAME through the API before theorising about the mechanism:
+        #   boto3.client('amplify').get_app(appId=...)['app']['environmentVariables']
+        # and look at repr() of each key, not at the console.
+        - npm ci --cache .npm --prefer-offline
+    build:
+      commands:
+        - npm run build
+        # Next's build cache is scratch space for the next build and is never
+        # read at runtime; Amplify caps the bundle, so it goes.
+        - rm -rf .next/cache
+        - echo "=== .next size (Amplify caps the bundle at 230686720) ==="
+        - du -sb .next
+    postBuild:
+      commands:
+        - rm -rf .next/cache
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    # Deliberately not `.next/cache` — it is deleted above. The npm cache does
+    # the work that matters on install and lives outside `.next`.
+    paths:
+      - .npm/**/*

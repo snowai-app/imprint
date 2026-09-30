@@ -1,0 +1,119 @@
+# What has to be true before anything merges.
+#
+# Copied from snowai-app/forms (from snowai-app/points, from snowai-app/hq). Asked for by the operator 13 September 2026, after looking at a third-party
+# code-scanning product and asking whether this could be done without giving
+# anybody a key to the private repositories. It can, and this is it.
+#
+# ONLY GITHUB'S OWN ACTIONS. `actions/checkout` and `actions/setup-node` are
+# published by GitHub itself; everything else here is a plain command. That is
+# a deliberate limit, promised to the operator: a marketplace action is
+# somebody else's code running with your checked-out repository in front of
+# it, which is the exact thing they were avoiding by not buying the product.
+# If a future check genuinely needs an outside tool, name whose it is and ask
+# — do not quietly add it.
+#
+# WHY IT EXISTS. `next build` has failed on `main` twice this month and nobody
+# knew: once for two stylesheets importing a renamed folder, once for a client
+# component importing a server-only module. Both passed `tsc --noEmit`. A
+# typecheck is not a build, and only a build catches either.
+
+name: Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel the previous run when a branch is pushed again — the older answer is
+# about code that no longer exists.
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # `npm ci` and not `npm install`: the lockfile is the fact, and dev
+      # dependencies are required — TypeScript is a devDependency.
+      - run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Tests
+        run: npm test
+
+      # The one that actually catches what has been breaking. Kept separate
+      # from the typecheck so the log says which of the two failed.
+      - name: Build
+        run: npx next build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # Runtime dependencies only. A vulnerability in a build-time tool is
+      # worth knowing about and is not the same risk as one in code that
+      # serves requests, and mixing them is how the real ones get ignored.
+      #
+      - name: Audit runtime dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Enough history to diff against the base. Not the whole thing —
+          # see below.
+          fetch-depth: 0
+
+      # NEW COMMITS ONLY, AND THAT IS DELIBERATE.
+      #
+      # The full history was scanned once, by hand, on 13 September 2026. It
+      # found exactly one hit: the access key ID of a retired SES SMTP user in a
+      # documentation file. That user was deleted the same afternoon, and a key
+      # ID is not a secret in any case — the secret access key is, and it was
+      # never committed.
+      #
+      # Scanning all history on every run would therefore fail every build
+      # forever over a line that cannot be removed without rewriting published
+      # commits. A check that always fails is a check nobody reads, which is
+      # worse than no check. So this guards what is being ADDED.
+      #
+      # Written out rather than imported, because a marketplace action is
+      # somebody else's code running with the repository checked out in front
+      # of it — the exact thing being avoided. Deliberately narrow: the shapes
+      # that actually leak from this estate. A scanner that cries wolf on every
+      # base64 string is one nobody reads either.
+      - name: Scan new commits for secrets
+        run: |
+          BASE="${{ github.event.pull_request.base.sha || github.event.before }}"
+          if [ -z "$BASE" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            BASE=$(git rev-parse HEAD~1 2>/dev/null || git rev-parse HEAD)
+          fi
+          echo "Scanning $BASE..HEAD"
+          PATTERN='AKIA[0-9A-Z]{16}|ASIA[0-9A-Z]{16}|GOCSPX-[A-Za-z0-9_-]{20,}|sk_live_[0-9a-zA-Z]{20,}|rk_live_[0-9a-zA-Z]{20,}|-----BEGIN [A-Z ]*PRIVATE KEY-----|eyJhbGciOi[A-Za-z0-9_-]{20,}'
+          HITS=$(git diff --no-color "$BASE" HEAD | grep '^+' | grep -E "$PATTERN" || true)
+          if [ -n "$HITS" ]; then
+            echo "$HITS" | head -20
+            echo "::error::Something that looks like a live credential is being added."
+            exit 1
+          fi
+          echo "No credential-shaped strings added."
