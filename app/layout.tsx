@@ -22,6 +22,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
       </head>
       <body>
+        {/* ESCAPE CLOSES STUDIO'S BOX (operator, 2 October 2026, T-1945). Shown inside
+            Studio's box, an Escape this page does not use itself is passed to Studio,
+            and only to Studio, so it closes the box as it does everywhere else. */}
+        <script dangerouslySetInnerHTML={{ __html: "if(window.parent!==window){addEventListener('keydown',function(e){if(e.key==='Escape'&&!e.defaultPrevented&&!document.querySelector('dialog[open]'))window.parent.postMessage({type:'studio:escape'},'https://studio.snowai.app')})}" }} />
         <a className="skip" href="#main">Skip to the content</a>
         {children}
         {visitor ? <Visitor /> : null}
