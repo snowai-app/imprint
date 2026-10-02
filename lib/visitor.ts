@@ -25,7 +25,11 @@ export const VISITOR_HEADER = 'x-imprint-visitor';
 
 /** The one origin, besides Imprint itself, allowed to frame a page. */
 export const HQ_ORIGIN = 'https://hq.snowai.app';
-export const VISITOR_FRAME_ANCESTORS = `'self' ${HQ_ORIGIN}`;
+/* Studio's box opens every capability inside Studio (operator, 2 October 2026,
+   T-1945). Framing grants nothing: inside the frame this app still signs in
+   and checks roles as it always does. */
+export const STUDIO_ORIGIN = 'https://studio.snowai.app';
+export const VISITOR_FRAME_ANCESTORS = `'self' ${HQ_ORIGIN} ${STUDIO_ORIGIN}`;
 
 export const isVisitor = (request: NextRequest) => request.cookies.get(VISITOR_COOKIE)?.value === '1';
 
