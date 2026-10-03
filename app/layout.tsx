@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
+import { THEME_COOKIE, themeFrom } from '@/lib/theme';
 import { VISITOR_HEADER } from '@/lib/visitor';
 import Visitor from './visitor';
 import './google-sans.css';
@@ -15,8 +16,10 @@ export const viewport: Viewport = { width: 'device-width', initialScale: 1, colo
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   /* Set only by proxy.ts, which cuts any copy a browser sends (lib/visitor.ts). */
   const visitor = (await headers()).get(VISITOR_HEADER) === '1';
+  /* Light unless the person chose dark (T-2120). */
+  const theme = themeFrom((await cookies()).get(THEME_COOKIE)?.value);
   return (
-    <html lang="en">
+    <html lang="en" data-theme={theme}>
       <head>
         <link rel="preload" href="/fonts/google-sans-normal-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { StudioContext, useToast, type Studio } from './studio-context';
+import { ThemeSwitch } from './ThemeSwitch';
 import { ROOMS, bookPath, crumbFor, disclosurePath, filesPath, outlinePath, railCurrent, sourcesPath } from '@/lib/studio-paths';
 
 /**
@@ -49,6 +50,7 @@ export default function StudioShell({ email, counts, children }: { email: string
         <div className="acts">
           {cur.tab === 'new' ? null : <Link className="bt go" href={ROOMS.new}>+ New book</Link>}
         </div>
+        <ThemeSwitch />
       </div>
       <div className="shell">
         <nav className="rail" aria-label="Imprint">
