@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { headers } from 'next/headers';
 import { VISITOR_HEADER } from '@/lib/visitor';
 import Visitor from './visitor';
+import './google-sans.css';
 import './imprint.css';
 
 export const metadata: Metadata = {
@@ -17,9 +18,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+        <link rel="preload" href="/fonts/google-sans-normal-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body>
         {/* ESCAPE CLOSES STUDIO'S BOX (operator, 2 October 2026, T-1945). Shown inside
