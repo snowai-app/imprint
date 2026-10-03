@@ -3,8 +3,8 @@
 
    ONE STANDARD COLOUR SET, LIGHT ONLY: the Financial Times pink ground #FFF1E5, a wheat band #F2DFCE, warm
    near-black ink #33302E with its warm greys, one accent, claret #990F3D. There is no dark mode and no toggle.
-   Newsreader for headlines, Inter for the interface and IBM Plex Mono for labels load from Google Fonts; without
-   them the pages fall back to Georgia, system sans and the system mono.
+   Google Sans for headlines and the interface, Google Sans Code for labels (the family typeface, T-2108),
+   self-hosted from /fonts (app/google-sans.css); without them the pages fall back to system sans and mono.
 
    LAYOUT: a workspace. A wheat band across the top (crumb and the buttons that belong to where you are), a left
    rail (Books; inside a book its rooms; the tools beside you) and a centre that is a table, an outline, a chapter
@@ -13,9 +13,9 @@
   --paper: #FFF1E5; --sheet: #F2E5DA; --band: #F2DFCE; --band-hover: #E9D3BF;
   --ink: #33302E; --ink-2: #4D4845; --ink-3: #66605C; --rule: #CCC1B7; --accent: #990F3D; --inv: #33302E; --inv-ink: #FFF1E5;
   --good: #2C5F3F; --warn: #8A5200; --warn-soft: #F6E2B9; --bad: #8C1D18;
-  --serif: "Newsreader", Georgia, "Times New Roman", serif;
-  --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --serif: "Google Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --sans: "Google Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "Google Sans Code", ui-monospace, SFMono-Regular, Menlo, monospace;
   --bar: 40px; color-scheme: light;
 }
 * { box-sizing: border-box; }

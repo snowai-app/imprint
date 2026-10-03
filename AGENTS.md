@@ -154,12 +154,12 @@ only. `test/visitor.test.ts` covers it.
 
 **Byline's, which is Playbook's**: the Financial Times pink ground `#FFF1E5`, a
 wheat band `#F2DFCE`, warm near-black ink `#33302E`, one accent, claret
-`#990F3D`; Newsreader for headlines, Inter for the interface, IBM Plex Mono for
-labels. **One standard colour set, light only: no dark mode and no toggle.**
+`#990F3D`; Google Sans for headlines and the interface, Google Sans Code for
+labels (the family typeface, T-2108). **One standard colour set, light only: no dark mode and no toggle.**
 Imprint's own mark is an "I". `app/imprint.css` holds it all and works at phone
 width (no sideways scroll at 390px). The skip link, focus rings and reduced
-motion are kept. Fonts load from Google Fonts; without them the pages fall back
-to Georgia, system sans and the system mono.
+motion are kept. The fonts are self-hosted from `public/fonts/`
+(`app/google-sans.css`); without them the pages fall back to system sans and mono.
 
 ## Copied, not shared
 

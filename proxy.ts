@@ -116,5 +116,5 @@ function toLogin(request: NextRequest, path: string, visitor: boolean): NextResp
 }
 
 export const config = {
-  matcher: ['/((?!_next/|favicon|icon|apple-touch-icon).*)'],
+  matcher: ['/((?!_next/|fonts/|favicon|icon|apple-touch-icon).*)'],
 };
