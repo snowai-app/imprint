@@ -1,4 +1,5 @@
-import { ThemeSwitch } from './ThemeSwitch';
+import ThemeSwitch from '@/family/components/ThemeSwitch';
+import { THEME_COOKIE } from '@/lib/theme';
 
 /** The band across the top of the public front page: Imprint's name, and whatever the page puts on the right. (The studio has its own, in StudioShell.) */
 export function Bar({ right }: { right?: React.ReactNode }) {
@@ -12,7 +13,7 @@ export function Bar({ right }: { right?: React.ReactNode }) {
       <div className="acts">
         {right}
       </div>
-      <ThemeSwitch />
+      <ThemeSwitch cookie={THEME_COOKIE} className="theme-switch" />
     </header>
   );
 }

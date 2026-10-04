@@ -4,7 +4,10 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { StudioContext, useToast, type Studio } from './studio-context';
-import { ThemeSwitch } from './ThemeSwitch';
+import AppLauncher from '@/family/components/AppLauncher';
+import ThemeSwitch from '@/family/components/ThemeSwitch';
+import type { LauncherApp } from '@/family/apps';
+import { THEME_COOKIE } from '@/lib/theme';
 import { ROOMS, bookPath, crumbFor, disclosurePath, filesPath, outlinePath, railCurrent, sourcesPath } from '@/lib/studio-paths';
 
 /**
@@ -24,7 +27,7 @@ const TOOLS: [string, string][] = [
   ['Transcribe', 'dictation'],
 ];
 
-export default function StudioShell({ email, counts, children }: { email: string; counts: Counts; children: React.ReactNode }) {
+export default function StudioShell({ email, counts, launcher, children }: { email: string; counts: Counts; launcher: { apps: LauncherApp[]; shelfHref: string }; children: React.ReactNode }) {
   const path = usePathname();
   const router = useRouter();
   const { message, on, toast } = useToast();
@@ -45,12 +48,13 @@ export default function StudioShell({ email, counts, children }: { email: string
   return (
     <StudioContext.Provider value={studio}>
       <div className="band" role="region" aria-label="Studio bar">
+        <AppLauncher apps={launcher.apps} owned={['imprint']} current="imprint" shelfHref={launcher.shelfHref} />
         <a className="name" href="/"><i aria-hidden="true" />Imprint <small>Studio</small></a>
         <div className="crumb" aria-live="polite"><b>{word}</b>{room}</div>
         <div className="acts">
           {cur.tab === 'new' ? null : <Link className="bt go" href={ROOMS.new}>+ New book</Link>}
         </div>
-        <ThemeSwitch />
+        <ThemeSwitch cookie={THEME_COOKIE} className="theme-switch" />
       </div>
       <div className="shell">
         <nav className="rail" aria-label="Imprint">

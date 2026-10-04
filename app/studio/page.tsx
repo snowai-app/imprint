@@ -3,10 +3,11 @@ import { bookStore } from '@/lib/books-store';
 import type { Book } from '@/lib/books';
 import { chapterStore } from '@/lib/chapter-store';
 import { requireViewer } from '@/lib/session';
+import { familyTitle } from '@/family/apps';
 
 /** The studio's front room: the viewer's own books. Any signed-in person may write their own. A database that is not there yet answers in words, never a crash. */
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Books · Studio · Imprint · Snow AI' };
+export const metadata = { title: familyTitle('imprint', 'Books · Studio') };
 
 export default async function Page() {
   const viewer = await requireViewer('/studio');

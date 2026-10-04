@@ -1,0 +1,199 @@
+/*
+ * THE SNOW AI FAMILY TOKENS (T-2126). Master copy in snowai/family/; every
+ * app copies family/ byte for byte. Change one, change them all.
+ *
+ * The measures of docs/design/family-standard.md, approved by the operator on
+ * 4 October 2026: type scale, spacing, radius, elevation, motion and control
+ * sizes, plus the shared neutrals. The per-app colours (accent, strong, soft,
+ * ground and their dark values) are in app-colours.css, generated from
+ * palette.json; an app sets `data-app="<id>"` on <html> to take its own.
+ *
+ * Light by default, dark only by choice (T-2120): dark is
+ * `:root[data-theme="dark"]`, never `prefers-color-scheme`.
+ *
+ * Google Sans is the family face (T-2108); google-sans.css declares it.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* ---------------------------------------------------------------- type */
+  --font-sans: "Google Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Google Sans Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* `font` shorthands (weight size/line family) and their tracking. */
+  --text-display-1: 400 64px/72px var(--font-sans);
+  --track-display-1: -0.02em;
+  --text-display-2: 400 48px/56px var(--font-sans);
+  --track-display-2: -0.015em;
+  --text-headline-1: 500 36px/44px var(--font-sans);
+  --track-headline-1: -0.01em;
+  --text-headline-2: 500 28px/36px var(--font-sans);
+  --track-headline-2: -0.005em;
+  --text-title-1: 500 22px/28px var(--font-sans);
+  --text-title-2: 500 18px/24px var(--font-sans);
+  --text-title-3: 500 16px/24px var(--font-sans);
+  --text-body-lg: 400 16px/24px var(--font-sans);
+  --text-body: 400 14px/20px var(--font-sans);
+  --text-body-sm: 400 12px/16px var(--font-sans);
+  --track-body-sm: 0.01em;
+  --text-label-lg: 500 14px/20px var(--font-sans);
+  --track-label-lg: 0.005em;
+  --text-label: 500 12px/16px var(--font-sans);
+  --track-label: 0.02em;
+  --text-eyebrow: 500 11px/16px var(--font-sans);
+  --track-eyebrow: 0.08em;
+
+  /* ------------------------------------------------------------- spacing */
+  --space-0: 0px;
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-80: 80px;
+  --space-96: 96px;
+
+  /* Page gutters: 16 on phones, 24 on tablets, 32 on desktop. */
+  --gutter: 32px;
+  --content-max: 1200px;
+
+  /* -------------------------------------------------------------- radius */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 999px;
+  --radius-tile: 25%;
+
+  /* ----------------------------------------------------------- elevation */
+  --elev-0: none;
+  --elev-1: 0 1px 2px rgb(0 0 0 / 0.06), 0 0 1px rgb(0 0 0 / 0.1);
+  --elev-2: 0 4px 12px rgb(0 0 0 / 0.08), 0 0 1px rgb(0 0 0 / 0.12);
+  --elev-3: 0 16px 40px rgb(0 0 0 / 0.14), 0 0 1px rgb(0 0 0 / 0.12);
+
+  /* -------------------------------------------------------------- motion */
+  --dur-1: 100ms;
+  --dur-2: 200ms;
+  --dur-3: 300ms;
+  --dur-4: 500ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  /* How far things move: a hover lifts 1px, a menu slides 4px, a dialog
+     scales from 98%, a press is 98% for 100ms. No bounce in apps. */
+  --move-hover: -1px;
+  --move-menu: 4px;
+  --scale-dialog: 0.98;
+  --scale-press: 0.98;
+
+  /* ------------------------------------------------------------ controls */
+  --control-sm: 32px;
+  --control-md: 40px;
+  --control-lg: 48px;
+  --input-height: 40px;
+  --input-text: 14px;
+  --header-app: 56px;
+  --header-public: 64px;
+  --launcher-size: 40px;
+  --launcher-panel: 360px;
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --stroke: 1.75;
+
+  /* ------------------------------------------------------------- colours */
+  /* Neutrals, shared by every app (warm paper, palette C). */
+  --surface: #ffffff;
+  --surface-2: #f3efe7;
+  --ink: #1d1b18;
+  --ink-2: #47443e;
+  --ink-3: #6b675f;
+  --line: #e6e0d4;
+  --line-strong: #c3bcae;
+  --ok: #2f6b4a;
+  --warn: #8a5a00;
+  --danger: #b42318;
+  --on-danger: #ffffff;
+
+  /* The app's own colour. These defaults are Snow AI's; app-colours.css
+     replaces them for the app named in `data-app`.
+       --accent         the tile and the brand, a mid tone (graphics only)
+       --accent-strong  links, small text and filled buttons
+       --accent-soft    selected rows, chips, tints
+       --accent-ink     text on a filled --accent-strong button
+       --ground         the page                                         */
+  --accent: #c96442;
+  --accent-strong: #b5573a;
+  --accent-soft: #f5e6de;
+  --accent-ink: #ffffff;
+  --ground: #faf9f5;
+  --tile: #c96442;
+  --focus: var(--accent-strong);
+}
+
+/* Phones: the large type steps down, inputs grow to 48 with 16px text so iOS
+   does not zoom, and the gutter is 16. */
+@media (max-width: 600px) {
+  :root {
+    --text-display-1: 400 40px/48px var(--font-sans);
+    --text-display-2: 400 34px/40px var(--font-sans);
+    --text-headline-1: 500 28px/36px var(--font-sans);
+    --text-headline-2: 500 24px/32px var(--font-sans);
+    --text-title-1: 500 20px/28px var(--font-sans);
+    --input-height: 48px;
+    --input-text: 16px;
+    --gutter: 16px;
+  }
+}
+@media (min-width: 601px) and (max-width: 1024px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+
+/* Every movement becomes a 100ms fade. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-2: 100ms;
+    --dur-3: 100ms;
+    --dur-4: 100ms;
+    --move-hover: 0px;
+    --move-menu: 0px;
+    --scale-dialog: 1;
+    --scale-press: 1;
+  }
+}
+
+/* Dark, by choice only. A warm near-black ground, surfaces one step lighter,
+   the accent lifted, shadows about three times stronger with a hairline. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --surface: #2b2a28;
+  --surface-2: #363431;
+  --ink: #f3f0ea;
+  --ink-2: #cdc8be;
+  --ink-3: #a09a90;
+  --line: #3b3834;
+  --line-strong: #57524b;
+  --ok: #8fcaa6;
+  --warn: #e8b44f;
+  --danger: #f29b8f;
+  --on-danger: #1f1e1d;
+
+  --accent: #d97757;
+  --accent-strong: #d97757;
+  --accent-soft: #4a3329;
+  --accent-ink: #1f1e1d;
+  --ground: #1f1e1d;
+
+  --elev-1: 0 1px 2px rgb(0 0 0 / 0.18), 0 0 1px rgb(0 0 0 / 0.3), inset 0 0 0 1px rgb(255 255 255 / 0.04);
+  --elev-2: 0 4px 12px rgb(0 0 0 / 0.24), 0 0 1px rgb(0 0 0 / 0.36), inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  --elev-3: 0 16px 40px rgb(0 0 0 / 0.42), 0 0 1px rgb(0 0 0 / 0.36), inset 0 0 0 1px rgb(255 255 255 / 0.06);
+}

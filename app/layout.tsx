@@ -1,17 +1,21 @@
 import type { Metadata, Viewport } from 'next';
 import { cookies, headers } from 'next/headers';
+import { familyTitle } from '@/family/apps';
 import { THEME_COOKIE, themeFrom } from '@/lib/theme';
 import { VISITOR_HEADER } from '@/lib/visitor';
 import Visitor from './visitor';
 import './google-sans.css';
+import '@/family/tokens.css';
+import '@/family/app-colours.css';
+import '@/family/components.css';
 import './imprint.css';
 
 export const metadata: Metadata = {
-  title: 'Imprint · Snow AI',
+  title: familyTitle('imprint'),
   description: 'Imprint is where a book is written from your own expertise: an idea, a title, an outline, chapter drafts and a Word and PDF file. Not open yet.',
 };
 
-export const viewport: Viewport = { width: 'device-width', initialScale: 1, colorScheme: 'light', themeColor: '#FFF1E5' };
+export const viewport: Viewport = { width: 'device-width', initialScale: 1, colorScheme: 'light', themeColor: '#fff1e5' };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   /* Set only by proxy.ts, which cuts any copy a browser sends (lib/visitor.ts). */
@@ -19,7 +23,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   /* Light unless the person chose dark (T-2120). */
   const theme = themeFrom((await cookies()).get(THEME_COOKIE)?.value);
   return (
-    <html lang="en" data-theme={theme}>
+    <html lang="en" data-app="imprint" data-theme={theme}>
       <head>
         <link rel="preload" href="/fonts/google-sans-normal-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
