@@ -27,9 +27,13 @@ in snowai.
 | `components/ThemeSwitch.tsx` | The one Light/Dark switch. Takes the app's own cookie name; `shared` puts it on a registrable domain (snowai.app does); `label={{ toDark, toLight }}` gives a translated app its own words. |
 | `components/CookieBar.tsx` | The family cookie bar (T-2143), after getcovered.cloud's: the sentence and "Privacy and cookies" on the left, Accept (the app's strong shade) and Deny non-essential as pills on the right, under the sentence on a phone. A named region; labels and the privacy link are props with English defaults. |
 | `components/CookieChoices.tsx` | The footer's "Cookie choices" pill, which reopens the bar. |
+| `ask-snow.ts` | Ask Snow's parts with no screen (T-2168): the words in English (`ASK_SNOW_EN`, one object a translated app replaces), protected mode (`maskText` hides Social Security numbers, dates of birth and health words before anything is sent), the greeting rule (`greetNow`: once per visit, after 10 seconds or half a scroll, never on a phone, never again once closed), and the shapes the Ask service answers in. No imports. |
+| `components/AskSnow.tsx` | Ask Snow on a public page: the "Ask Snow" button in the corner, the greeting with the page's quick choices (the operator's presets, most specific URL rule first) and the conversation. Never opens the conversation by itself, never covers the page, nothing on a phone until tapped (then a bottom sheet). Props: `site` (the app's id), `endpoint` (Ask's address from `lib/links.ts`), `greet`, `labels`, `lang`. |
+| `components/AskSnowButton.tsx` | Ask Snow signed in: the Ask button for a product's header and the side panel under it, answering from the product and the family's pages, with questions pooled across the account. Props: `site`, `endpoint`, `suggestions`, `labels`, `top`. Marks `<html data-ask-docked>` while open, so a work area marked `data-ask-dock` makes room on a wide screen. |
+| `components/AskSnowPanel.tsx` | The conversation both share: answers stream in and end with a button; "Talk to a person" goes through Live help (in the box when signed in, by email after "Yes, contact me" when not); a protected conversation is never handed over. |
 | `components/NotFound.tsx` | The family 404: the app's tile and name, "This page isn't here", links home. Light unless dark was chosen. |
 | `templates/not-found.tsx` | The `app/not-found.tsx` to copy. |
-| `family.test.mts` | The kit's tests: app-colours.css in sync with palette.json; every app has a palette entry, a glyph and a group; contrast present and at least 4.5 for text and buttons (3 for the tile's glyph); the launcher filters operator surfaces, draws an app that is not live yet without a link, and draws the shelf link only when given one; the consent cookie's value, domain and lifetime; the cookie bar's name, wording and token-only colours. |
+| `family.test.mts` | The kit's tests: Ask Snow's masking, greeting rule, words, no address in its components and token-only colours; app-colours.css in sync with palette.json; every app has a palette entry, a glyph and a group; contrast present and at least 4.5 for text and buttons (3 for the tile's glyph); the launcher filters operator surfaces, draws an app that is not live yet without a link, and draws the shelf link only when given one; the consent cookie's value, domain and lifetime; the cookie bar's name, wording and token-only colours. |
 
 ## How an app adopts it
 
@@ -90,6 +94,28 @@ in snowai.
    On the server, `parseConsent(cookie)` with `allows()` says the same. Optional
    storage is on until the visitor turns it off (as on GetCovered, T-1549);
    "Deny non-essential" turns it off across the family at once.
+
+9. Mount Ask Snow, the family's one assistant (T-2168). On the public pages,
+   once, last inside `<body>` before the cookie bar (outside any wrapper whose
+   styles would reach it):
+
+   ```tsx
+   import AskSnow from '@/family/components/AskSnow';
+   import { FAMILY_LINKS } from '@/lib/links';
+   <AskSnow site="<id>" endpoint={FAMILY_LINKS.ask} />
+   ```
+
+   In the signed-in header, beside the account menu:
+
+   ```tsx
+   import AskSnowButton from '@/family/components/AskSnowButton';
+   <AskSnowButton site="<id>" endpoint={FAMILY_LINKS.ask} suggestions={[…]} />
+   ```
+
+   The Ask service decides what it says: the operator's library at
+   `ask.snowai.app/admin/answers` word for word, then that site's own pages,
+   then a person. Phase 1 mounts it on snowai.app and Invoice only; the rest of
+   the family follows once the operator has seen those two live.
 
 Titles follow `familyTitle(id, page)`: `Page · Snow AI Invoice`, and the app's
 own name for its home.

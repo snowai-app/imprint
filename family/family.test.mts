@@ -12,6 +12,7 @@ import {
   framedRequest,
   parseConsent,
 } from './consent.ts';
+import { ASK_SNOW_EN, GREET_AFTER_MS, MAX_QUESTION, fallbackPreset, fill, foundWords, greetNow, maskText, readGreetState, scrolledHalf, visitKey } from './ask-snow.ts';
 
 /**
  * The family kit's own checks (T-2126). Copied with the kit, so every app
@@ -179,7 +180,7 @@ describe('family kit', () => {
     assert.ok(bar.includes("accept: 'Accept'") && bar.includes("deny: 'Deny non-essential'") && bar.includes("link: 'Privacy and cookies'"));
     assert.doesNotMatch(bar, /https?:\/\//, 'no address in the component');
     const css = source('./components.css');
-    const block = css.slice(css.indexOf('/* ------------------------------------------------------ the cookie bar */'));
+    const block = css.slice(css.indexOf('/* ------------------------------------------------------ the cookie bar */'), css.indexOf('/* ------------------------------------------------------------- Ask Snow */'));
     assert.ok(block.includes('.fam-cookiebar__accept {') && block.includes('.fam-cookiebtn.fam-cookiebtn {'));
     assert.match(block, /\.fam-cookiebar__accept \{\s*background: var\(--accent-strong\);\s*color: var\(--accent-ink\);/);
     /* No colour of its own: tokens, and black or white only to darken or lift a hover. */
@@ -196,5 +197,64 @@ describe('family kit', () => {
     const sw = source('./components/ThemeSwitch.tsx');
     assert.match(sw, /label\?: \{ toDark\?: string; toLight\?: string \}/);
     assert.doesNotMatch(sw, /useEffect/, 'no state set in an effect');
+  });
+  /* ---------------------------------------------------------- Ask Snow (T-2168) */
+
+  it('Ask Snow masks a Social Security number, a date of birth and health words before anything is sent', () => {
+    const m = maskText('SSN 123-45-6789, born 02/03/1981, I have diabetes and take insulin');
+    assert.doesNotMatch(m.text, /123-45-6789|02\/03\/1981|diabetes|insulin/);
+    assert.deepEqual([...m.found].sort(), ['dob', 'health', 'ssn']);
+    assert.deepEqual(maskText('My invoice 0045 is due 10/25/2026').found, [], 'a due date this year is not a birth date');
+    assert.deepEqual(maskText('my number is 123456789 ok').found, ['ssn']);
+    assert.deepEqual(maskText('still typing 123456789', true).found, [], 'a bare number being typed waits for the next key');
+    assert.equal(foundWords(['ssn', 'dob']), 'a Social Security number and a date of birth');
+  });
+
+  it('Ask Snow greets once per visit, after ten seconds or half a scroll, never on a phone, never again once closed', () => {
+    const base = { state: 'none' as const, phone: false, open: false, enabled: true, elapsedMs: 0, scrolledHalf: false };
+    assert.equal(GREET_AFTER_MS, 10_000);
+    assert.equal(greetNow(base), 'wait');
+    assert.equal(greetNow({ ...base, elapsedMs: 10_000 }), 'show');
+    assert.equal(greetNow({ ...base, scrolledHalf: true }), 'show');
+    assert.equal(greetNow({ ...base, state: 'shown' }), 'restore', 'shown earlier this visit: put back, not shown again');
+    assert.equal(greetNow({ ...base, state: 'closed', elapsedMs: 99_000 }), 'never');
+    assert.equal(greetNow({ ...base, phone: true, elapsedMs: 99_000, scrolledHalf: true }), 'never', 'the phone rule');
+    assert.equal(greetNow({ ...base, enabled: false, elapsedMs: 99_000 }), 'never');
+    assert.equal(greetNow({ ...base, open: true, elapsedMs: 99_000 }), 'wait', 'never over the open conversation');
+    assert.equal(readGreetState('closed'), 'closed');
+    assert.equal(readGreetState('nonsense'), 'none');
+    assert.equal(visitKey('invoice'), 'ask-snow.visit.invoice');
+    assert.equal(scrolledHalf(500, 2000, 1000), true);
+    assert.equal(scrolledHalf(499, 2000, 1000), false);
+    assert.equal(scrolledHalf(0, 800, 1000), false, 'a page that cannot scroll is never half scrolled');
+  });
+
+  it('Ask Snow carries its words in one object, with the honest line, and a fallback greeting', () => {
+    for (const [k, v] of Object.entries(ASK_SNOW_EN)) assert.ok(typeof v === 'string' && v.trim(), `${k} has words`);
+    assert.equal(ASK_SNOW_EN.name, 'Ask Snow');
+    assert.equal(ASK_SNOW_EN.honest, 'AI assistant · answers from Snow AI’s own pages · not tax, legal or insurance advice');
+    const p = fallbackPreset('invoice', 'Snow AI Invoice');
+    assert.equal(p.greeting, 'Hi, welcome to Snow AI Invoice. What are you trying to get done?');
+    assert.equal(p.choices[0].kind, 'followup');
+    assert.equal(fill('{a} and {b}', { a: '1' }), '1 and {b}');
+    assert.equal(MAX_QUESTION, 500);
+  });
+
+  it('Ask Snow names no address, takes its endpoint as a prop, and is coloured only by tokens', () => {
+    for (const f of ['./components/AskSnow.tsx', './components/AskSnowButton.tsx', './components/AskSnowPanel.tsx', './ask-snow.ts']) {
+      const src = source(f);
+      assert.doesNotMatch(src, /https?:\/\/|snowai\.app|getcovered\./, `${f} writes an address`);
+    }
+    assert.match(source('./components/AskSnow.tsx'), /endpoint: string;/);
+    assert.match(source('./components/AskSnowButton.tsx'), /endpoint: string;/);
+    assert.match(source('./components/AskSnowPanel.tsx'), /"protected": true|protected: found\.length > 0/);
+    const css = source('./components.css');
+    const block = css.slice(css.indexOf('/* ------------------------------------------------------------- Ask Snow */'));
+    assert.ok(block.includes('.fam-ask .fam-ask-fab {') && block.includes('.fam-ask-btn.fam-ask-btn {'));
+    assert.deepEqual(block.match(/#[0-9a-f]{3,8}\b/gi) ?? [], [], 'no colour of its own');
+    assert.match(block, /@media \(max-width: 600px\)[\s\S]*\.fam-ask \.fam-ask-greet \{ display: none !important; \}/, 'no greeting on a phone');
+    assert.match(block, /prefers-reduced-motion: reduce/);
+    assert.doesNotMatch(block, /prefers-color-scheme/);
+    assert.match(block, /z-index: 800/, 'under the cookie bar');
   });
 });
