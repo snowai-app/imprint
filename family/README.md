@@ -18,15 +18,18 @@ in snowai.
 | `tokens.css` | The standard's tokens on `:root`: type scale, spacing, radius, elevation, motion, control sizes, and the shared neutrals; dark under `:root[data-theme="dark"]`. |
 | `app-colours.css` | **Generated.** For every app, `:root[data-app="<id>"]` (light) and `:root[data-app="<id>"][data-theme="dark"]`, plus `[data-tile="<id>"]` so any page can draw any app's tile. |
 | `generate-app-colours.mjs` | Writes `app-colours.css` from `palette.json`; `--check` fails when they differ. |
-| `components.css` | The kit's components, every class prefixed `fam-`: tile, launcher, status chip, theme switch, not-found page, and the standard's buttons (`fam-btn`), inputs (`fam-input`) and cards (`fam-card`). |
+| `components.css` | The kit's components, every class prefixed `fam-`: tile, launcher, status chip, theme switch, not-found page, cookie bar and its footer button, and the standard's buttons (`fam-btn`), inputs (`fam-input`) and cards (`fam-card`). |
+| `consent.ts` | The family's one cookie choice (T-2143): the `snowai-consent` cookie (`v1.all` or `v1.essential`, twelve months, shared across `.snowai.app` when the page is on it, host-only elsewhere), `parseConsent` for the server, and `hasConsent()`, `onConsentChange()`, `setConsent()` and `openCookieChoices()` for the browser. No imports. |
 | `apps.ts` | Every app: id, full and short name, one line, job group, Lucide glyph, the environment variable for its address, status, operator-only, brand. Pure data; no hostnames. |
 | `glyphs.tsx` | Glyph name to Lucide component, imported one by one. |
 | `components/AppTile.tsx` | The tile: a rounded square at 25%, the app's colour, a white glyph at 55%, no border. Sizes 24, 32, 40, 56. |
-| `components/AppLauncher.tsx` | The nine-dot button at the far left of the header and its panel: "Your apps", then "More from Snow AI" grouped by job with statuses, then the full shelf. Keyboard (arrows, Home, End, Escape with focus return), click-outside, and a bottom sheet on phones. |
-| `components/ThemeSwitch.tsx` | The one Light/Dark switch. Takes the app's own cookie name; `shared` puts it on a registrable domain (snowai.app does). |
+| `components/AppLauncher.tsx` | The nine-dot button at the far left of the header and its panel: "Your apps", then "More from Snow AI" grouped by job with statuses, then the full shelf when `shelfHref` is given (left out, the "All Snow AI apps" link is not drawn at all). Keyboard (arrows, Home, End, Escape with focus return), click-outside, and a bottom sheet on phones. |
+| `components/ThemeSwitch.tsx` | The one Light/Dark switch. Takes the app's own cookie name; `shared` puts it on a registrable domain (snowai.app does); `label={{ toDark, toLight }}` gives a translated app its own words. |
+| `components/CookieBar.tsx` | The family cookie bar (T-2143), after getcovered.cloud's: the sentence and "Privacy and cookies" on the left, Accept (the app's strong shade) and Deny non-essential as pills on the right, under the sentence on a phone. A named region; labels and the privacy link are props with English defaults. |
+| `components/CookieChoices.tsx` | The footer's "Cookie choices" pill, which reopens the bar. |
 | `components/NotFound.tsx` | The family 404: the app's tile and name, "This page isn't here", links home. Light unless dark was chosen. |
 | `templates/not-found.tsx` | The `app/not-found.tsx` to copy. |
-| `family.test.mts` | The kit's tests: app-colours.css in sync with palette.json; every app has a palette entry, a glyph and a group; contrast present and at least 4.5 for text and buttons (3 for the tile's glyph); the launcher filters operator surfaces. |
+| `family.test.mts` | The kit's tests: app-colours.css in sync with palette.json; every app has a palette entry, a glyph and a group; contrast present and at least 4.5 for text and buttons (3 for the tile's glyph); the launcher filters operator surfaces and draws the shelf link only when given one; the consent cookie's value, domain and lifetime; the cookie bar's name, wording and token-only colours. |
 
 ## How an app adopts it
 
@@ -47,6 +50,46 @@ in snowai.
 5. Replace the app's theme switch with `<ThemeSwitch cookie="<app>-theme" />`,
    copy `templates/not-found.tsx` to `app/not-found.tsx` with the app's id,
    and add `family/**/*.test.mts` to the test script.
+
+6. Mount the cookie bar once, in `app/layout.tsx`, last inside `<body>`:
+   read the choice on the server beside the theme cookie, so a visitor who
+   has chosen never sees it flash.
+
+   ```tsx
+   import CookieBar from '@/family/components/CookieBar';
+   import { CONSENT_COOKIE, framedRequest, parseConsent } from '@/family/consent';
+   const consent = parseConsent((await cookies()).get(CONSENT_COOKIE)?.value);
+   const framed = framedRequest((await headers()).get('sec-fetch-dest'));
+   <CookieBar initial={consent} framed={framed} privacyHref={privacyUrl} />
+   ```
+
+   A page inside a frame (HQ's visitor view, Studio's app box, a form
+   embedded on someone else's site) never shows the bar: its parent does.
+
+   `privacyHref` comes from the app's `lib/links.ts` (the family page,
+   `${snowai}/privacy`, read from the environment); left out it is the
+   family's. A translated app passes `labels={{ region, text, link, accept,
+   deny }}` in the visitor's language.
+7. Put `<CookieChoices />` in the footer beside the legal links (a
+   translated app passes `label`). Where a page has no footer, put it where
+   its legal links are.
+8. Gate anything non-essential on the choice. Essential is sign-in and the
+   session, security, the theme and language cookies, display settings the
+   person chose, and the consent cookie itself; none of that asks. Anything
+   that counts visits, any third-party script, anything else asks first and
+   stops when the choice changes:
+
+   ```tsx
+   import { hasConsent, onConsentChange } from '@/family/consent';
+   useEffect(() => {
+     if (hasConsent()) start();
+     return onConsentChange((c) => (c === 'all' ? start() : stop()));
+   }, []);
+   ```
+
+   On the server, `parseConsent(cookie)` with `allows()` says the same. Optional
+   storage is on until the visitor turns it off (as on GetCovered, T-1549);
+   "Deny non-essential" turns it off across the family at once.
 
 Titles follow `familyTitle(id, page)`: `Page · Snow AI Invoice`, and the app's
 own name for its home.

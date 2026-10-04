@@ -10,7 +10,8 @@ import AppTile from './AppTile';
  * THE APP LAUNCHER (family standard 3.7): the nine-dot button at the far left
  * of every app's header, before the lockup. It opens a panel: "Your apps"
  * (what the signed-in account can open, three across), then "More from Snow
- * AI" grouped by job with each app's status, then a link to the full shelf.
+ * AI" grouped by job with each app's status, then a link to the full shelf
+ * when the app passes one (`shelfHref`; left out, the link is not drawn).
  * On a phone the panel is a sheet from the bottom.
  *
  * Keyboard: Enter, Space or ArrowDown opens it and moves focus into it; the
@@ -33,8 +34,9 @@ export default function AppLauncher({
   owned: string[];
   /** The app this page belongs to. */
   current?: string;
-  /** The full shelf, at snowai.app. */
-  shelfHref: string;
+  /** The full shelf, at snowai.app. Left out, there is no "All Snow AI
+   *  apps" link at all (T-2132): not hidden, not in the page. */
+  shelfHref?: string;
   moreTitle?: string;
   label?: string;
 }) {
@@ -175,9 +177,11 @@ export default function AppLauncher({
               </section>
             ))}
 
-            <a className="fam-launcher__all" href={shelfHref}>
-              All Snow AI apps <ArrowRight size={16} strokeWidth={STROKE} aria-hidden />
-            </a>
+            {shelfHref ? (
+              <a className="fam-launcher__all" href={shelfHref}>
+                All Snow AI apps <ArrowRight size={16} strokeWidth={STROKE} aria-hidden />
+              </a>
+            ) : null}
           </div>
         </>
       ) : null}

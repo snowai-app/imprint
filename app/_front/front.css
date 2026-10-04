@@ -618,3 +618,10 @@ html:has(.imprintfront){scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 .imprintfront .fp-top .fam-theme-switch.fp-theme:focus-visible{outline:2px solid var(--fp-band-ink)}
 /* The kit's tile (family/components/AppTile.tsx) in the header and the foot. */
 @media (max-width:420px){ .imprintfront .fp-brand .fam-tile{--size:28px} }
+
+/* The family's Cookie choices button (family kit, T-2143) in the dark band:
+   the band's own ink and rule instead of the page's. */
+.imprintfront .fp-foot-b{align-items:center}
+.imprintfront .fp-foot-b .fam-cookiebtn.fam-cookiebtn{color:var(--fp-band-ink-2);border-color:var(--fp-band-line)}
+.imprintfront .fp-foot-b .fam-cookiebtn.fam-cookiebtn:hover{color:var(--fp-band-ink)}
+.imprintfront .fp-foot-b .fam-cookiebtn.fam-cookiebtn:focus-visible{outline-color:var(--fp-band-ink)}
