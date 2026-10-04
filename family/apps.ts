@@ -161,7 +161,7 @@ export const APPS: FamilyApp[] = [
   { id: 'metis', name: 'Snow AI Metis', short: 'Metis', line: 'Dedicated to women and open to everyone: career, academics and health.', group: 'pubs', glyph: 'sprout', env: 'NEXT_PUBLIC_METIS_URL', brand: 'snowai', status: 'building', operatorOnly: false },
 
   /* Insurance: GetCovered, its own master brand */
-  { id: 'getcovered', name: 'GetCovered', short: 'GetCovered', line: 'Health coverage end to end, for the agents who place it.', group: 'gc', glyph: 'heart-pulse', env: 'NEXT_PUBLIC_GETCOVERED_URL', brand: 'getcovered', status: 'building', operatorOnly: false },
+  { id: 'getcovered', name: 'Get Covered', short: 'Get Covered', line: 'Health coverage end to end, for the agents who place it.', group: 'gc', glyph: 'heart-pulse', env: 'NEXT_PUBLIC_GETCOVERED_URL', brand: 'getcovered', status: 'building', operatorOnly: false },
 
   /* Company: the operator's own */
   { id: 'hq', name: 'Snow AI HQ', short: 'HQ', line: 'The company, every business rolled up: revenue, activity and what was decided.', group: 'company', glyph: 'building-2', env: 'NEXT_PUBLIC_HQ_URL', brand: 'snowai', status: 'open', operatorOnly: true },

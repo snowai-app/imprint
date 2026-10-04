@@ -9,6 +9,8 @@ import ThemeSwitch from '@/family/components/ThemeSwitch';
 import type { LauncherApp } from '@/family/apps';
 import { THEME_COOKIE } from '@/lib/theme';
 import { ROOMS, bookPath, crumbFor, disclosurePath, filesPath, outlinePath, railCurrent, sourcesPath } from '@/lib/studio-paths';
+import AskSnowButton from '@/family/components/AskSnowButton';
+import { askEndpointOf } from '@/family/ask-snow';
 
 /**
  * THE STUDIO'S FRAME (T-1751), in Byline's shape and look: a wheat band across
@@ -54,6 +56,7 @@ export default function StudioShell({ email, counts, launcher, children }: { ema
         <div className="acts">
           {cur.tab === 'new' ? null : <Link className="bt go" href={ROOMS.new}>+ New book</Link>}
         </div>
+        <AskSnowButton site="imprint" endpoint={askEndpointOf(launcher.apps)} />
         <ThemeSwitch cookie={THEME_COOKIE} className="theme-switch" />
       </div>
       <div className="shell">
