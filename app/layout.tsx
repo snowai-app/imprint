@@ -12,6 +12,7 @@ import './imprint.css';
 import CookieBar from '@/family/components/CookieBar';
 import { CONSENT_COOKIE, framedRequest, parseConsent } from '@/family/consent';
 import { FAMILY_LINKS } from '@/lib/links';
+import AskSnow from '@/family/components/AskSnow';
 
 export const metadata: Metadata = {
   title: familyTitle('imprint'),
@@ -42,6 +43,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <a className="skip" href="#main">Skip to the content</a>
         {children}
         {visitor ? <Visitor /> : null}
+        {/* Ask Snow, the family's guide (T-2168), on the public pages. */}
+        {framed ? null : <AskSnow site="imprint" endpoint={FAMILY_LINKS.ask} hideOn={['/studio']} />}
         <CookieBar initial={consent} framed={framed} privacyHref={`${FAMILY_LINKS.snowai}/privacy`} />
       </body>
     </html>
