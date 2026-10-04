@@ -117,7 +117,8 @@
   padding: 0;
   list-style: none;
 }
-.fam-launcher__yours a {
+.fam-launcher__yours a,
+.fam-launcher__yours .fam-launcher__nolink {
   display: grid;
   justify-items: center;
   gap: var(--space-8);
@@ -152,7 +153,8 @@
   padding: 0;
   list-style: none;
 }
-.fam-launcher__list a {
+.fam-launcher__list a,
+.fam-launcher__list .fam-launcher__nolink {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;

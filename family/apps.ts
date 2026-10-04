@@ -110,6 +110,10 @@ export type FamilyApp = {
   operatorOnly: boolean;
   /** Byline, Imprint and Playbook keep the paper ground as a publication look. */
   paper?: boolean;
+  /** `false` while the app's address does not answer yet (no DNS record;
+   *  family audit, T-2148). The launcher still shows the app with its status,
+   *  but draws no link. Remove it the day the address is up. */
+  live?: false;
 };
 
 export const APPS: FamilyApp[] = [
@@ -133,7 +137,7 @@ export const APPS: FamilyApp[] = [
   { id: 'crm', name: 'Snow AI CRM', short: 'CRM', line: 'The client book: details, services, money, time, tasks and issues in one place.', group: 'clients', glyph: 'contact', env: 'NEXT_PUBLIC_CRM_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'portal', name: 'Snow AI Portal', short: 'Portal', line: 'One account for everything your agency does for you: health insurance, taxes and more.', group: 'clients', glyph: 'door-open', env: 'NEXT_PUBLIC_PORTAL_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'recovery', name: 'Snow AI Recovery', short: 'Recovery', line: 'The collections desk for agencies and the creditors they work for.', group: 'clients', glyph: 'hand-coins', env: 'NEXT_PUBLIC_RECOVERY_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'network', name: 'Snow AI Network', short: 'Network', line: 'One network: members ask and answer, and businesses offer what they do.', group: 'clients', glyph: 'users', env: 'NEXT_PUBLIC_NETWORK_URL', brand: 'snowai', status: 'building', operatorOnly: false },
+  { id: 'network', name: 'Snow AI Network', short: 'Network', line: 'One network: members ask and answer, and businesses offer what they do.', group: 'clients', glyph: 'users', env: 'NEXT_PUBLIC_NETWORK_URL', brand: 'snowai', status: 'building', operatorOnly: false, live: false },
   { id: 'memo', name: 'Snow AI Memo', short: 'Memo', line: 'Voice messages with their transcript.', group: 'clients', glyph: 'mic', env: 'NEXT_PUBLIC_MEMO_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'transcribe', name: 'Snow AI Transcribe', short: 'Transcribe', line: 'A recording in, its words and their timings out.', group: 'clients', glyph: 'audio-lines', env: 'NEXT_PUBLIC_TRANSCRIBE_URL', brand: 'snowai', status: 'building', operatorOnly: false },
 
@@ -145,7 +149,7 @@ export const APPS: FamilyApp[] = [
 
   /* Answers and rewards */
   { id: 'ask', name: 'Snow AI Ask', short: 'Ask', line: 'Answers from everything your account holds, in every app.', group: 'answers', glyph: 'message-circle-question-mark', env: 'NEXT_PUBLIC_ASK_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'atlas', name: 'Snow AI Atlas', short: 'Atlas', line: 'The Snow AI family in one search.', group: 'answers', glyph: 'compass', env: 'NEXT_PUBLIC_ATLAS_URL', brand: 'snowai', status: 'building', operatorOnly: false },
+  { id: 'atlas', name: 'Snow AI Atlas', short: 'Atlas', line: 'The Snow AI family in one search.', group: 'answers', glyph: 'compass', env: 'NEXT_PUBLIC_ATLAS_URL', brand: 'snowai', status: 'building', operatorOnly: false, live: false },
   { id: 'story', name: 'Snow AI Story', short: 'Story', line: 'A customer’s story, written as an email, a post, a video script or a page.', group: 'answers', glyph: 'quote', env: 'NEXT_PUBLIC_STORY_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'rewards', name: 'Snow AI Rewards', short: 'Rewards', line: 'Clients earn points for surveys and forms, and spend them on rewards.', group: 'answers', glyph: 'gift', env: 'NEXT_PUBLIC_REWARDS_URL', brand: 'snowai', status: 'building', operatorOnly: false },
 
@@ -174,6 +178,8 @@ export function appById(id: string): FamilyApp | undefined {
 /** What the launcher draws for one app: plain data, safe to hand from a
  *  server component to the client. */
 export type LauncherApp = Pick<FamilyApp, 'id' | 'short' | 'line' | 'group' | 'glyph' | 'status'> & {
+  /** Empty when the app has no working address yet (`live: false`): the
+   *  launcher shows it, with its status, and draws no link. */
   href: string;
   /** The app whose tile colour it wears, when that is not its own id (a
    *  second door into the same product). */
@@ -187,7 +193,10 @@ export type LauncherApp = Pick<FamilyApp, 'id' | 'short' | 'line' | 'group' | 'g
  * the browser keeps HQ, Studio and the rest out of a customer's page entirely.
  *
  * `hrefs` is the app's own address map (lib/links.ts), by app id; an app with
- * no address is left out rather than linked nowhere. GetCovered stands alone:
+ * no address is left out rather than linked nowhere. An app whose address does
+ * not answer yet (`live: false`) stays in the list, as the family shows what
+ * exists, but with an empty `href`, so the launcher draws it without a link.
+ * GetCovered stands alone:
  * its launcher lists only GetCovered; Snow AI's shelf keeps GetCovered in its
  * Insurance group, as it always has.
  */
@@ -199,7 +208,7 @@ export function launcherApps(
     .filter((a) => brand === 'snowai' || a.brand === brand)
     .filter((a) => !a.operatorOnly || operator)
     .filter((a) => Boolean(hrefs[a.id]))
-    .map((a) => ({ id: a.id, short: a.short, line: a.line, group: a.group, glyph: a.glyph, status: a.status, href: hrefs[a.id] as string }));
+    .map((a) => ({ id: a.id, short: a.short, line: a.line, group: a.group, glyph: a.glyph, status: a.status, href: a.live === false ? '' : (hrefs[a.id] as string) }));
 }
 
 /** `Page · Snow AI Invoice`, or the app's own name for its home. */

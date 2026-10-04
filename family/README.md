@@ -20,7 +20,7 @@ in snowai.
 | `generate-app-colours.mjs` | Writes `app-colours.css` from `palette.json`; `--check` fails when they differ. |
 | `components.css` | The kit's components, every class prefixed `fam-`: tile, launcher, status chip, theme switch, not-found page, cookie bar and its footer button, and the standard's buttons (`fam-btn`), inputs (`fam-input`) and cards (`fam-card`). |
 | `consent.ts` | The family's one cookie choice (T-2143): the `snowai-consent` cookie (`v1.all` or `v1.essential`, twelve months, shared across `.snowai.app` when the page is on it, host-only elsewhere), `parseConsent` for the server, and `hasConsent()`, `onConsentChange()`, `setConsent()` and `openCookieChoices()` for the browser. No imports. |
-| `apps.ts` | Every app: id, full and short name, one line, job group, Lucide glyph, the environment variable for its address, status, operator-only, brand. Pure data; no hostnames. |
+| `apps.ts` | Every app: id, full and short name, one line, job group, Lucide glyph, the environment variable for its address, status, operator-only, brand, and `live: false` while its address does not answer yet (the launcher then shows it, with its status, without a link). Pure data; no hostnames. |
 | `glyphs.tsx` | Glyph name to Lucide component, imported one by one. |
 | `components/AppTile.tsx` | The tile: a rounded square at 25%, the app's colour, a white glyph at 55%, no border. Sizes 24, 32, 40, 56. |
 | `components/AppLauncher.tsx` | The nine-dot button at the far left of the header and its panel: "Your apps", then "More from Snow AI" grouped by job with statuses, then the full shelf when `shelfHref` is given (left out, the "All Snow AI apps" link is not drawn at all). Keyboard (arrows, Home, End, Escape with focus return), click-outside, and a bottom sheet on phones. |
@@ -29,7 +29,7 @@ in snowai.
 | `components/CookieChoices.tsx` | The footer's "Cookie choices" pill, which reopens the bar. |
 | `components/NotFound.tsx` | The family 404: the app's tile and name, "This page isn't here", links home. Light unless dark was chosen. |
 | `templates/not-found.tsx` | The `app/not-found.tsx` to copy. |
-| `family.test.mts` | The kit's tests: app-colours.css in sync with palette.json; every app has a palette entry, a glyph and a group; contrast present and at least 4.5 for text and buttons (3 for the tile's glyph); the launcher filters operator surfaces and draws the shelf link only when given one; the consent cookie's value, domain and lifetime; the cookie bar's name, wording and token-only colours. |
+| `family.test.mts` | The kit's tests: app-colours.css in sync with palette.json; every app has a palette entry, a glyph and a group; contrast present and at least 4.5 for text and buttons (3 for the tile's glyph); the launcher filters operator surfaces, draws an app that is not live yet without a link, and draws the shelf link only when given one; the consent cookie's value, domain and lifetime; the cookie bar's name, wording and token-only colours. |
 
 ## How an app adopts it
 
