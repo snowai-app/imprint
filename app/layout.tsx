@@ -9,6 +9,9 @@ import '@/family/tokens.css';
 import '@/family/app-colours.css';
 import '@/family/components.css';
 import './imprint.css';
+import CookieBar from '@/family/components/CookieBar';
+import { CONSENT_COOKIE, framedRequest, parseConsent } from '@/family/consent';
+import { FAMILY_LINKS } from '@/lib/links';
 
 export const metadata: Metadata = {
   title: familyTitle('imprint'),
@@ -22,6 +25,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const visitor = (await headers()).get(VISITOR_HEADER) === '1';
   /* Light unless the person chose dark (T-2120). */
   const theme = themeFrom((await cookies()).get(THEME_COOKIE)?.value);
+  /* The family's one cookie choice (family/consent.ts, T-2143), read here so
+     a visitor who has chosen never sees the bar, not even for a frame. */
+  const consent = parseConsent((await cookies()).get(CONSENT_COOKIE)?.value);
+  const framed = framedRequest((await headers()).get('sec-fetch-dest'));
   return (
     <html lang="en" data-app="imprint" data-theme={theme}>
       <head>
@@ -35,6 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <a className="skip" href="#main">Skip to the content</a>
         {children}
         {visitor ? <Visitor /> : null}
+        <CookieBar initial={consent} framed={framed} privacyHref={`${FAMILY_LINKS.snowai}/privacy`} />
       </body>
     </html>
   );

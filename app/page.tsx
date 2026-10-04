@@ -10,6 +10,7 @@ import { rich } from './_front/rich';
 import Rise from './_front/Rise';
 import { P, Svg } from './_front/svg';
 import { CHAPTERS, W, type Key } from './_front/words';
+import CookieChoices from '@/family/components/CookieChoices';
 
 /* IMPRINT, THE PUBLIC FRONT PAGE (T-2131). The mock-up the operator approved
    ("approve ... Imprint ..., build them", palette C, version 3), built page for page:
@@ -426,7 +427,7 @@ export default function Home() {
               <CopyMail address={L.support} copy={W.copy} copied={W.copied} />
             </div>
           </div>
-          <div className="fp-foot-b"><span>{W['foot.c']}</span><span>{W['foot.fine']}</span></div>
+          <div className="fp-foot-b"><CookieChoices /><span>{W['foot.c']}</span><span>{W['foot.fine']}</span></div>
         </div>
       </footer>
       <Rise root="imprintfront" />
