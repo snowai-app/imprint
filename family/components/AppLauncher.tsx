@@ -19,7 +19,10 @@ import AppTile from './AppTile';
  * focus to the button; tabbing out or clicking outside closes it.
  *
  * `apps` arrives already filtered ON THE SERVER (launcherApps in apps.ts):
- * operator surfaces never reach a customer's browser, not even hidden.
+ * operator surfaces never reach a customer's browser, not even hidden. An
+ * app with an empty `href` (its address does not answer yet) is drawn with
+ * its tile and status but as plain text, not a link, and the arrow keys
+ * pass over it.
  */
 export default function AppLauncher({
   apps,
@@ -139,10 +142,10 @@ export default function AppLauncher({
                 <ul className="fam-launcher__yours">
                   {yours.map((a) => (
                     <li key={a.id}>
-                      <a href={a.href} aria-current={a.id === current ? 'page' : undefined}>
+                      <Entry app={a} current={current}>
                         <AppTile app={a.tile ?? a.id} glyph={a.glyph} size={40} />
                         <span>{a.short}</span>
-                      </a>
+                      </Entry>
                     </li>
                   ))}
                 </ul>
@@ -163,14 +166,14 @@ export default function AppLauncher({
                 <ul className="fam-launcher__list">
                   {g.apps.map((a) => (
                     <li key={a.id}>
-                      <a href={a.href} aria-current={a.id === current ? 'page' : undefined}>
+                      <Entry app={a} current={current}>
                         <AppTile app={a.tile ?? a.id} glyph={a.glyph} size={32} />
                         <span style={{ minWidth: 0 }}>
                           <span className="fam-launcher__name">{a.short}</span>
                           <span className="fam-launcher__line">{a.line}</span>
                         </span>
                         <span className={`fam-status fam-status--${a.status}`}>{STATUS_LABEL[a.status]}</span>
-                      </a>
+                      </Entry>
                     </li>
                   ))}
                 </ul>
@@ -186,5 +189,18 @@ export default function AppLauncher({
         </>
       ) : null}
     </div>
+  );
+}
+
+/** One app in the panel: a link to its address, or, when it has none that
+ *  answers yet, the same row as plain text. */
+function Entry({ app, current, children }: { app: LauncherApp; current?: string; children: React.ReactNode }) {
+  if (!app.href) {
+    return <span className="fam-launcher__nolink">{children}</span>;
+  }
+  return (
+    <a href={app.href} aria-current={app.id === current ? 'page' : undefined}>
+      {children}
+    </a>
   );
 }

@@ -36,6 +36,8 @@ function contrast(a: string, b: string): number {
 }
 
 describe('family kit', () => {
+  const source = (f: string) => readFileSync(new URL(f, import.meta.url), 'utf8');
+
   it('app-colours.css is generated from palette.json and in sync', () => {
     assert.equal(readFileSync(OUTPUT, 'utf8'), render(palette), 'run node family/generate-app-colours.mjs');
   });
@@ -116,6 +118,27 @@ describe('family kit', () => {
     assert.ok(!launcherApps({ ...hrefs, sign: '' }, { operator: false }).some((a) => a.id === 'sign'), 'no address, no link');
   });
 
+  it('an app whose address does not answer yet stays in the launcher, In build, without a link', () => {
+    const hrefs = Object.fromEntries(APPS.map((a) => [a.id, `/${a.id}`]));
+    const list = launcherApps(hrefs, { operator: false });
+    /* Network and Atlas have no DNS record yet (family audit, T-2148). */
+    for (const id of ['network', 'atlas']) {
+      assert.equal(APPS.find((a) => a.id === id)?.live, false, `${id} is marked not live`);
+      const entry = list.find((a) => a.id === id);
+      assert.ok(entry, `${id} is still shown`);
+      assert.equal(entry.href, '', `${id} has no link`);
+      assert.equal(STATUS_LABEL[entry.status], 'In build', `${id} says In build`);
+    }
+    /* A not-live app is never one that says it can be opened. */
+    for (const app of APPS.filter((a) => a.live === false)) assert.ok(app.status === 'building' || app.status === 'planned', app.id);
+    /* Every other app keeps its address. */
+    for (const entry of list.filter((a) => APPS.find((x) => x.id === a.id)?.live !== false)) assert.equal(entry.href, `/${entry.id}`);
+    /* And the launcher draws an empty address as plain text, never <a href="">. */
+    const launcher = source('./components/AppLauncher.tsx');
+    assert.match(launcher, /if \(!app\.href\) \{\s*return <span className="fam-launcher__nolink">/);
+    assert.doesNotMatch(launcher, /<a href=\{a\.href\}/, 'every app row goes through Entry');
+  });
+
   it('the cookie choice reads and writes one family cookie', () => {
     assert.equal(CONSENT_COOKIE, 'snowai-consent');
     assert.equal(parseConsent('v1.all'), 'all');
@@ -148,8 +171,6 @@ describe('family kit', () => {
     const c = consentCookie('essential', { hostname: 'localhost', https: false });
     assert.equal(c, 'snowai-consent=v1.essential; Path=/; Max-Age=31536000; SameSite=Lax');
   });
-
-  const source = (f: string) => readFileSync(new URL(f, import.meta.url), 'utf8');
 
   it('the cookie bar is a named region with the family wording, its colours only from tokens', () => {
     const bar = source('./components/CookieBar.tsx');
