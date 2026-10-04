@@ -1,0 +1,621 @@
+/*
+ * GENERATED from palette.json by generate-app-colours.mjs. Do not edit.
+ * Snow AI family palette C, Earth and ink (mid-tone retune); decided 2026-10-04, operator, T-2126.
+ *
+ * An app sets data-app="<id>" on <html> and takes its own colours; any
+ * element with data-tile="<id>" gets that app's tile colour as --tile.
+ */
+
+:root[data-app="playbook"] {
+  --accent: #990f3d;
+  --accent-strong: #7b002e;
+  --accent-soft: #ffe8ea;
+  --accent-ink: #ffffff;
+  --ground: #fff1e5;
+  --tile: #990f3d;
+}
+:root[data-app="playbook"][data-theme="dark"] {
+  --accent: #e0a5ad;
+  --accent-strong: #e0a5ad;
+  --accent-soft: #4f3d3f;
+  --accent-ink: #1f1718;
+  --ground: #1f1718;
+  --surface: #2b2324;
+  --surface-2: #383031;
+}
+:root[data-app="imprint"] {
+  --accent: #a64f57;
+  --accent-strong: #9b414b;
+  --accent-soft: #ffe8e9;
+  --accent-ink: #ffffff;
+  --ground: #fff1e5;
+  --tile: #a64f57;
+}
+:root[data-app="imprint"][data-theme="dark"] {
+  --accent: #e1a6a8;
+  --accent-strong: #e1a6a8;
+  --accent-soft: #4f3d3e;
+  --accent-ink: #1f1717;
+  --ground: #1f1717;
+  --surface: #2b2323;
+  --surface-2: #383030;
+}
+:root[data-app="getcovered"] {
+  --accent: #c8431d;
+  --accent-strong: #a8371a;
+  --accent-soft: #fdece5;
+  --accent-ink: #ffffff;
+  --ground: #fcf6f2;
+  --tile: #c8431d;
+}
+:root[data-app="getcovered"][data-theme="dark"] {
+  --accent: #f0896a;
+  --accent-strong: #f0896a;
+  --accent-soft: #52332e;
+  --accent-ink: #1e1214;
+  --ground: #1e1214;
+  --surface: #2b1d1f;
+  --surface-2: #382b2c;
+}
+:root[data-app="foundry"] {
+  --accent: #945832;
+  --accent-strong: #8a4b23;
+  --accent-soft: #ffeade;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #945832;
+}
+:root[data-app="foundry"][data-theme="dark"] {
+  --accent: #ddab8f;
+  --accent-strong: #ddab8f;
+  --accent-soft: #4f3f35;
+  --accent-ink: #1e1814;
+  --ground: #1e1814;
+  --surface: #2b241f;
+  --surface-2: #38312c;
+}
+:root[data-app="rewards"] {
+  --accent: #9c7346;
+  --accent-strong: #916637;
+  --accent-soft: #fbecdd;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #9c7346;
+}
+:root[data-app="rewards"][data-theme="dark"] {
+  --accent: #d6af88;
+  --accent-strong: #d6af88;
+  --accent-soft: #4c4033;
+  --accent-ink: #1d1814;
+  --ground: #1d1814;
+  --surface: #2a241e;
+  --surface-2: #37312c;
+}
+:root[data-app="ask"] {
+  --accent: #a98b4f;
+  --accent-strong: #8b6c2b;
+  --accent-soft: #f8edda;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #a98b4f;
+}
+:root[data-app="ask"][data-theme="dark"] {
+  --accent: #cdb484;
+  --accent-strong: #cdb484;
+  --accent-soft: #494232;
+  --accent-ink: #1c1913;
+  --ground: #1c1913;
+  --surface: #28251e;
+  --surface-2: #35322c;
+}
+:root[data-app="atlas"] {
+  --accent: #7a6800;
+  --accent-strong: #6d5d00;
+  --accent-soft: #f5efd5;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #7a6800;
+}
+:root[data-app="atlas"][data-theme="dark"] {
+  --accent: #c4b884;
+  --accent-strong: #c4b884;
+  --accent-soft: #464232;
+  --accent-ink: #1b1a13;
+  --ground: #1b1a13;
+  --surface: #27251e;
+  --surface-2: #34322c;
+}
+:root[data-app="story"] {
+  --accent: #807f2c;
+  --accent-strong: #757314;
+  --accent-soft: #f0f1d7;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #807f2c;
+}
+:root[data-app="story"][data-theme="dark"] {
+  --accent: #bbbb87;
+  --accent-strong: #bbbb87;
+  --accent-soft: #444433;
+  --accent-ink: #1a1a14;
+  --ground: #1a1a14;
+  --surface: #26261e;
+  --surface-2: #33332c;
+}
+:root[data-app="forms"] {
+  --accent: #7d9750;
+  --accent-strong: #60792e;
+  --accent-soft: #e9f3db;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #7d9750;
+}
+:root[data-app="forms"][data-theme="dark"] {
+  --accent: #acc08f;
+  --accent-strong: #acc08f;
+  --accent-soft: #3f4536;
+  --accent-ink: #181a15;
+  --ground: #181a15;
+  --surface: #242620;
+  --surface-2: #31332d;
+}
+:root[data-app="model"] {
+  --accent: #53793a;
+  --accent-strong: #466e2b;
+  --accent-soft: #e6f4de;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #53793a;
+}
+:root[data-app="model"][data-theme="dark"] {
+  --accent: #a5c294;
+  --accent-strong: #a5c294;
+  --accent-soft: #3d4637;
+  --accent-ink: #171b15;
+  --ground: #171b15;
+  --surface: #232720;
+  --surface-2: #30342d;
+}
+:root[data-app="tax"] {
+  --accent: #2f6b4a;
+  --accent-strong: #135836;
+  --accent-soft: #e1f4e7;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #2f6b4a;
+}
+:root[data-app="tax"][data-theme="dark"] {
+  --accent: #8fcaa6;
+  --accent-strong: #8fcaa6;
+  --accent-soft: #36483d;
+  --accent-ink: #151b17;
+  --ground: #151b17;
+  --surface: #202723;
+  --surface-2: #2d3430;
+}
+:root[data-app="network"] {
+  --accent: #3ca16f;
+  --accent-strong: #008252;
+  --accent-soft: #dcf6e6;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #3ca16f;
+}
+:root[data-app="network"][data-theme="dark"] {
+  --accent: #91c6a7;
+  --accent-strong: #91c6a7;
+  --accent-soft: #37473d;
+  --accent-ink: #151b17;
+  --ground: #151b17;
+  --surface: #202723;
+  --surface-2: #2d3430;
+}
+:root[data-app="portal"] {
+  --accent: #008565;
+  --accent-strong: #00785b;
+  --accent-soft: #d9f7ea;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #008565;
+}
+:root[data-app="portal"][data-theme="dark"] {
+  --accent: #8bc6af;
+  --accent-strong: #8bc6af;
+  --accent-soft: #354740;
+  --accent-ink: #141b18;
+  --ground: #141b18;
+  --surface: #1f2724;
+  --surface-2: #2c3431;
+}
+:root[data-app="crm"] {
+  --accent: #439080;
+  --accent-strong: #287f6f;
+  --accent-soft: #ddf5ef;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #439080;
+}
+:root[data-app="crm"][data-theme="dark"] {
+  --accent: #85c7b8;
+  --accent-strong: #85c7b8;
+  --accent-soft: #334742;
+  --accent-ink: #141b19;
+  --ground: #141b19;
+  --surface: #1e2725;
+  --surface-2: #2c3432;
+}
+:root[data-app="recovery"] {
+  --accent: #009fa8;
+  --accent-strong: #007e85;
+  --accent-soft: #d5f6f8;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #009fa8;
+}
+:root[data-app="recovery"][data-theme="dark"] {
+  --accent: #80c5ca;
+  --accent-strong: #80c5ca;
+  --accent-soft: #324748;
+  --accent-ink: #131b1c;
+  --ground: #131b1c;
+  --surface: #1e2728;
+  --surface-2: #2c3435;
+}
+:root[data-app="transcribe"] {
+  --accent: #00787c;
+  --accent-strong: #006b6e;
+  --accent-soft: #daf5f5;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #00787c;
+}
+:root[data-app="transcribe"][data-theme="dark"] {
+  --accent: #80c6c8;
+  --accent-strong: #80c6c8;
+  --accent-soft: #324748;
+  --accent-ink: #131b1b;
+  --ground: #131b1b;
+  --surface: #1e2728;
+  --surface-2: #2c3435;
+}
+:root[data-app="memo"] {
+  --accent: #00899e;
+  --accent-strong: #007c8f;
+  --accent-soft: #d7f5fc;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #00899e;
+}
+:root[data-app="memo"][data-theme="dark"] {
+  --accent: #82c4d2;
+  --accent-strong: #82c4d2;
+  --accent-soft: #32464b;
+  --accent-ink: #131b1d;
+  --ground: #131b1d;
+  --surface: #1e2729;
+  --surface-2: #2c3436;
+}
+:root[data-app="compliance"] {
+  --accent: #2193c4;
+  --accent-strong: #007aa6;
+  --accent-soft: #dcf2ff;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #2193c4;
+}
+:root[data-app="compliance"][data-theme="dark"] {
+  --accent: #8ac0dd;
+  --accent-strong: #8ac0dd;
+  --accent-soft: #34454f;
+  --accent-ink: #141a1e;
+  --ground: #141a1e;
+  --surface: #1f262b;
+  --surface-2: #2c3338;
+}
+:root[data-app="extract"] {
+  --accent: #3c6e93;
+  --accent-strong: #2d6389;
+  --accent-soft: #e0f1ff;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #3c6e93;
+}
+:root[data-app="extract"][data-theme="dark"] {
+  --accent: #90bde1;
+  --accent-strong: #90bde1;
+  --accent-soft: #36444f;
+  --accent-ink: #151a1f;
+  --ground: #151a1f;
+  --surface: #20262b;
+  --surface-2: #2d3338;
+}
+:root[data-app="render"] {
+  --accent: #2f7cb9;
+  --accent-strong: #1770af;
+  --accent-soft: #e1f1ff;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #2f7cb9;
+}
+:root[data-app="render"][data-theme="dark"] {
+  --accent: #93bce2;
+  --accent-strong: #93bce2;
+  --accent-soft: #374450;
+  --accent-ink: #151a1f;
+  --ground: #151a1f;
+  --surface: #20262b;
+  --surface-2: #2d3338;
+}
+:root[data-app="documents"] {
+  --accent: #668fd8;
+  --accent-strong: #4971bb;
+  --accent-soft: #e6efff;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #668fd8;
+}
+:root[data-app="documents"][data-theme="dark"] {
+  --accent: #9fb8e5;
+  --accent-strong: #9fb8e5;
+  --accent-soft: #3b4251;
+  --accent-ink: #161a1f;
+  --ground: #161a1f;
+  --surface: #22252c;
+  --surface-2: #2f3239;
+}
+:root[data-app="sign"] {
+  --accent: #4567af;
+  --accent-strong: #30529c;
+  --accent-soft: #e6efff;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #4567af;
+}
+:root[data-app="sign"][data-theme="dark"] {
+  --accent: #8db0f7;
+  --accent-strong: #8db0f7;
+  --accent-soft: #374155;
+  --accent-ink: #17191f;
+  --ground: #17191f;
+  --surface: #22252c;
+  --surface-2: #2f3239;
+}
+:root[data-app="invoice"] {
+  --accent: #5259a5;
+  --accent-strong: #3f4492;
+  --accent-soft: #eaedff;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #5259a5;
+}
+:root[data-app="invoice"][data-theme="dark"] {
+  --accent: #8c8ed5;
+  --accent-strong: #8c8ed5;
+  --accent-soft: #383a4e;
+  --accent-ink: #18191f;
+  --ground: #18191f;
+  --surface: #23252c;
+  --surface-2: #303239;
+}
+:root[data-app="pitch"] {
+  --accent: #8177c8;
+  --accent-strong: #7266ba;
+  --accent-soft: #edecff;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #8177c8;
+}
+:root[data-app="pitch"][data-theme="dark"] {
+  --accent: #b5b1e2;
+  --accent-strong: #b5b1e2;
+  --accent-soft: #424050;
+  --accent-ink: #19191f;
+  --ground: #19191f;
+  --surface: #25242b;
+  --surface-2: #323138;
+}
+:root[data-app="campaigns"] {
+  --accent: #7457a2;
+  --accent-strong: #694a98;
+  --accent-soft: #f1ebff;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #7457a2;
+}
+:root[data-app="campaigns"][data-theme="dark"] {
+  --accent: #beaede;
+  --accent-strong: #beaede;
+  --accent-soft: #44404f;
+  --accent-ink: #1a181e;
+  --ground: #1a181e;
+  --surface: #26242b;
+  --surface-2: #333138;
+}
+:root[data-app="video"] {
+  --accent: #9067a1;
+  --accent-strong: #855a96;
+  --accent-soft: #f7e9fd;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #9067a1;
+}
+:root[data-app="video"][data-theme="dark"] {
+  --accent: #c9aad6;
+  --accent-strong: #c9aad6;
+  --accent-soft: #483e4c;
+  --accent-ink: #1c181d;
+  --ground: #1c181d;
+  --surface: #28232a;
+  --surface-2: #353037;
+}
+:root[data-app="webinar"] {
+  --accent: #ab7ca8;
+  --accent-strong: #91618e;
+  --accent-soft: #f9e8f8;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #ab7ca8;
+}
+:root[data-app="webinar"][data-theme="dark"] {
+  --accent: #d1a8ce;
+  --accent-strong: #d1a8ce;
+  --accent-soft: #4b3e49;
+  --accent-ink: #1d181c;
+  --ground: #1d181c;
+  --surface: #292328;
+  --surface-2: #363035;
+}
+:root[data-app="metis"] {
+  --accent: #875679;
+  --accent-strong: #7c4a6e;
+  --accent-soft: #fbe8f4;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #875679;
+}
+:root[data-app="metis"][data-theme="dark"] {
+  --accent: #d6a7c7;
+  --accent-strong: #d6a7c7;
+  --accent-soft: #4c3d47;
+  --accent-ink: #1d171b;
+  --ground: #1d171b;
+  --surface: #2a2327;
+  --surface-2: #373034;
+}
+:root[data-app="byline"] {
+  --accent: #aa647e;
+  --accent-strong: #9f5772;
+  --accent-soft: #ffe7ef;
+  --accent-ink: #ffffff;
+  --ground: #fff1e5;
+  --tile: #aa647e;
+}
+:root[data-app="byline"][data-theme="dark"] {
+  --accent: #dda5b8;
+  --accent-strong: #dda5b8;
+  --accent-soft: #4f3d42;
+  --accent-ink: #1e1719;
+  --ground: #1e1719;
+  --surface: #2b2325;
+  --surface-2: #383032;
+}
+:root[data-app="hq"] {
+  --accent: #3d485b;
+  --accent-strong: #2b3549;
+  --accent-soft: #eaeff6;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #3d485b;
+}
+:root[data-app="hq"][data-theme="dark"] {
+  --accent: #a9b8d3;
+  --accent-strong: #a9b8d3;
+  --accent-soft: #3d424d;
+  --accent-ink: #161a1f;
+  --ground: #161a1f;
+  --surface: #22252c;
+  --surface-2: #2f3239;
+}
+:root[data-app="studio"] {
+  --accent: #466464;
+  --accent-strong: #325150;
+  --accent-soft: #e6f1f1;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #466464;
+}
+:root[data-app="studio"][data-theme="dark"] {
+  --accent: #99c0c0;
+  --accent-strong: #99c0c0;
+  --accent-soft: #374646;
+  --accent-ink: #131b1b;
+  --ground: #131b1b;
+  --surface: #1e2727;
+  --surface-2: #2c3434;
+}
+:root[data-app="workbench"] {
+  --accent: #3c575f;
+  --accent-strong: #28444c;
+  --accent-soft: #e7f0f3;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #3c575f;
+}
+:root[data-app="workbench"][data-theme="dark"] {
+  --accent: #9abec9;
+  --accent-strong: #9abec9;
+  --accent-soft: #37454a;
+  --accent-ink: #131b1d;
+  --ground: #131b1d;
+  --surface: #1e272a;
+  --surface-2: #2c3437;
+}
+:root[data-app="data"] {
+  --accent: #576c7b;
+  --accent-strong: #435868;
+  --accent-soft: #e8f0f5;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #576c7b;
+}
+:root[data-app="data"][data-theme="dark"] {
+  --accent: #a0bcd0;
+  --accent-strong: #a0bcd0;
+  --accent-soft: #3a444c;
+  --accent-ink: #151a1e;
+  --ground: #151a1e;
+  --surface: #20262b;
+  --surface-2: #2d3338;
+}
+:root[data-app="snowai"] {
+  --accent: #c96442;
+  --accent-strong: #b5573a;
+  --accent-soft: #f5e6de;
+  --accent-ink: #ffffff;
+  --ground: #faf9f5;
+  --tile: #c96442;
+}
+:root[data-app="snowai"][data-theme="dark"] {
+  --accent: #d97757;
+  --accent-strong: #d97757;
+  --accent-soft: #4e342c;
+  --accent-ink: #1f1e1d;
+  --ground: #1f1e1d;
+  --surface: #2b2321;
+  --surface-2: #38302e;
+}
+
+[data-tile="playbook"] { --tile: #990f3d; }
+[data-tile="imprint"] { --tile: #a64f57; }
+[data-tile="getcovered"] { --tile: #c8431d; }
+[data-tile="foundry"] { --tile: #945832; }
+[data-tile="rewards"] { --tile: #9c7346; }
+[data-tile="ask"] { --tile: #a98b4f; }
+[data-tile="atlas"] { --tile: #7a6800; }
+[data-tile="story"] { --tile: #807f2c; }
+[data-tile="forms"] { --tile: #7d9750; }
+[data-tile="model"] { --tile: #53793a; }
+[data-tile="tax"] { --tile: #2f6b4a; }
+[data-tile="network"] { --tile: #3ca16f; }
+[data-tile="portal"] { --tile: #008565; }
+[data-tile="crm"] { --tile: #439080; }
+[data-tile="recovery"] { --tile: #009fa8; }
+[data-tile="transcribe"] { --tile: #00787c; }
+[data-tile="memo"] { --tile: #00899e; }
+[data-tile="compliance"] { --tile: #2193c4; }
+[data-tile="extract"] { --tile: #3c6e93; }
+[data-tile="render"] { --tile: #2f7cb9; }
+[data-tile="documents"] { --tile: #668fd8; }
+[data-tile="sign"] { --tile: #4567af; }
+[data-tile="invoice"] { --tile: #5259a5; }
+[data-tile="pitch"] { --tile: #8177c8; }
+[data-tile="campaigns"] { --tile: #7457a2; }
+[data-tile="video"] { --tile: #9067a1; }
+[data-tile="webinar"] { --tile: #ab7ca8; }
+[data-tile="metis"] { --tile: #875679; }
+[data-tile="byline"] { --tile: #aa647e; }
+[data-tile="hq"] { --tile: #3d485b; }
+[data-tile="studio"] { --tile: #466464; }
+[data-tile="workbench"] { --tile: #3c575f; }
+[data-tile="data"] { --tile: #576c7b; }
+[data-tile="snowai"] { --tile: #c96442; }

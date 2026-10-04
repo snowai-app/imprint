@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation';
 import StudioShell, { type Counts } from '@/components/StudioShell';
 import { bookStore } from '@/lib/books-store';
-import { loginUrl } from '@/lib/links';
+import { launcherApps } from '@/family/apps';
+import { FAMILY_LINKS, SHELF, loginUrl } from '@/lib/links';
 import { pageViewer } from '@/lib/session';
 
 /**
@@ -22,5 +23,7 @@ export default async function StudioLayout({ children }: { children: React.React
   } catch {
     /* the rail simply shows no number */
   }
-  return <StudioShell email={viewer.email} counts={counts}>{children}</StudioShell>;
+  /* The launcher's list, made here on the server (T-2126): no operator surface reaches the page. */
+  const launcher = { apps: launcherApps(FAMILY_LINKS, { operator: false }), shelfHref: SHELF };
+  return <StudioShell email={viewer.email} counts={counts} launcher={launcher}>{children}</StudioShell>;
 }
