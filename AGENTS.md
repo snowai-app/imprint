@@ -161,6 +161,31 @@ width (no sideways scroll at 390px). The skip link, focus rings and reduced
 motion are kept. The fonts are self-hosted from `public/fonts/`
 (`app/google-sans.css`); without them the pages fall back to system sans and mono.
 
+### The front page (T-2131)
+
+`/` is the front-page mock-up the operator approved on 4 October 2026 ("approve
+Pitch, Model, Memo, Ask, Byline, Imprint and Playbook, build them"; palette C,
+version 3), built page for page: the band with the kit's tile and theme switch,
+the "Being built, in steps" notice, the hero with the outline growing, a
+chapter drafted and the Word and PDF made beside a page of the book (with
+Pause), the family strip, who it is for, five feature rows each with its "In
+build" badge, "Try it here" (Outline, A chapter, Files, AI disclosure, all
+working on the page and sending nothing), the two plans with no figure, what is
+included where, the family, eight questions, the closing band and the foot.
+
+- **Its words** are `app/_front/words.ts`, English only as the mock-up is;
+  `test/front-words.test.ts` fails if the page asks for a key that is not
+  there, or a value carries markup the page does not draw.
+- **Its stylesheet** is `app/_front/front.css`, imported by `app/page.tsx`
+  only: the mock-up's own, every rule scoped under `.imprintfront` and every
+  class and keyframe `fp-`, so it and `app/imprint.css` cannot reach each
+  other. Its tokens are `--fp-*`; the tile, the accent, its soft tint, the
+  paper ground and the faces read the kit's tokens.
+- **Its moving parts** are client components in `app/_front/` (`HeroStage`,
+  `Demo`, `CopyMail`, `Rise`); with reduced motion the hero rests on the whole
+  outline and nothing rises. Links are Imprint's paths and the family's
+  addresses from `lib/links.ts` (`app/_front/links.ts`).
+
 ## Copied, not shared
 
 From `snowai-app/byline` (from `snowai-app/pitch`, from `snowai-app/model`):
