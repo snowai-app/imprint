@@ -12,6 +12,23 @@ import {
   framedRequest,
   parseConsent,
 } from './consent.ts';
+import { ATLAS_MAX_BATCH, ATLAS_MANIFEST_PATH, atlasManifest, atlasSlug, publishToAtlas, removeFromAtlas, type AtlasEntry } from './atlas.ts';
+import {
+  EMBED_NAME,
+  EMBED_SCRIPT,
+  FRAME_ANCESTORS,
+  NEVER_FRAMED,
+  SIGN_IN_PATH,
+  embedHref,
+  familyFrameHeaders,
+  frameName,
+  isFamilyOrigin,
+  openFromSearch,
+  readEmbedMessage,
+  withOpen,
+  workspaceTarget,
+} from './embed.ts';
+import { runInNewContext } from 'node:vm';
 import { ASK_SNOW_EN, GREET_AFTER_MS, MAX_QUESTION, askEndpointOf, fallbackPreset, fill, foundWords, greetNow, hiddenOn, maskText, readGreetState, scrolledHalf, visitKey } from './ask-snow.ts';
 
 /**
@@ -117,6 +134,16 @@ describe('family kit', () => {
     assert.ok(launcherApps(hrefs, { operator: true }).some((a) => a.id === 'hq'));
     assert.deepEqual(launcherApps(hrefs, { operator: true, brand: 'getcovered' }).map((a) => a.id), ['getcovered']);
     assert.ok(!launcherApps({ ...hrefs, sign: '' }, { operator: false }).some((a) => a.id === 'sign'), 'no address, no link');
+  });
+
+  it('an app that only forwards elsewhere is in no launcher (the Workbench, T-2174)', () => {
+    const hrefs = Object.fromEntries(APPS.map((a) => [a.id, `/${a.id}`]));
+    assert.equal(APPS.find((a) => a.id === 'workbench')?.listed, false, 'the Workbench is marked not listed');
+    for (const operator of [true, false]) {
+      const list = launcherApps(hrefs, { operator });
+      for (const app of APPS.filter((a) => a.listed === false)) assert.ok(!list.some((a) => a.id === app.id), `${app.id} is not in the launcher`);
+    }
+    assert.ok(launcherApps(hrefs, { operator: true }).some((a) => a.id === 'studio'), 'Studio, where its tools went, is');
   });
 
   it('an app whose address does not answer yet stays in the launcher, In build, without a link', () => {
@@ -267,5 +294,173 @@ describe('family kit', () => {
     assert.match(block, /prefers-reduced-motion: reduce/);
     assert.doesNotMatch(block, /prefers-color-scheme/);
     assert.match(block, /z-index: 800/, 'under the cookie bar');
+  });
+
+  it('Atlas: an entry with no slug gets <source>-<id>, and the manifest says who sent it and when (T-2193)', () => {
+    assert.equal(atlasSlug('tax', 'What_is 1099?'), 'tax-what-is-1099');
+    assert.equal(atlasSlug('playbook', '--x--'), 'playbook-x');
+    assert.ok(atlasSlug('a1', 'y'.repeat(200)).length <= 81);
+    assert.match(atlasSlug('tax', 'z'.repeat(200)), /^[a-z0-9][a-z0-9-]*[a-z0-9]$/);
+    const m = atlasManifest('tax', [], new Date('2026-10-04T12:00:00Z'));
+    assert.deepEqual(m, { source: 'tax', updated_at: '2026-10-04T12:00:00.000Z', entries: [] });
+    assert.equal(ATLAS_MANIFEST_PATH, '/atlas.json');
+  });
+
+  it('Atlas: publishing pushes in batches with the key, removing names the source and id, and neither throws', async () => {
+    const real = globalThis.fetch;
+    const calls: { url: string; method: string; auth: string; body: unknown }[] = [];
+    globalThis.fetch = (async (url: string, init: RequestInit) => {
+      const body = init.body ? JSON.parse(String(init.body)) : null;
+      calls.push({ url, method: String(init.method), auth: String((init.headers as Record<string, string>).authorization), body });
+      return new Response(JSON.stringify(init.method === 'POST' ? { saved: body.entries.length } : { removed: true }), { status: 200 });
+    }) as typeof fetch;
+    try {
+      const e: AtlasEntry = { id: 'x', kind: 'article', title: 'T', lead: 'L.', url: 'https://tax.snowai.app/x', updated_at: '2026-10-04T00:00:00Z' };
+      const many = Array.from({ length: ATLAS_MAX_BATCH + 5 }, (_, i) => ({ ...e, id: `x${i}` }));
+      const r = await publishToAtlas('https://atlas.test/', 'k', 'tax', many);
+      assert.deepEqual(r, { ok: true, saved: ATLAS_MAX_BATCH + 5 });
+      assert.equal(calls.length, 2);
+      assert.equal(calls[0].url, 'https://atlas.test/api/entries');
+      assert.equal(calls[0].auth, 'Bearer k');
+      assert.equal((calls[0].body as { source: string }).source, 'tax');
+      const d = await removeFromAtlas('https://atlas.test', 'k', 'tax', 'v1:a.b');
+      assert.deepEqual(d, { ok: true, removed: 'v1:a.b' });
+      assert.equal(calls[2].url, 'https://atlas.test/api/entries/tax/v1%3Aa.b');
+      assert.equal(calls[2].method, 'DELETE');
+      assert.equal((await publishToAtlas('https://atlas.test', '', 'tax', e)).ok, false, 'no key, no call');
+      assert.equal((await removeFromAtlas('https://atlas.test', 'k', 'Tax!', 'x')).ok, false, 'a bad source is refused before any call');
+      assert.equal(calls.length, 3);
+      globalThis.fetch = (async () => {
+        throw new Error('offline');
+      }) as typeof fetch;
+      assert.deepEqual(await publishToAtlas('https://atlas.test', 'k', 'tax', e), { ok: false, status: 0, error: 'Atlas could not be reached' });
+      globalThis.fetch = (async () => new Response(JSON.stringify({ error: 'entry 1: url' }), { status: 400 })) as typeof fetch;
+      assert.deepEqual(await removeFromAtlas('https://atlas.test', 'k', 'tax', 'x'), { ok: false, status: 400, error: 'entry 1: url' });
+    } finally {
+      globalThis.fetch = real;
+    }
+    assert.doesNotMatch(source('./atlas.ts'), /https?:\/\/|snowai\.app|getcovered\./, 'atlas.ts writes no address');
+    assert.doesNotMatch(source('./atlas.ts'), /^import /m, 'atlas.ts imports nothing');
+  });
+
+  describe('the integrated workspace (T-2223)', () => {
+    it('only the family may frame a page', () => {
+      assert.equal(FRAME_ANCESTORS, "frame-ancestors 'self' https://snowai.app https://*.snowai.app");
+      assert.deepEqual(familyFrameHeaders(), [{ key: 'Content-Security-Policy', value: FRAME_ANCESTORS }]);
+      for (const o of ['https://snowai.app', 'https://tax.snowai.app', 'https://a.b.snowai.app']) assert.ok(isFamilyOrigin(o), o);
+      for (const o of ['http://tax.snowai.app', 'https://snowai.app.evil.com', 'https://evilsnowai.app', 'https://getcovered.cloud', '', null]) assert.ok(!isFamilyOrigin(o), String(o));
+    });
+
+    it('embed and open are added and read without losing the rest of the address', () => {
+      assert.equal(embedHref('https://tax.snowai.app'), 'https://tax.snowai.app?embed=1');
+      assert.equal(embedHref('https://tax.snowai.app/dashboard?y=2026#w2'), 'https://tax.snowai.app/dashboard?y=2026&embed=1#w2');
+      assert.equal(embedHref('/campaigns'), '/campaigns?embed=1');
+      assert.equal(withOpen('/dashboard?x=1#a', 'tax'), '/dashboard?x=1&open=tax#a');
+      assert.equal(withOpen('/dashboard?open=tax&x=1', null), '/dashboard?x=1');
+      assert.equal(withOpen('/admin?open=tax', null), '/admin');
+      assert.equal(openFromSearch('?open=transcribe'), 'transcribe');
+      for (const q of ['', '?open=', '?open=<script>', '?x=1']) assert.equal(openFromSearch(q), null, q);
+      assert.equal(frameName('https://sign.snowai.app'), `${EMBED_NAME}:https://sign.snowai.app`);
+      assert.equal(frameName('https://evil.example'), EMBED_NAME);
+    });
+
+    it('a held product opens beneath the bar, anything else in a new tab, Get Covered always in a new tab', () => {
+      const held = new Set(['tax', 'getcovered', 'portal']);
+      const ctx = { current: 'sign', holding: held, tryBase: 'https://snowai.app/try/' };
+      assert.deepEqual(workspaceTarget({ id: 'sign', href: '/dashboard/home' }, ctx), { kind: 'current' });
+      assert.deepEqual(workspaceTarget({ id: 'tax', href: 'https://tax.snowai.app' }, ctx), { kind: 'frame', src: 'https://tax.snowai.app?embed=1' });
+      assert.deepEqual(workspaceTarget({ id: 'invoice', href: 'https://invoice.snowai.app' }, ctx), { kind: 'tab', href: 'https://snowai.app/try/invoice' });
+      assert.deepEqual(workspaceTarget({ id: 'getcovered', href: 'https://getcovered.cloud' }, ctx), { kind: 'tab', href: 'https://getcovered.cloud' });
+      assert.deepEqual(workspaceTarget({ id: 'snowai', href: 'https://snowai.app' }, ctx), { kind: 'tab', href: 'https://snowai.app' });
+      assert.deepEqual(workspaceTarget({ id: 'network', href: '' }, ctx), { kind: 'none' });
+      /* The answer could not be read: the product itself, in a new tab. */
+      assert.deepEqual(workspaceTarget({ id: 'tax', href: 'https://tax.snowai.app' }, { ...ctx, holding: 'unknown' }), { kind: 'tab', href: 'https://tax.snowai.app' });
+      assert.ok(NEVER_FRAMED.includes('getcovered'));
+      assert.ok(NEVER_FRAMED.includes('portal'), 'Portal keeps frame-ancestors none: its own login, GetCovered PHI');
+    });
+
+    it('a guest message is heard only when it is well formed and names a family address', () => {
+      assert.deepEqual(readEmbedMessage({ source: 'snowai-embed', type: 'top', url: 'https://snowai.app/login?next=x' }), { source: 'snowai-embed', type: 'top', url: 'https://snowai.app/login?next=x' });
+      for (const m of [null, 'x', { source: 'other', type: 'top', url: 'https://snowai.app' }, { source: 'snowai-embed', type: 'go', url: 'https://snowai.app' }, { source: 'snowai-embed', type: 'top', url: 'https://evil.example/login' }, { source: 'snowai-embed', type: 'top', url: 'javascript:alert(1)' }])
+        assert.equal(readEmbedMessage(m), null, JSON.stringify(m));
+    });
+
+    it('sign-in pages are known', () => {
+      for (const p of ['/login', '/login/code', '/sign-in', '/signin', '/sign-up', '/es/login', '/auth/login']) assert.ok(SIGN_IN_PATH.test(p), p);
+      for (const p of ['/', '/dashboard', '/admin/logins', '/auth/callback', '/loginx']) assert.ok(!SIGN_IN_PATH.test(p), p);
+    });
+
+    /** Runs EMBED_SCRIPT in a pretend browser and says what it did. */
+    function guest({ framed = true, search = '', path = '/dashboard', name = '', referrer = '' }: { framed?: boolean; search?: string; path?: string; name?: string; referrer?: string }) {
+      const attrs: Record<string, string> = {};
+      const posted: { msg: unknown; origin: string }[] = [];
+      const listeners: string[] = [];
+      const self = {} as Record<string, unknown>;
+      const win: Record<string, unknown> = {
+        name,
+        parent: { postMessage: (msg: unknown, origin: string) => posted.push({ msg, origin }) },
+        addEventListener: (t: string) => listeners.push(`window:${t}`),
+      };
+      win.self = win;
+      win.top = framed ? self : win;
+      const ctx = {
+        window: win,
+        document: {
+          documentElement: { setAttribute: (k: string, v: string) => (attrs[k] = v), style: {} as Record<string, string> },
+          referrer,
+          addEventListener: (t: string) => listeners.push(`document:${t}`),
+        },
+        location: { search, pathname: path, href: `https://tax.snowai.app${path}${search}`, origin: 'https://tax.snowai.app' },
+        history: { pushState() {}, replaceState() {} },
+        URL,
+        URLSearchParams,
+        setTimeout: () => 0,
+      };
+      runInNewContext(EMBED_SCRIPT, ctx);
+      return { attrs, posted: JSON.parse(JSON.stringify(posted)) as typeof posted, listeners, name: win.name as string, style: ctx.document.documentElement.style };
+    }
+
+    it('the guest script does nothing outside a frame, whatever the address says', () => {
+      const r = guest({ framed: false, search: '?embed=1' });
+      assert.deepEqual(r.attrs, {});
+      assert.equal(r.name, '');
+      assert.equal(r.posted.length, 0);
+    });
+
+    it('framed with embed=1 it marks the page, keeps the mode in the frame name and tells the host', () => {
+      const r = guest({ search: '?embed=1', referrer: 'https://sign.snowai.app/dashboard' });
+      assert.equal(r.attrs['data-embed'], '1');
+      assert.equal(r.name, 'snowai-embed:https://sign.snowai.app');
+      assert.deepEqual(r.posted, [{ msg: { source: 'snowai-embed', type: 'ready', url: 'https://tax.snowai.app/dashboard?embed=1' }, origin: 'https://sign.snowai.app' }]);
+      assert.ok(r.listeners.includes('document:click'), 'links leaving the family open in a new tab');
+      /* The next page in the same frame carries no query: the name keeps the mode. */
+      const next = guest({ name: r.name, path: '/dashboard/returns' });
+      assert.equal(next.attrs['data-embed'], '1');
+      assert.equal(next.posted.length, 1);
+    });
+
+    it('a host that is not the family is never told anything, and a frame without the mode is left alone', () => {
+      const r = guest({ search: '?embed=1', referrer: 'https://evil.example/' });
+      assert.equal(r.attrs['data-embed'], '1');
+      assert.equal(r.name, 'snowai-embed');
+      assert.equal(r.posted.length, 0);
+      assert.deepEqual(guest({ name: 'snowai-embed:https://evil.example' }).posted, []);
+      assert.deepEqual(guest({}).attrs, {}, 'framed by HQ without embed: untouched');
+      assert.equal(guest({ name: r.name, search: '?embed=0' }).name, '', 'embed=0 clears it');
+    });
+
+    it('a sign-in page in the workspace is hidden and asks the host for the whole window', () => {
+      const r = guest({ name: 'snowai-embed:https://sign.snowai.app', path: '/login', search: '?next=%2Fdashboard' });
+      assert.equal(r.style.visibility, 'hidden');
+      assert.deepEqual(r.posted, [{ msg: { source: 'snowai-embed', type: 'top', url: 'https://tax.snowai.app/login?next=%2Fdashboard' }, origin: 'https://sign.snowai.app' }]);
+    });
+
+    it('the workspace components write no address and the launcher only turns it on with snowai', () => {
+      for (const f of ['./components/FamilyWorkspace.tsx', './components/EmbedScript.tsx']) assert.doesNotMatch(source(f), /https?:\/\/|snowai\.app|getcovered\./, `${f} writes an address`);
+      const launcher = source('./components/AppLauncher.tsx');
+      assert.match(launcher, /useFamilyWorkspace\(\{ snowai,/);
+      const css = source('./components.css');
+      for (const sel of ['.fam-launcher', '.fam-ask', '.fam-cookiebar', '[data-fam-chrome]', 'header:has(.fam-launcher)']) assert.ok(css.includes(`:root[data-embed] ${sel}`), sel);
+    });
   });
 });

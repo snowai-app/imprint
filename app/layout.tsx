@@ -13,6 +13,7 @@ import CookieBar from '@/family/components/CookieBar';
 import { CONSENT_COOKIE, framedRequest, parseConsent } from '@/family/consent';
 import { FAMILY_LINKS } from '@/lib/links';
 import AskSnow from '@/family/components/AskSnow';
+import EmbedScript from '@/family/components/EmbedScript';
 
 export const metadata: Metadata = {
   title: familyTitle('imprint'),
@@ -31,8 +32,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const consent = parseConsent((await cookies()).get(CONSENT_COOKIE)?.value);
   const framed = framedRequest((await headers()).get('sec-fetch-dest'));
   return (
-    <html lang="en" data-app="imprint" data-theme={theme}>
+    <html suppressHydrationWarning lang="en" data-app="imprint" data-theme={theme}>
       <head>
+        {/* Embed mode, before anything paints (family/embed.ts, T-2223). */}
+        <EmbedScript />
         <link rel="preload" href="/fonts/google-sans-normal-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body>

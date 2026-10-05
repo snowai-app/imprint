@@ -114,6 +114,11 @@ export type FamilyApp = {
    *  family audit, T-2148). The launcher still shows the app with its status,
    *  but draws no link. Remove it the day the address is up. */
   live?: false;
+  /** `false` for an app whose address only forwards elsewhere now (the
+   *  Workbench, T-2174: to snowai.app/try and Studio). Its name and colours
+   *  stay for the forwarder; no launcher and no shelf draws it. Remove the
+   *  entry the day the app is retired. */
+  listed?: false;
 };
 
 export const APPS: FamilyApp[] = [
@@ -166,7 +171,8 @@ export const APPS: FamilyApp[] = [
   /* Company: the operator's own */
   { id: 'hq', name: 'Snow AI HQ', short: 'HQ', line: 'The company, every business rolled up: revenue, activity and what was decided.', group: 'company', glyph: 'building-2', env: 'NEXT_PUBLIC_HQ_URL', brand: 'snowai', status: 'open', operatorOnly: true },
   { id: 'studio', name: 'Snow AI Studio', short: 'Studio', line: 'Every capability in one place, beside the file it works on.', group: 'company', glyph: 'layout-dashboard', env: 'NEXT_PUBLIC_STUDIO_URL', brand: 'snowai', status: 'open', operatorOnly: true },
-  { id: 'workbench', name: 'Snow AI Workbench', short: 'Workbench', line: 'Writing, transcribing, signing and rendering, and the search that reaches every product.', group: 'company', glyph: 'flask-conical', env: 'NEXT_PUBLIC_WORKBENCH_URL', brand: 'snowai', status: 'open', operatorOnly: true },
+  /* The Workbench forwards: its tools moved to Studio and its public bench to Try (T-2174). */
+  { id: 'workbench', name: 'Snow AI Workbench', short: 'Workbench', line: 'Forwards to Try, on the front door, and to Studio.', group: 'company', glyph: 'flask-conical', env: 'NEXT_PUBLIC_WORKBENCH_URL', brand: 'snowai', status: 'open', operatorOnly: true, listed: false },
   { id: 'data', name: 'Snow AI Data', short: 'Data', line: 'Leads from every site in the family, and the buyers who take them.', group: 'company', glyph: 'database', env: 'NEXT_PUBLIC_DATA_URL', brand: 'snowai', status: 'open', operatorOnly: true },
 ];
 
@@ -189,7 +195,8 @@ export type LauncherApp = Pick<FamilyApp, 'id' | 'short' | 'line' | 'group' | 'g
 /**
  * The launcher's list, made ON THE SERVER: the brand's apps with their
  * addresses, without the front door itself, and without the operator's own
- * surfaces unless the viewer is an operator. Filtering here rather than in
+ * surfaces unless the viewer is an operator, and without an app that only
+ * forwards elsewhere now (`listed: false`). Filtering here rather than in
  * the browser keeps HQ, Studio and the rest out of a customer's page entirely.
  *
  * `hrefs` is the app's own address map (lib/links.ts), by app id; an app with
@@ -207,6 +214,7 @@ export function launcherApps(
   return APPS.filter((a) => a.group !== 'hub')
     .filter((a) => brand === 'snowai' || a.brand === brand)
     .filter((a) => !a.operatorOnly || operator)
+    .filter((a) => a.listed !== false)
     .filter((a) => Boolean(hrefs[a.id]))
     .map((a) => ({ id: a.id, short: a.short, line: a.line, group: a.group, glyph: a.glyph, status: a.status, href: a.live === false ? '' : (hrefs[a.id] as string) }));
 }

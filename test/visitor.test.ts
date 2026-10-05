@@ -79,7 +79,7 @@ test('a browser cannot bring its own visitor mark', async () => {
 test('every page may be framed by Imprint and HQ only', async () => {
   const rules = await nextConfig.headers!();
   const all = rules.find((r) => r.source === '/:path*');
-  assert.equal(all?.headers.find((h) => h.key === 'Content-Security-Policy')?.value, "frame-ancestors 'self' https://hq.snowai.app https://studio.snowai.app");
+  assert.equal(all?.headers.find((h) => h.key === 'Content-Security-Policy')?.value, "frame-ancestors 'self' https://snowai.app https://*.snowai.app");
   assert.ok(!all?.headers.some((h) => h.key.toLowerCase() === 'x-frame-options'));
   assert.equal(isFamilyHost('evilsnowai.app'), false);
   assert.equal(isFamilyHost('tax.snowai.app'), true);
