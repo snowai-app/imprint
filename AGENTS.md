@@ -324,3 +324,10 @@ None of the three is a request for a plan or a question back. If something genui
 cannot be finished at close, it is blocked on the ledger and named in the handoff —
 not left for them to remember.
 
+
+## Integrated workspace (T-2223, 5 October 2026)
+
+The family kit's workspace (snowai `family/embed.ts`, `family/README.md` step 10).
+This app takes part as a guest and as a host. `app/layout.tsx` mounts `EmbedScript` first in `<head>`. Framed with `?embed=1`, it hides its top bar, launcher, Ask Snow and cookie bar.
+Every page sends the kit's `frame-ancestors 'self' https://snowai.app https://*.snowai.app`.
+The launcher takes `snowai={FAMILY_LINKS.snowai}`, so a product the account holds opens beneath this app's bar, and anything else opens in a new tab.

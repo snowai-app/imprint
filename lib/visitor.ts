@@ -16,6 +16,7 @@
    `__Host-` because the name is the family's, identical in every app. */
 
 import type { NextRequest, NextResponse } from 'next/server';
+import { FRAME_ANCESTOR_SOURCES } from '../family/embed.ts';
 
 export const VISITOR_COOKIE = 'sa_visitor';
 export const VISITOR_MAX_AGE = 3600;
@@ -29,7 +30,9 @@ export const HQ_ORIGIN = 'https://hq.snowai.app';
    T-1945). Framing grants nothing: inside the frame this app still signs in
    and checks roles as it always does. */
 export const STUDIO_ORIGIN = 'https://studio.snowai.app';
-export const VISITOR_FRAME_ANCESTORS = `'self' ${HQ_ORIGIN} ${STUDIO_ORIGIN}`;
+/* The whole family may frame this app, HQ's visitor window among it, and
+   nobody else (family/embed.ts, T-2223). */
+export const VISITOR_FRAME_ANCESTORS = FRAME_ANCESTOR_SOURCES;
 
 export const isVisitor = (request: NextRequest) => request.cookies.get(VISITOR_COOKIE)?.value === '1';
 

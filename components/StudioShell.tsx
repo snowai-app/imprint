@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { StudioContext, useToast, type Studio } from './studio-context';
 import AppLauncher from '@/family/components/AppLauncher';
+import { FAMILY_LINKS } from '@/lib/links';
 import ThemeSwitch from '@/family/components/ThemeSwitch';
 import type { LauncherApp } from '@/family/apps';
 import { THEME_COOKIE } from '@/lib/theme';
@@ -50,7 +51,7 @@ export default function StudioShell({ email, counts, launcher, children }: { ema
   return (
     <StudioContext.Provider value={studio}>
       <div className="band" role="region" aria-label="Studio bar">
-        <AppLauncher apps={launcher.apps} owned={['imprint']} current="imprint" shelfHref={launcher.shelfHref} />
+        <AppLauncher apps={launcher.apps} owned={['imprint']} current="imprint" shelfHref={launcher.shelfHref} snowai={FAMILY_LINKS.snowai} />
         <a className="name" href="/"><i aria-hidden="true" />Imprint <small>Studio</small></a>
         <div className="crumb" aria-live="polite"><b>{word}</b>{room}</div>
         <div className="acts">

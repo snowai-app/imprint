@@ -5,6 +5,7 @@ import { ArrowRight, Grip, X } from 'lucide-react';
 import { GROUPS, STATUS_LABEL, type LauncherApp } from '../apps';
 import { STROKE } from '../glyphs';
 import AppTile from './AppTile';
+import { useFamilyWorkspace, type WorkspaceLinkProps } from './FamilyWorkspace';
 
 /**
  * THE APP LAUNCHER (family standard 3.7): the nine-dot button at the far left
@@ -23,6 +24,14 @@ import AppTile from './AppTile';
  * app with an empty `href` (its address does not answer yet) is drawn with
  * its tile and status but as plain text, not a link, and the arrow keys
  * pass over it.
+ *
+ * THE INTEGRATED WORKSPACE (T-2223): given `snowai` (the front door's address
+ * from the app's lib/links.ts), a click on a product the account holds keeps
+ * this header and opens the product beneath it, in the same tab; a product
+ * not held opens its try page in a new tab; Get Covered always opens in a new
+ * tab; the app's own product goes back to its page as it was
+ * (FamilyWorkspace.tsx, embed.ts). "Your apps" then lists what the account
+ * holds as well as `owned`. Left out, every row is a plain link, as before.
  */
 export default function AppLauncher({
   apps,
@@ -31,6 +40,7 @@ export default function AppLauncher({
   shelfHref,
   moreTitle = 'More from Snow AI',
   label = 'Snow AI apps',
+  snowai,
 }: {
   apps: LauncherApp[];
   /** Ids of the apps this account can open now. Empty when signed out. */
@@ -42,6 +52,9 @@ export default function AppLauncher({
   shelfHref?: string;
   moreTitle?: string;
   label?: string;
+  /** The front door's address (`FAMILY_LINKS.snowai`): turns on the
+   *  integrated workspace. */
+  snowai?: string;
 }) {
   const [open, setOpen] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
@@ -49,7 +62,9 @@ export default function AppLauncher({
   const root = useRef<HTMLDivElement>(null);
   const panelId = useId();
 
-  const ownedSet = new Set(owned);
+  const ws = useFamilyWorkspace({ snowai, current, register: apps.map((a) => ({ id: a.id, href: a.href })), anchor: root });
+  const ownedSet = new Set([...owned, ...(ws.holding === 'unknown' ? [] : [...ws.holding])]);
+  const link = (a: LauncherApp) => ws.linkProps(a, () => close(false));
   const yours = apps.filter((a) => ownedSet.has(a.id));
   const more = apps.filter((a) => !ownedSet.has(a.id));
   const groups = GROUPS.map((g) => ({ ...g, apps: more.filter((a) => a.group === g.id) })).filter((g) => g.apps.length);
@@ -142,7 +157,7 @@ export default function AppLauncher({
                 <ul className="fam-launcher__yours">
                   {yours.map((a) => (
                     <li key={a.id}>
-                      <Entry app={a} current={current}>
+                      <Entry app={a} current={current} link={link(a)}>
                         <AppTile app={a.tile ?? a.id} glyph={a.glyph} size={40} />
                         <span>{a.short}</span>
                       </Entry>
@@ -166,7 +181,7 @@ export default function AppLauncher({
                 <ul className="fam-launcher__list">
                   {g.apps.map((a) => (
                     <li key={a.id}>
-                      <Entry app={a} current={current}>
+                      <Entry app={a} current={current} link={link(a)}>
                         <AppTile app={a.tile ?? a.id} glyph={a.glyph} size={32} />
                         <span style={{ minWidth: 0 }}>
                           <span className="fam-launcher__name">{a.short}</span>
@@ -188,18 +203,20 @@ export default function AppLauncher({
           </div>
         </>
       ) : null}
+      {ws.stage}
     </div>
   );
 }
 
-/** One app in the panel: a link to its address, or, when it has none that
- *  answers yet, the same row as plain text. */
-function Entry({ app, current, children }: { app: LauncherApp; current?: string; children: React.ReactNode }) {
+/** One app in the panel: a link to its address (through the workspace when
+ *  it is on), or, when it has none that answers yet, the same row as plain
+ *  text. */
+function Entry({ app, current, link, children }: { app: LauncherApp; current?: string; link: WorkspaceLinkProps | null; children: React.ReactNode }) {
   if (!app.href) {
     return <span className="fam-launcher__nolink">{children}</span>;
   }
   return (
-    <a href={app.href} aria-current={app.id === current ? 'page' : undefined}>
+    <a href={app.href} aria-current={app.id === current ? 'page' : undefined} {...link}>
       {children}
     </a>
   );

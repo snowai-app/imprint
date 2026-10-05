@@ -851,3 +851,60 @@ a.fam-card:hover {
   .fam-ask,
   .fam-ask-btn.fam-ask-btn { display: none; }
 }
+
+/* ------------------------------------------------------------------------
+   THE INTEGRATED WORKSPACE (T-2223; embed.ts, components/FamilyWorkspace.tsx)
+
+   The host: a product the account holds opens in a frame under the bar that
+   holds the launcher, over the host page, which stays mounted underneath.
+   FamilyWorkspace sets `top` (or `left`, beside a rail) to the bar's edge and
+   lifts the bar above the frame while one is open. Above the page (Ask Snow
+   and the cookie bar stay over it); below the launcher's panel. */
+.fam-workspace {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 750;
+  background: var(--ground);
+}
+.fam-workspace[hidden],
+.fam-workspace__pane[hidden] { display: none !important; }
+.fam-workspace__pane { position: absolute; inset: 0; }
+.fam-workspace__frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--ground);
+}
+.fam-workspace__notice {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: var(--space-16);
+  padding: var(--space-24);
+  text-align: center;
+  background: var(--ground);
+  color: var(--ink);
+}
+.fam-workspace__notice p { margin: 0; }
+.fam-workspace__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  justify-content: center;
+}
+
+/* The guest: in embed mode (EMBED_SCRIPT marks <html data-embed>) the app's
+   own top bar, its launcher, Ask Snow and the cookie bar are not drawn; the
+   host shows its own. The top bar is the header that holds the launcher, or
+   anything an app marks `data-fam-chrome` (Sign's family bar). A rail that
+   holds the launcher beside the product's own folders or rooms stays, without
+   the launcher: it is the product's navigation, not the family's. */
+:root[data-embed] .fam-launcher,
+:root[data-embed] .fam-ask,
+:root[data-embed] .fam-ask-btn,
+:root[data-embed] .fam-cookiebar,
+:root[data-embed] [data-fam-chrome],
+:root[data-embed] header:has(.fam-launcher) { display: none !important; }
