@@ -215,6 +215,9 @@ describe('family kit', () => {
     assert.deepEqual([...new Set(hexes)].sort(), ['#000000', '#ffffff']);
     assert.doesNotMatch(block, /prefers-color-scheme/);
     assert.ok(source('./components/CookieChoices.tsx').includes('openCookieChoices'));
+    // T-2535: every footer carries the family's one compliance line, worded "HIPAA compliant".
+    assert.ok(source('./components/CookieChoices.tsx').includes("hipaa = 'HIPAA compliant'"));
+    assert.ok(source('./components.css').includes('.fam-hipaa.fam-hipaa {'));
   });
 
   it('the launcher draws the shelf link only when it is given one, and the switch takes its words', () => {

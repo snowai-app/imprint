@@ -613,6 +613,26 @@ a.fam-card:hover {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+.fam-hipaa.fam-hipaa {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--ink-2);
+  font: 400 13px/1.6 var(--font-sans);
+  letter-spacing: normal;
+  white-space: nowrap;
+}
+.fam-hipaa.fam-hipaa > svg {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 @media print {
   .fam-cookiebar,
   .fam-cookiebar-spacer,
