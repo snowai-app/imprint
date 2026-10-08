@@ -81,7 +81,9 @@ in snowai.
    deny }}` in the visitor's language.
 7. Put `<CookieChoices />` in the footer beside the legal links (a
    translated app passes `label`). Where a page has no footer, put it where
-   its legal links are.
+   its legal links are. It brings the family's compliance line with it,
+   "HIPAA compliant" (T-2535), the one wording across the suite; a translated
+   app passes `hipaa` in its language.
 8. Gate anything non-essential on the choice. Essential is sign-in and the
    session, security, the theme and language cookies, display settings the
    person chose, and the consent cookie itself; none of that asks. Anything
