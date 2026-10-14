@@ -72,7 +72,7 @@ in snowai.
    <CookieBar initial={consent} framed={framed} privacyHref={privacyUrl} />
    ```
 
-   A page inside a frame (HQ's visitor view, Studio's app box, a form
+   A page inside a frame (Studio's visitor view, Studio's app box, a form
    embedded on someone else's site) never shows the bar: its parent does.
 
    `privacyHref` comes from the app's `lib/links.ts` (the family page,
@@ -199,9 +199,9 @@ and gets a row in `palette.json`, an entry in `apps.ts` and its glyph in
 | CRM | `contact` | | Foundry | `graduation-cap` |
 | Portal | `door-open` | | Metis | `sprout` |
 | Recovery | `hand-coins` | | GetCovered | `heart-pulse` |
-| Network | `users` | | HQ | `building-2` |
-| Memo | `mic` | | Studio | `layout-dashboard` |
-| Transcribe | `audio-lines` | | Workbench | `flask-conical` |
-| Campaigns | `send` | | Data | `database` |
+| Network | `users` | | Studio | `layout-dashboard` |
+| Voice | `phone` | | Workbench | `flask-conical` |
+| Transcribe | `audio-lines` | | Data | `database` |
+| Campaigns | `send` | | | |
 
 Icons inside apps are Lucide too, at a 1.75 stroke (`STROKE` in `glyphs.tsx`).

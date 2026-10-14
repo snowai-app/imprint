@@ -131,7 +131,7 @@ describe('family kit', () => {
     const customer = launcherApps(hrefs, { operator: false });
     assert.ok(customer.every((a) => !APPS.find((x) => x.id === a.id)?.operatorOnly));
     assert.ok(!customer.some((a) => a.id === 'snowai'));
-    assert.ok(launcherApps(hrefs, { operator: true }).some((a) => a.id === 'hq'));
+    assert.ok(launcherApps(hrefs, { operator: true }).some((a) => a.id === 'studio'));
     assert.deepEqual(launcherApps(hrefs, { operator: true, brand: 'getcovered' }).map((a) => a.id), ['getcovered']);
     assert.ok(!launcherApps({ ...hrefs, sign: '' }, { operator: false }).some((a) => a.id === 'sign'), 'no address, no link');
   });
@@ -448,7 +448,7 @@ describe('family kit', () => {
       assert.equal(r.name, 'snowai-embed');
       assert.equal(r.posted.length, 0);
       assert.deepEqual(guest({ name: 'snowai-embed:https://evil.example' }).posted, []);
-      assert.deepEqual(guest({}).attrs, {}, 'framed by HQ without embed: untouched');
+      assert.deepEqual(guest({}).attrs, {}, 'framed by Studio without embed: untouched');
       assert.equal(guest({ name: r.name, search: '?embed=0' }).name, '', 'embed=0 clears it');
     });
 

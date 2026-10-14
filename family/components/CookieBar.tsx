@@ -23,7 +23,7 @@ import {
  * and no flash. The choice is the family's (family/consent.ts): made on any
  * snowai.app address, it holds on all of them.
  *
- * Never inside a frame: HQ's visitor view, Studio's app box and a form
+ * Never inside a frame: Studio's visitor view, Studio's app box and a form
  * embedded on someone else's site each sit under a page that has its own.
  * The layout passes `framed` from the request's Sec-Fetch-Dest so a framed
  * page does not draw it even for a frame; the browser checks again.

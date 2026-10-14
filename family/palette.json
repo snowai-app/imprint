@@ -226,6 +226,22 @@
     "darkText": 9.04
    }
   },
+  "voice": {
+   "accent": "#3b5bdb",
+   "strong": "#2c46b0",
+   "soft": "#e5eafd",
+   "ground": "#f3f5f8",
+   "dark": "#7d95ff",
+   "darkGround": "#11161c",
+   "darkSurface": "#1a212a",
+   "group": "clients",
+   "contrast": {
+    "tileWhite": 5.67,
+    "textOnGround": 7.37,
+    "buttonWhite": 8.05,
+    "darkText": 6.59
+   }
+  },
   "recovery": {
    "accent": "#009fa8",
    "strong": "#007e85",
@@ -256,22 +272,6 @@
     "textOnGround": 5.91,
     "buttonWhite": 6.31,
     "darkText": 9.02
-   }
-  },
-  "memo": {
-   "accent": "#00899e",
-   "strong": "#007c8f",
-   "soft": "#d7f5fc",
-   "ground": "#fbf7f0",
-   "dark": "#82c4d2",
-   "darkGround": "#131b1d",
-   "darkSurface": "#1e2729",
-   "group": "clients",
-   "contrast": {
-    "tileWhite": 4.14,
-    "textOnGround": 4.59,
-    "buttonWhite": 4.91,
-    "darkText": 8.96
    }
   },
   "compliance": {
@@ -464,22 +464,6 @@
     "textOnGround": 4.65,
     "buttonWhite": 5.15,
     "darkText": 8.52
-   }
-  },
-  "hq": {
-   "accent": "#3d485b",
-   "strong": "#2b3549",
-   "soft": "#eaeff6",
-   "ground": "#fbf7f0",
-   "dark": "#a9b8d3",
-   "darkGround": "#161a1f",
-   "darkSurface": "#22252c",
-   "group": "company",
-   "contrast": {
-    "tileWhite": 9.22,
-    "textOnGround": 11.51,
-    "buttonWhite": 12.29,
-    "darkText": 8.72
    }
   },
   "studio": {

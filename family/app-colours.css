@@ -244,6 +244,23 @@
   --surface: #1e2725;
   --surface-2: #2c3432;
 }
+:root[data-app="voice"] {
+  --accent: #3b5bdb;
+  --accent-strong: #2c46b0;
+  --accent-soft: #e5eafd;
+  --accent-ink: #ffffff;
+  --ground: #f3f5f8;
+  --tile: #3b5bdb;
+}
+:root[data-app="voice"][data-theme="dark"] {
+  --accent: #7d95ff;
+  --accent-strong: #7d95ff;
+  --accent-soft: #2e3855;
+  --accent-ink: #11161c;
+  --ground: #11161c;
+  --surface: #1a212a;
+  --surface-2: #282e37;
+}
 :root[data-app="recovery"] {
   --accent: #009fa8;
   --accent-strong: #007e85;
@@ -277,23 +294,6 @@
   --ground: #131b1b;
   --surface: #1e2728;
   --surface-2: #2c3435;
-}
-:root[data-app="memo"] {
-  --accent: #00899e;
-  --accent-strong: #007c8f;
-  --accent-soft: #d7f5fc;
-  --accent-ink: #ffffff;
-  --ground: #fbf7f0;
-  --tile: #00899e;
-}
-:root[data-app="memo"][data-theme="dark"] {
-  --accent: #82c4d2;
-  --accent-strong: #82c4d2;
-  --accent-soft: #32464b;
-  --accent-ink: #131b1d;
-  --ground: #131b1d;
-  --surface: #1e2729;
-  --surface-2: #2c3436;
 }
 :root[data-app="compliance"] {
   --accent: #2193c4;
@@ -499,23 +499,6 @@
   --surface: #2b2325;
   --surface-2: #383032;
 }
-:root[data-app="hq"] {
-  --accent: #3d485b;
-  --accent-strong: #2b3549;
-  --accent-soft: #eaeff6;
-  --accent-ink: #ffffff;
-  --ground: #fbf7f0;
-  --tile: #3d485b;
-}
-:root[data-app="hq"][data-theme="dark"] {
-  --accent: #a9b8d3;
-  --accent-strong: #a9b8d3;
-  --accent-soft: #3d424d;
-  --accent-ink: #161a1f;
-  --ground: #161a1f;
-  --surface: #22252c;
-  --surface-2: #2f3239;
-}
 :root[data-app="studio"] {
   --accent: #466464;
   --accent-strong: #325150;
@@ -599,9 +582,9 @@
 [data-tile="network"] { --tile: #3ca16f; }
 [data-tile="portal"] { --tile: #008565; }
 [data-tile="crm"] { --tile: #439080; }
+[data-tile="voice"] { --tile: #3b5bdb; }
 [data-tile="recovery"] { --tile: #009fa8; }
 [data-tile="transcribe"] { --tile: #00787c; }
-[data-tile="memo"] { --tile: #00899e; }
 [data-tile="compliance"] { --tile: #2193c4; }
 [data-tile="extract"] { --tile: #3c6e93; }
 [data-tile="render"] { --tile: #2f7cb9; }
@@ -614,7 +597,6 @@
 [data-tile="webinar"] { --tile: #ab7ca8; }
 [data-tile="metis"] { --tile: #875679; }
 [data-tile="byline"] { --tile: #aa647e; }
-[data-tile="hq"] { --tile: #3d485b; }
 [data-tile="studio"] { --tile: #466464; }
 [data-tile="workbench"] { --tile: #3c575f; }
 [data-tile="data"] { --tile: #576c7b; }
