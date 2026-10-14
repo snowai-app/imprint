@@ -1,7 +1,6 @@
 import {
   AudioLines,
   BookOpen,
-  Building2,
   Clapperboard,
   ClipboardList,
   Compass,
@@ -20,9 +19,9 @@ import {
   LayoutDashboard,
   type LucideIcon,
   MessageCircleQuestionMark,
-  Mic,
   Newspaper,
   PenLine,
+  Phone,
   Presentation,
   Quote,
   Receipt,
@@ -57,7 +56,6 @@ export const GLYPHS: Record<GlyphName, LucideIcon> = {
   'door-open': DoorOpen,
   'hand-coins': HandCoins,
   users: Users,
-  mic: Mic,
   'audio-lines': AudioLines,
   send: Send,
   presentation: Presentation,
@@ -73,10 +71,10 @@ export const GLYPHS: Record<GlyphName, LucideIcon> = {
   'graduation-cap': GraduationCap,
   sprout: Sprout,
   'heart-pulse': HeartPulse,
-  'building-2': Building2,
   'layout-dashboard': LayoutDashboard,
   'flask-conical': FlaskConical,
   database: Database,
+  phone: Phone,
 };
 
 /** The family's interface stroke (standard 3.5). */

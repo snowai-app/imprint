@@ -69,7 +69,6 @@ export type GlyphName =
   | 'door-open'
   | 'hand-coins'
   | 'users'
-  | 'mic'
   | 'audio-lines'
   | 'send'
   | 'presentation'
@@ -85,10 +84,10 @@ export type GlyphName =
   | 'graduation-cap'
   | 'sprout'
   | 'heart-pulse'
-  | 'building-2'
   | 'layout-dashboard'
   | 'flask-conical'
-  | 'database';
+  | 'database'
+  | 'phone';
 
 export type FamilyApp = {
   /** The key in palette.json and the value of `data-app` on <html>. */
@@ -140,10 +139,10 @@ export const APPS: FamilyApp[] = [
 
   /* Clients and conversation */
   { id: 'crm', name: 'Snow AI CRM', short: 'CRM', line: 'The client book: details, services, money, time, tasks and issues in one place.', group: 'clients', glyph: 'contact', env: 'NEXT_PUBLIC_CRM_URL', brand: 'snowai', status: 'building', operatorOnly: false },
+  { id: 'voice', name: 'Snow AI Voice', short: 'Voice', line: 'Record a call, and get its words and a short summary, sealed.', group: 'clients', glyph: 'phone', env: 'NEXT_PUBLIC_VOICE_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'portal', name: 'Snow AI Portal', short: 'Portal', line: 'One account for everything your agency does for you: health insurance, taxes and more.', group: 'clients', glyph: 'door-open', env: 'NEXT_PUBLIC_PORTAL_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'recovery', name: 'Snow AI Recovery', short: 'Recovery', line: 'The collections desk for agencies and the creditors they work for.', group: 'clients', glyph: 'hand-coins', env: 'NEXT_PUBLIC_RECOVERY_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'network', name: 'Snow AI Network', short: 'Network', line: 'One network: members ask and answer, and businesses offer what they do.', group: 'clients', glyph: 'users', env: 'NEXT_PUBLIC_NETWORK_URL', brand: 'snowai', status: 'building', operatorOnly: false, live: false },
-  { id: 'memo', name: 'Snow AI Memo', short: 'Memo', line: 'Voice messages with their transcript.', group: 'clients', glyph: 'mic', env: 'NEXT_PUBLIC_MEMO_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'transcribe', name: 'Snow AI Transcribe', short: 'Transcribe', line: 'A recording in, its words and their timings out.', group: 'clients', glyph: 'audio-lines', env: 'NEXT_PUBLIC_TRANSCRIBE_URL', brand: 'snowai', status: 'building', operatorOnly: false },
 
   /* Outreach */
@@ -169,7 +168,6 @@ export const APPS: FamilyApp[] = [
   { id: 'getcovered', name: 'Get Covered', short: 'Get Covered', line: 'Health coverage end to end, for the agents who place it.', group: 'gc', glyph: 'heart-pulse', env: 'NEXT_PUBLIC_GETCOVERED_URL', brand: 'getcovered', status: 'building', operatorOnly: false },
 
   /* Company: the operator's own */
-  { id: 'hq', name: 'Snow AI HQ', short: 'HQ', line: 'The company, every business rolled up: revenue, activity and what was decided.', group: 'company', glyph: 'building-2', env: 'NEXT_PUBLIC_HQ_URL', brand: 'snowai', status: 'open', operatorOnly: true },
   { id: 'studio', name: 'Snow AI Studio', short: 'Studio', line: 'Every capability in one place, beside the file it works on.', group: 'company', glyph: 'layout-dashboard', env: 'NEXT_PUBLIC_STUDIO_URL', brand: 'snowai', status: 'open', operatorOnly: true },
   /* The Workbench forwards: its tools moved to Studio and its public bench to Try (T-2174). */
   { id: 'workbench', name: 'Snow AI Workbench', short: 'Workbench', line: 'Forwards to Try, on the front door, and to Studio.', group: 'company', glyph: 'flask-conical', env: 'NEXT_PUBLIC_WORKBENCH_URL', brand: 'snowai', status: 'open', operatorOnly: true, listed: false },
@@ -197,7 +195,7 @@ export type LauncherApp = Pick<FamilyApp, 'id' | 'short' | 'line' | 'group' | 'g
  * addresses, without the front door itself, and without the operator's own
  * surfaces unless the viewer is an operator, and without an app that only
  * forwards elsewhere now (`listed: false`). Filtering here rather than in
- * the browser keeps HQ, Studio and the rest out of a customer's page entirely.
+ * the browser keeps Studio and the rest out of a customer's page entirely.
  *
  * `hrefs` is the app's own address map (lib/links.ts), by app id; an app with
  * no address is left out rather than linked nowhere. An app whose address does

@@ -4,12 +4,12 @@
    components/VisitorMode.tsx, which is snowai-app/portal's
    VisitorMode without its translations. Mounted only when proxy.ts marked the
    request a visitor's. It changes nothing about how the page looks or moves:
-   family links carry `?visitor=1`; framed by HQ it says where it is; not
+   family links carry `?visitor=1`; framed by Studio it says where it is; not
    framed it shows one pill to leave. */
 
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { HQ_ORIGIN, isFamilyHost } from '@/lib/visitor';
+import { STUDIO_ORIGIN, isFamilyHost } from '@/lib/visitor';
 
 function carryVisitor(root: ParentNode) {
   for (const a of root.querySelectorAll<HTMLAnchorElement>('a[href]')) {
@@ -42,9 +42,9 @@ export default function Visitor() {
     if (window.top === window.self) return;
     const t = window.setTimeout(() => {
       try {
-        window.parent.postMessage({ type: 'sa-visitor-location', href: location.href, title: document.title }, HQ_ORIGIN);
+        window.parent.postMessage({ type: 'sa-visitor-location', href: location.href, title: document.title }, STUDIO_ORIGIN);
       } catch {
-        /* not HQ's frame */
+        /* not Studio's frame */
       }
     }, 0);
     return () => window.clearTimeout(t);

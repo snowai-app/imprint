@@ -25,12 +25,11 @@ export const VISITOR_MAX_AGE = 3600;
 export const VISITOR_HEADER = 'x-imprint-visitor';
 
 /** The one origin, besides Imprint itself, allowed to frame a page. */
-export const HQ_ORIGIN = 'https://hq.snowai.app';
 /* Studio's box opens every capability inside Studio (operator, 2 October 2026,
    T-1945). Framing grants nothing: inside the frame this app still signs in
    and checks roles as it always does. */
 export const STUDIO_ORIGIN = 'https://studio.snowai.app';
-/* The whole family may frame this app, HQ's visitor window among it, and
+/* The whole family may frame this app, Studio's visitor window among it, and
    nobody else (family/embed.ts, T-2223). */
 export const VISITOR_FRAME_ANCESTORS = FRAME_ANCESTOR_SOURCES;
 
@@ -53,7 +52,7 @@ export function withoutSwitch(request: NextRequest): URL {
 }
 
 /** Turn the cookie on or off. The options carry no domain, so it belongs to
-    this host alone; SameSite=None and Partitioned let it live inside HQ's frame. */
+    this host alone; SameSite=None and Partitioned let it live inside Studio's frame. */
 export function setVisitorCookie(response: NextResponse, on: boolean): void {
   response.cookies.set(VISITOR_COOKIE, on ? '1' : '', {
     path: '/',

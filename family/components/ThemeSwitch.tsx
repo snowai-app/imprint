@@ -14,7 +14,7 @@ import { STROKE } from '../glyphs';
  * System option.
  *
  * Each app keeps its cookie as before: `cookie` is its name (`ask-theme`,
- * `memo-theme`, `snowai-theme`…). `shared` puts it on a registrable domain so
+ * `voice-theme`, `snowai-theme`…). `shared` puts it on a registrable domain so
  * every app under it shares one choice (snowai.app does this); it is only
  * used when the page is actually on that domain, so a preview deploy keeps a
  * host-only cookie. The choice is also kept in this origin's storage under
