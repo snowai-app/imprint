@@ -367,11 +367,11 @@ describe('family kit', () => {
       assert.equal(frameName('https://evil.example'), EMBED_NAME);
     });
 
-    it('a held product opens beneath the bar, anything else in a new tab, Get Covered always in a new tab', () => {
+    it('every product opens in its own tab: a held one at its address, one not held at its try page (T-3166)', () => {
       const held = new Set(['tax', 'getcovered', 'portal']);
       const ctx = { current: 'sign', holding: held, tryBase: 'https://snowai.app/try/' };
       assert.deepEqual(workspaceTarget({ id: 'sign', href: '/dashboard/home' }, ctx), { kind: 'current' });
-      assert.deepEqual(workspaceTarget({ id: 'tax', href: 'https://tax.snowai.app' }, ctx), { kind: 'frame', src: 'https://tax.snowai.app?embed=1' });
+      assert.deepEqual(workspaceTarget({ id: 'tax', href: 'https://tax.snowai.app' }, ctx), { kind: 'tab', href: 'https://tax.snowai.app' }, 'a held app opens in its own tab (T-3166)');
       assert.deepEqual(workspaceTarget({ id: 'invoice', href: 'https://invoice.snowai.app' }, ctx), { kind: 'tab', href: 'https://snowai.app/try/invoice' });
       assert.deepEqual(workspaceTarget({ id: 'getcovered', href: 'https://getcovered.cloud' }, ctx), { kind: 'tab', href: 'https://getcovered.cloud' });
       assert.deepEqual(workspaceTarget({ id: 'snowai', href: 'https://snowai.app' }, ctx), { kind: 'tab', href: 'https://snowai.app' });
