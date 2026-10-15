@@ -135,7 +135,11 @@ export type WorkspaceTarget =
  * - The host's own product: back to the host page.
  * - No address: nothing.
  * - Get Covered and the front door: their own address, in a new tab.
- * - Held: framed beneath the bar, with embed=1.
+ * - Held: its own address, in a new tab (operator, 15 October 2026, T-3165,
+ *   T-3166: "it should go straight to the intended URL ... open this in
+ *   another tab ... do that for all other apps as well"). Each app keeps its
+ *   own address, back button and sign-in, which an agency on its own domain
+ *   needs; it was framed beneath the bar, with embed=1, from T-2223.
  * - Unknown (the answer could not be read): its own address in a new tab.
  * - Not held: its try page on snowai.app in a new tab (`tryBase` is
  *   `${FAMILY_LINKS.snowai}/try`), or its address when no try page is known.
@@ -148,7 +152,7 @@ export function workspaceTarget(
   if (!app.href) return { kind: 'none' };
   if (NEVER_FRAMED.includes(app.id) || app.id === HUB_ID) return { kind: 'tab', href: app.href };
   if (ctx.holding === 'unknown') return { kind: 'tab', href: app.href };
-  if (ctx.holding.has(app.id)) return { kind: 'frame', src: embedHref(app.href) };
+  if (ctx.holding.has(app.id)) return { kind: 'tab', href: app.href };
   return { kind: 'tab', href: ctx.tryBase ? `${ctx.tryBase.replace(/\/+$/, '')}/${encodeURIComponent(app.id)}` : app.href };
 }
 
