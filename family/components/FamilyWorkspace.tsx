@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { ArrowLeft, ExternalLink, Lock, X } from 'lucide-react';
 import { appById } from '../apps';
 import { fetchEntitlements } from '../entitlements';
-import { frameName, isFamilyOrigin, openFromSearch, readEmbedMessage, windowAddress, withOpen, workspaceTarget, type Holding } from '../embed';
+import { HUB_ID, NEVER_FRAMED, embedHref, frameName, isFamilyOrigin, openFromSearch, readEmbedMessage, windowAddress, withOpen, workspaceTarget, type Holding } from '../embed';
 import { STROKE } from '../glyphs';
 
 /**
@@ -95,6 +95,31 @@ export function openInWorkspace(id: string | null) {
   if (!show(id)) return;
   const target = withOpen(here(), id && id !== hostApp ? id : null);
   if (target !== here()) window.history.pushState(null, '', target);
+}
+
+/**
+ * Open a given page of a family app in the window (T-3249): a deep link such
+ * as Voice's recorder, a Help article or a room in Studio, where the launcher
+ * only knows each app's front page. `id` is the app (from family/apps.ts, or
+ * the first part of its host). Returns false, so the caller follows the link
+ * as usual, when there is no workspace on this page, the address is not the
+ * family's, or the app is one that always opens in its own tab.
+ */
+export function openAddressInWorkspace(id: string, href: string, name?: string): boolean {
+  if (typeof window === 'undefined' || !snowaiBase) return false;
+  let u: URL;
+  try {
+    u = new URL(href, window.location.href);
+  } catch {
+    return false;
+  }
+  if (!isFamilyOrigin(u.origin) || NEVER_FRAMED.includes(id) || id === HUB_ID || id === hostApp) return false;
+  if (!apps.has(id)) apps.set(id, { id, href: u.origin, name: name ?? appById(id)?.name ?? id });
+  const frame: Frame = { id, src: embedHref(u.toString()), title: apps.get(id)?.name ?? id, failed: false };
+  update({ open: id, frames: [...state.frames.filter((f) => f.id !== id), frame].slice(-KEEP) });
+  const target = withOpen(here(), id);
+  if (target !== here()) window.history.pushState(null, '', target);
+  return true;
 }
 
 /** The address bar says which product is open: follow it (a reload, a back press, a link). */

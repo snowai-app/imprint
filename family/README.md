@@ -205,3 +205,12 @@ and gets a row in `palette.json`, an entry in `apps.ts` and its glyph in
 | Campaigns | `send` | | | |
 
 Icons inside apps are Lucide too, at a 1.75 stroke (`STROKE` in `glyphs.tsx`).
+
+## A link to a page inside another app (T-3249)
+
+`components/FamilyWindowLink.tsx` opens a given page of another family app
+(Voice's recorder, a Help article, a room in Studio) in the window on this
+page, as the launcher does for an app's front page. Use it for every such
+link instead of `target="_blank"`; it falls back to its own tab only when the
+page has no workspace. `openAddressInWorkspace(id, href)` in
+`components/FamilyWorkspace.tsx` is the same for code that opens a page itself.
