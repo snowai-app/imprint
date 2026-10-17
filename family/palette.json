@@ -370,6 +370,22 @@
     "darkText": 5.8
    }
   },
+  "verify": {
+   "accent": "#0e6b55",
+   "strong": "#0a5c49",
+   "soft": "#e2f1ec",
+   "ground": "#fcfcfb",
+   "dark": "#8fc9b4",
+   "darkGround": "#141a18",
+   "darkSurface": "#1f2624",
+   "group": "paper",
+   "contrast": {
+    "tileWhite": 6.46,
+    "textOnGround": 7.75,
+    "buttonWhite": 7.95,
+    "darkText": 9.39
+   }
+  },
   "pitch": {
    "accent": "#8177c8",
    "strong": "#7266ba",

@@ -397,6 +397,23 @@
   --surface: #23252c;
   --surface-2: #303239;
 }
+:root[data-app="verify"] {
+  --accent: #0e6b55;
+  --accent-strong: #0a5c49;
+  --accent-soft: #e2f1ec;
+  --accent-ink: #ffffff;
+  --ground: #fcfcfb;
+  --tile: #0e6b55;
+}
+:root[data-app="verify"][data-theme="dark"] {
+  --accent: #8fc9b4;
+  --accent-strong: #8fc9b4;
+  --accent-soft: #354741;
+  --accent-ink: #141a18;
+  --ground: #141a18;
+  --surface: #1f2624;
+  --surface-2: #2c3331;
+}
 :root[data-app="pitch"] {
   --accent: #8177c8;
   --accent-strong: #7266ba;
@@ -591,6 +608,7 @@
 [data-tile="documents"] { --tile: #668fd8; }
 [data-tile="sign"] { --tile: #4567af; }
 [data-tile="invoice"] { --tile: #5259a5; }
+[data-tile="verify"] { --tile: #0e6b55; }
 [data-tile="pitch"] { --tile: #8177c8; }
 [data-tile="campaigns"] { --tile: #7457a2; }
 [data-tile="video"] { --tile: #9067a1; }
