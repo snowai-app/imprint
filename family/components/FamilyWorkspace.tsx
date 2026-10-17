@@ -4,10 +4,10 @@
 import { createPortal } from 'react-dom';
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type AnchorHTMLAttributes, type MouseEvent, type ReactNode, type RefObject } from 'react';
 import { usePathname } from 'next/navigation';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Lock, X } from 'lucide-react';
 import { appById } from '../apps';
 import { fetchEntitlements } from '../entitlements';
-import { frameName, isFamilyOrigin, openFromSearch, readEmbedMessage, withOpen, workspaceTarget, type Holding } from '../embed';
+import { frameName, isFamilyOrigin, openFromSearch, readEmbedMessage, windowAddress, withOpen, workspaceTarget, type Holding } from '../embed';
 import { STROKE } from '../glyphs';
 
 /**
@@ -286,6 +286,8 @@ function Stage({ state: s }: { state: State }) {
   const frames = useRef(new Map<string, HTMLIFrameElement>());
   const readyAt = useRef(new Map<string, number>());
   const loadedAt = useRef(new Map<string, number>());
+  /* Where each window is now, from its own `ready` message: the address bar follows it. */
+  const [at, setAt] = useState<Record<string, string>>({});
 
   /* Guests talk to the host: `top` loads a sign-in page in the whole window,
      `ready` says a page loaded in embed mode. Only the family, only from our
@@ -302,6 +304,7 @@ function Stage({ state: s }: { state: State }) {
         return;
       }
       readyAt.current.set(id, Date.now());
+      setAt((prev) => (prev[id] === m.url ? prev : { ...prev, [id]: m.url }));
       if (state.frames.find((f) => f.id === id)?.failed) update({ frames: state.frames.map((f) => (f.id === id ? { ...f, failed: false } : f)) });
     };
     window.addEventListener('message', onMessage);
@@ -360,6 +363,7 @@ function Stage({ state: s }: { state: State }) {
         const entry = apps.get(f.id);
         return (
           <div key={f.id} className="fam-workspace__pane" hidden={f.id !== open}>
+            <WindowBar title={f.title} url={at[f.id] ?? new URL(f.src, window.location.href).toString()} host={host} />
             <iframe
               ref={(el) => {
                 if (el) {
@@ -396,5 +400,25 @@ function Stage({ state: s }: { state: State }) {
       })}
     </div>,
     document.body,
+  );
+}
+
+/** The window's own bar (T-3247): the app's address, a button that opens it
+ *  fully in its own tab, and the way back to the host page. */
+function WindowBar({ title, url, host }: { title: string; url: string; host: string }) {
+  const addr = windowAddress(url);
+  return (
+    <div className="fam-window-bar">
+      <span className="fam-window-bar__addr" title={addr.full}>
+        <Lock size={14} strokeWidth={STROKE} aria-hidden />
+        <span className="fam-window-bar__text">{addr.shown}</span>
+      </span>
+      <a className="fam-btn fam-btn--ghost fam-window-bar__btn" href={addr.full} target="_blank" rel="noopener">
+        Open {title} in its own tab <ExternalLink size={16} strokeWidth={STROKE} aria-hidden />
+      </a>
+      <button type="button" className="fam-btn fam-btn--ghost fam-window-bar__btn" onClick={() => openInWorkspace(null)} aria-label={host ? `Close ${title} and go back to ${host}` : `Close ${title}`}>
+        <X size={16} strokeWidth={STROKE} aria-hidden /> {host ? `Back to ${host}` : 'Close'}
+      </button>
+    </div>
   );
 }
