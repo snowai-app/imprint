@@ -87,7 +87,8 @@ export type GlyphName =
   | 'layout-dashboard'
   | 'flask-conical'
   | 'database'
-  | 'phone';
+  | 'phone'
+  | 'mail-check';
 
 export type FamilyApp = {
   /** The key in palette.json and the value of `data-app` on <html>. */
@@ -129,6 +130,7 @@ export const APPS: FamilyApp[] = [
   { id: 'sign', name: 'Snow AI Sign', short: 'Sign', line: 'Send a document out to be signed, and keep what was said about it.', group: 'paper', glyph: 'pen-line', env: 'NEXT_PUBLIC_SIGN_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'invoice', name: 'Snow AI Invoice', short: 'Invoice', line: 'Create, send and keep invoices; clients pay by card or Zelle.', group: 'paper', glyph: 'receipt', env: 'NEXT_PUBLIC_INVOICE_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'compliance', name: 'Snow AI Compliance', short: 'Compliance', line: 'Readiness, evidence and an auditor view for SOC 2, HIPAA and the Safeguards Rule.', group: 'paper', glyph: 'shield-check', env: 'NEXT_PUBLIC_COMPLIANCE_URL', brand: 'snowai', status: 'building', operatorOnly: false },
+  { id: 'verify', name: 'Snow AI Verify', short: 'Verify', line: 'Check an email list before it goes out, with the evidence for every address.', group: 'paper', glyph: 'mail-check', env: 'NEXT_PUBLIC_VERIFY_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'extract', name: 'Snow AI Extract', short: 'Extract', line: 'The words in a PDF, where each one sits, and a picture of every page.', group: 'paper', glyph: 'scan-text', env: 'NEXT_PUBLIC_READER_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'render', name: 'Snow AI Render', short: 'Render', line: 'Documents in, PDF or Word out.', group: 'paper', glyph: 'file-output', env: 'NEXT_PUBLIC_RENDER_URL', brand: 'snowai', status: 'building', operatorOnly: false },
 
