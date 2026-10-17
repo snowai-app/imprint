@@ -60,6 +60,8 @@ const FAMILY_DEFAULTS: Record<string, string> = {
   workbench: 'https://workbench.snowai.app',
   data: 'https://data.snowai.app',
   verify: 'https://verify.snowai.app',
+  help: 'https://help.snowai.app',
+  agents: 'https://agents.snowai.app',
 };
 
 /** The family's addresses by app id, read through the environment. */

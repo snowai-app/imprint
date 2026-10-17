@@ -191,7 +191,8 @@ and gets a row in `palette.json`, an entry in `apps.ts` and its glyph in
 | Sign | `pen-line` | | Pitch | `target` |
 | Invoice | `receipt` | | Ask | `message-circle-question-mark` |
 | Compliance | `shield-check` | | Atlas | `compass` |
-| Verify | `mail-check` | | | |
+| Verify | `mail-check` | | Help | `life-buoy` |
+| Agents | `calendar-clock` | | | |
 | Extract | `scan-text` | | Story | `quote` |
 | Render | `file-output` | | Rewards | `gift` |
 | Tax | `landmark` | | Playbook | `newspaper` |

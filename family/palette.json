@@ -98,6 +98,22 @@
     "darkText": 8.73
    }
   },
+  "help": {
+   "accent": "#815b1e",
+   "strong": "#6c4801",
+   "soft": "#fbecd9",
+   "ground": "#fcfcfb",
+   "dark": "#dbb176",
+   "darkGround": "#1b1610",
+   "darkSurface": "#27221b",
+   "group": "answers",
+   "contrast": {
+    "tileWhite": 6.09,
+    "textOnGround": 7.98,
+    "buttonWhite": 8.19,
+    "darkText": 9.04
+   }
+  },
   "atlas": {
    "accent": "#7a6800",
    "strong": "#6d5d00",
@@ -160,6 +176,22 @@
     "textOnGround": 5.58,
     "buttonWhite": 5.96,
     "darkText": 8.92
+   }
+  },
+  "agents": {
+   "accent": "#518a55",
+   "strong": "#3c7542",
+   "soft": "#e1f5e1",
+   "ground": "#fbf7f0",
+   "dark": "#9ac69c",
+   "darkGround": "#131913",
+   "darkSurface": "#1e251f",
+   "group": "plan",
+   "contrast": {
+    "tileWhite": 4.1,
+    "textOnGround": 5.15,
+    "buttonWhite": 5.5,
+    "darkText": 9.29
    }
   },
   "tax": {

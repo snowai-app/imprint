@@ -88,7 +88,9 @@ export type GlyphName =
   | 'flask-conical'
   | 'database'
   | 'phone'
-  | 'mail-check';
+  | 'mail-check'
+  | 'calendar-clock'
+  | 'life-buoy';
 
 export type FamilyApp = {
   /** The key in palette.json and the value of `data-app` on <html>. */
@@ -119,6 +121,9 @@ export type FamilyApp = {
    *  stay for the forwarder; no launcher and no shelf draws it. Remove the
    *  entry the day the app is retired. */
   listed?: false;
+  /** `true` for an app everyone has without a plan (Help, T-3255): the
+   *  launcher draws it like any other, and it is never offered as a trial. */
+  free?: true;
 };
 
 export const APPS: FamilyApp[] = [
@@ -135,6 +140,7 @@ export const APPS: FamilyApp[] = [
   { id: 'render', name: 'Snow AI Render', short: 'Render', line: 'Documents in, PDF or Word out.', group: 'paper', glyph: 'file-output', env: 'NEXT_PUBLIC_RENDER_URL', brand: 'snowai', status: 'building', operatorOnly: false },
 
   /* Tax and planning */
+  { id: 'agents', name: 'Snow AI Agents', short: 'Agents', line: 'Scheduled agents that read your numbers and tell you what changed.', group: 'plan', glyph: 'calendar-clock', env: 'NEXT_PUBLIC_AGENTS_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'tax', name: 'Snow AI Tax', short: 'Tax', line: 'Returns prepared by your tax firm or by you, federal and every state, with the reason for every number.', group: 'plan', glyph: 'landmark', env: 'NEXT_PUBLIC_TAX_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'model', name: 'Snow AI Model', short: 'Model', line: 'Income, expenses and filing, with the levers that change the outcome side by side.', group: 'plan', glyph: 'sliders-horizontal', env: 'NEXT_PUBLIC_MODEL_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'forms', name: 'Snow AI Forms', short: 'Forms', line: 'Forms and surveys, added to any Snow AI app.', group: 'plan', glyph: 'clipboard-list', env: 'NEXT_PUBLIC_FORMS_URL', brand: 'snowai', status: 'building', operatorOnly: false },
@@ -155,6 +161,7 @@ export const APPS: FamilyApp[] = [
 
   /* Answers and rewards */
   { id: 'ask', name: 'Snow AI Ask', short: 'Ask', line: 'Answers from everything your account holds, in every app.', group: 'answers', glyph: 'message-circle-question-mark', env: 'NEXT_PUBLIC_ASK_URL', brand: 'snowai', status: 'building', operatorOnly: false },
+  { id: 'help', name: 'Snow AI Help', short: 'Help', line: 'How to use every Snow AI app.', group: 'answers', glyph: 'life-buoy', env: 'NEXT_PUBLIC_HELP_URL', brand: 'snowai', status: 'open', operatorOnly: false, free: true },
   { id: 'atlas', name: 'Snow AI Atlas', short: 'Atlas', line: 'The Snow AI family in one search.', group: 'answers', glyph: 'compass', env: 'NEXT_PUBLIC_ATLAS_URL', brand: 'snowai', status: 'building', operatorOnly: false, live: false },
   { id: 'story', name: 'Snow AI Story', short: 'Story', line: 'A customer’s story, written as an email, a post, a video script or a page.', group: 'answers', glyph: 'quote', env: 'NEXT_PUBLIC_STORY_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'rewards', name: 'Snow AI Rewards', short: 'Rewards', line: 'Clients earn points for surveys and forms, and spend them on rewards.', group: 'answers', glyph: 'gift', env: 'NEXT_PUBLIC_REWARDS_URL', brand: 'snowai', status: 'building', operatorOnly: false },
