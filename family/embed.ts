@@ -134,15 +134,19 @@ export type WorkspaceTarget =
  *
  * - The host's own product: back to the host page.
  * - No address: nothing.
- * - Get Covered and the front door: their own address, in a new tab.
- * - Held: its own address, in a new tab (operator, 15 October 2026, T-3165,
- *   T-3166: "it should go straight to the intended URL ... open this in
- *   another tab ... do that for all other apps as well"). Each app keeps its
- *   own address, back button and sign-in, which an agency on its own domain
- *   needs; it was framed beneath the bar, with embed=1, from T-2223.
- * - Unknown (the answer could not be read): its own address in a new tab.
- * - Not held: its try page on snowai.app in a new tab (`tryBase` is
- *   `${FAMILY_LINKS.snowai}/try`), or its address when no try page is known.
+ * - Get Covered, Portal and the front door: their own address, in a new tab.
+ * - Everything else opens in a window on the same page (operator, 17 October
+ *   2026, T-3246, T-3247: "a window would open up. It will have the address
+ *   bar in that window, which will say sign.snowai.app ... there will be an
+ *   option to fully go to that particular tab"; "I don't want them to go to a
+ *   second tab unless absolutely necessary"). The window shows the app's own
+ *   address and a button that opens it fully in its own tab. This replaces
+ *   T-3166's new tab, which was chosen because the host's address showed
+ *   `?open=` instead of the app's.
+ *   - Held, or the answer could not be read: the app itself (it sends a
+ *     signed-out visitor to its sign-in in the whole window).
+ *   - Not held: its try page on snowai.app (`tryBase` is
+ *     `${FAMILY_LINKS.snowai}/try`), so signing up happens in the window too.
  */
 export function workspaceTarget(
   app: { id: string; href: string },
@@ -151,9 +155,23 @@ export function workspaceTarget(
   if (app.id === ctx.current) return { kind: 'current' };
   if (!app.href) return { kind: 'none' };
   if (NEVER_FRAMED.includes(app.id) || app.id === HUB_ID) return { kind: 'tab', href: app.href };
-  if (ctx.holding === 'unknown') return { kind: 'tab', href: app.href };
-  if (ctx.holding.has(app.id)) return { kind: 'tab', href: app.href };
-  return { kind: 'tab', href: ctx.tryBase ? `${ctx.tryBase.replace(/\/+$/, '')}/${encodeURIComponent(app.id)}` : app.href };
+  if (ctx.holding === 'unknown' || ctx.holding.has(app.id)) return { kind: 'frame', src: embedHref(app.href) };
+  return { kind: 'frame', src: embedHref(ctx.tryBase ? `${ctx.tryBase.replace(/\/+$/, '')}/${encodeURIComponent(app.id)}` : app.href) };
+}
+
+/** What the window's address bar shows for a framed page: its host and path,
+ *  without the scheme or the `embed` marker (`sign.snowai.app/dashboard`).
+ *  `full` is the same address to open in its own tab. */
+export function windowAddress(url: string): { shown: string; full: string } {
+  try {
+    const u = new URL(url);
+    u.searchParams.delete(EMBED_PARAM);
+    const full = u.toString();
+    const path = u.pathname === '/' ? '' : u.pathname;
+    return { shown: `${u.host}${path}${u.search}`, full };
+  } catch {
+    return { shown: url, full: url };
+  }
 }
 
 /** A message from a guest to its host. `top`: load this address in the whole

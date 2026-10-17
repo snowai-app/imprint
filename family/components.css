@@ -889,17 +889,47 @@ a.fam-card:hover {
 }
 .fam-workspace[hidden],
 .fam-workspace__pane[hidden] { display: none !important; }
-.fam-workspace__pane { position: absolute; inset: 0; }
+.fam-workspace__pane { position: absolute; inset: 0; display: flex; flex-direction: column; }
 .fam-workspace__frame {
   display: block;
   width: 100%;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   border: 0;
   background: var(--ground);
 }
+/* The window's bar (T-3247): the app's own address, Open in its own tab, Back. */
+.fam-window-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-12);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line-strong);
+}
+.fam-window-bar__addr {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  height: 32px;
+  padding: 0 var(--space-12);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font: var(--text-body);
+}
+.fam-window-bar__text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fam-window-bar__btn { white-space: nowrap; }
+@media (max-width: 600px) {
+  .fam-window-bar { flex-wrap: wrap; }
+  .fam-window-bar__addr { flex-basis: 100%; }
+}
 .fam-workspace__notice {
   position: absolute;
-  inset: 0;
+  inset: 49px 0 0 0;
   display: grid;
   place-content: center;
   gap: var(--space-16);
