@@ -108,6 +108,23 @@
   --surface: #28251e;
   --surface-2: #35322c;
 }
+:root[data-app="help"] {
+  --accent: #815b1e;
+  --accent-strong: #6c4801;
+  --accent-soft: #fbecd9;
+  --accent-ink: #ffffff;
+  --ground: #fcfcfb;
+  --tile: #815b1e;
+}
+:root[data-app="help"][data-theme="dark"] {
+  --accent: #dbb176;
+  --accent-strong: #dbb176;
+  --accent-soft: #4b3f2d;
+  --accent-ink: #1b1610;
+  --ground: #1b1610;
+  --surface: #27221b;
+  --surface-2: #342f29;
+}
 :root[data-app="atlas"] {
   --accent: #7a6800;
   --accent-strong: #6d5d00;
@@ -175,6 +192,23 @@
   --ground: #171b15;
   --surface: #232720;
   --surface-2: #30342d;
+}
+:root[data-app="agents"] {
+  --accent: #518a55;
+  --accent-strong: #3c7542;
+  --accent-soft: #e1f5e1;
+  --accent-ink: #ffffff;
+  --ground: #fbf7f0;
+  --tile: #518a55;
+}
+:root[data-app="agents"][data-theme="dark"] {
+  --accent: #9ac69c;
+  --accent-strong: #9ac69c;
+  --accent-soft: #374538;
+  --accent-ink: #131913;
+  --ground: #131913;
+  --surface: #1e251f;
+  --surface-2: #2c322c;
 }
 :root[data-app="tax"] {
   --accent: #2f6b4a;
@@ -591,10 +625,12 @@
 [data-tile="foundry"] { --tile: #945832; }
 [data-tile="rewards"] { --tile: #9c7346; }
 [data-tile="ask"] { --tile: #a98b4f; }
+[data-tile="help"] { --tile: #815b1e; }
 [data-tile="atlas"] { --tile: #7a6800; }
 [data-tile="story"] { --tile: #807f2c; }
 [data-tile="forms"] { --tile: #7d9750; }
 [data-tile="model"] { --tile: #53793a; }
+[data-tile="agents"] { --tile: #518a55; }
 [data-tile="tax"] { --tile: #2f6b4a; }
 [data-tile="network"] { --tile: #3ca16f; }
 [data-tile="portal"] { --tile: #008565; }
