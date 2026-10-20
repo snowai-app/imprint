@@ -274,6 +274,22 @@
     "darkText": 6.59
    }
   },
+  "engage": {
+   "accent": "#2584b2",
+   "strong": "#006f9c",
+   "soft": "#d8f3ff",
+   "ground": "#f3f5f8",
+   "dark": "#7ec3eb",
+   "darkGround": "#11181d",
+   "darkSurface": "#1d252a",
+   "group": "clients",
+   "contrast": {
+    "tileWhite": 4.18,
+    "textOnGround": 5.12,
+    "buttonWhite": 5.59,
+    "darkText": 9.29
+   }
+  },
   "recovery": {
    "accent": "#009fa8",
    "strong": "#007e85",

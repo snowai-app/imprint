@@ -35,7 +35,7 @@ in snowai.
 | `atlas.ts` | Atlas sync (T-2193): every app's public articles, help pages, forms, terms and the app itself reach Atlas the moment they change. `publishToAtlas(FAMILY_LINKS.atlas, key, '<app id>', entries)` adds or updates (batches of 200), `removeFromAtlas(FAMILY_LINKS.atlas, key, '<app id>', id)` hides one at once; both run on the app's server with the shared capability key and never throw. `atlasManifest(source, entries)` is what the app serves at `/atlas.json`, which Atlas sweeps every 15 minutes (an app with none, or one that does not answer, keeps its entries). `AtlasEntry`: `id`, `kind`, `title`, `lead`, `url`, `updated_at`, optional `body`, `keywords`, `lang` (`es`, `hi`) and `slug` (`atlasSlug(source, id)` when left out). Public entries only: Atlas refuses an email address, phone number or Social Security number. No imports. |
 | `embed.ts` | The integrated workspace (T-2223): `FRAME_ANCESTORS` (`frame-ancestors 'self' https://snowai.app https://*.snowai.app`, every app's header, `familyFrameHeaders()` for next.config.ts), `workspaceTarget` (the one rule for a click: held, its own address in a new tab (T-3166; it was framed beneath the bar); not held, its snowai.app/try page in a new tab; unknown, a new tab; Get Covered, Portal and the front door, always a new tab, `NEVER_FRAMED`), `embedHref`, `withOpen`/`openFromSearch` (the host's `?open=<id>`), `readEmbedMessage`, `SIGN_IN_PATH`, and `EMBED_SCRIPT`, the guest's half. No imports; the family's domain is named here as a security boundary, never as a link. |
 | `components/EmbedScript.tsx` | The guest's half, first in the root layout's `<head>`: in a frame in embed mode it marks `<html data-embed>` before the first paint (components.css then hides the app's top bar, launcher, Ask Snow and cookie bar), keeps the mode in the frame's name across every page, opens links that leave the family in a new tab, and sends a sign-in page to the whole window. Does nothing outside a frame. Takes `nonce` for an app with a script-src. |
-| `components/FamilyWorkspace.tsx` | The host's half: one store per page, shared by every launcher and bar. Reads `/api/entitlements` once. Since T-3166 a held product opens in its own tab, so the frame under the bar (the host page mounted underneath, `?open=<id>` in the address bar, the last four frames kept) is no longer reached from a click; its code stays for a later choice. It shows a plain sentence and a new-tab link when a frame refuses to load, and loads a framed sign-in page in the whole window. `useFamilyWorkspace` for a launcher; `WorkspaceLink` for one link in a product's own family bar (Sign's). |
+| `components/FamilyWorkspace.tsx` | The host's half: one store per page, shared by every launcher and bar. Reads `/api/entitlements` once. Since T-3166 a held product opens in its own tab, so the frame under the bar (the host page mounted underneath, `?open=<id>` in the address bar, the last four frames kept) is no longer reached from a click; its code stays for a later choice. It shows a plain sentence and a new-tab link when a frame refuses to load, and loads a framed sign-in page in the whole window. A window has no bar of its own (no address, no "open in its own tab", no "back", T-3419): the top row is the way between apps. `useFamilyWorkspace` for a launcher; `WorkspaceLink` for one link in a product's own family bar (Sign's). |
 | `components/NotFound.tsx` | The family 404: the app's tile and name, "This page isn't here", links home. Light unless dark was chosen. |
 | `templates/not-found.tsx` | The `app/not-found.tsx` to copy. |
 | `family.test.mts` | The kit's tests: Ask Snow's masking, greeting rule, words, no address in its components and token-only colours; app-colours.css in sync with palette.json; every app has a palette entry, a glyph and a group; contrast present and at least 4.5 for text and buttons (3 for the tile's glyph); the launcher filters operator surfaces, draws an app that is not live yet without a link, leaves out an app that only forwards, and draws the shelf link only when given one; the consent cookie's value, domain and lifetime; the cookie bar's name, wording and token-only colours; Atlas's slugs, manifest, push and removal. |
@@ -168,6 +168,26 @@ own brand, colour and app list (`launcherApps(…, { brand: 'getcovered' })`),
 and its pages do not claim the Snow AI family. **Byline, Imprint and
 Playbook** keep the paper ground `#fff1e5` (already in the palette) with the
 family measures.
+
+11. The family bar, with pins (T-3403). An app with a signed-in header
+    mounts `<FamilyBar>` beside the launcher: the company on the left, the
+    apps the account holds in the middle, Ask, the language and the account
+    on the right. Which apps show is `family/launcher.ts`: the person's pins
+    first (a pin on each app in the nine dots), else the last five opened,
+    else the first nine. The row never says how many more there are and carries no plus: an app is added from the nine dots alone (T-3417). Pins and recents are
+    kept on snowai.app (`/api/launcher`), so every app shows the same bar;
+    while that cannot be read, the browser's own copy stands in.
+
+    ```tsx
+    import FamilyBar from '@/family/components/FamilyBar';
+    <div data-fam-chrome>
+      <AppLauncher apps={apps} owned={['crm']} current="crm" shelfHref={SHELF_URL} snowai={FAMILY_LINKS.snowai} />
+      <FamilyBar apps={apps} current="crm" snowai={FAMILY_LINKS.snowai} company={company} email={email} ask={ask} suggest={['campaigns', 'forms']} />
+    </div>
+    ```
+
+    The bar's base rules are in `components.css` (`.fb-*`); an app restates
+    the colours under its own root.
 
 ## Colours
 

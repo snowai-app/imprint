@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import { ArrowRight, Grip, X } from 'lucide-react';
+import { ArrowRight, Grip, Pin, PinOff, X } from 'lucide-react';
 import { GROUPS, STATUS_LABEL, type LauncherApp } from '../apps';
 import { STROKE } from '../glyphs';
 import AppTile from './AppTile';
@@ -32,6 +32,11 @@ import { useFamilyWorkspace, type WorkspaceLinkProps } from './FamilyWorkspace';
  * tab; the app's own product goes back to its page as it was
  * (FamilyWorkspace.tsx, embed.ts). "Your apps" then lists what the account
  * holds as well as `owned`. Left out, every row is a plain link, as before.
+ *
+ * PINS (T-3395, T-3403): each app in "Your apps" takes a pin; the pinned
+ * apps are what the family bar shows (family/launcher.ts). "Your apps"
+ * reads by section (the kit's GROUPS) whenever it spans more than one, the
+ * standard for every app (T-3408).
  */
 export default function AppLauncher({
   apps,
@@ -65,9 +70,34 @@ export default function AppLauncher({
   const ws = useFamilyWorkspace({ snowai, current, register: apps.map((a) => ({ id: a.id, href: a.href })), anchor: root });
   const ownedSet = new Set([...owned, ...(ws.holding === 'unknown' ? [] : [...ws.holding])]);
   const link = (a: LauncherApp) => ws.linkProps(a, () => close(false));
+  const menu = (a: LauncherApp) => (e: React.MouseEvent) => { if (!ws.enabled) return; e.preventDefault(); const r = panel.current?.getBoundingClientRect(); setMenuFor({ app: a, x: e.clientX - (r?.left ?? 0) + (panel.current?.scrollLeft ?? 0), y: e.clientY - (r?.top ?? 0) + (panel.current?.scrollTop ?? 0) }); };
   const yours = apps.filter((a) => ownedSet.has(a.id));
   const more = apps.filter((a) => !ownedSet.has(a.id));
+  /* "Your apps" reads by section whenever it spans more than one, so a person sees what area each app is for (T-3408); each app takes a pin (T-3403). */
+  const sections = GROUPS.map((g) => ({ ...g, apps: yours.filter((a) => a.group === g.id) })).filter((g) => g.apps.length);
+  const yoursGrouped = sections.length > 1 ? sections : null;
+  const pins = ws.prefs.pins;
+  /* A right-click on any app here (T-3413): add it to the top row, or take it off; an app not held offers its try page. */
+  const [menuFor, setMenuFor] = useState<{ app: LauncherApp; x: number; y: number } | null>(null);
+  const tryBase = snowai ? `${snowai.replace(/\/+$/, '')}/try` : null;
   const groups = GROUPS.map((g) => ({ ...g, apps: more.filter((a) => a.group === g.id) })).filter((g) => g.apps.length);
+
+  const Yours = ({ a }: { a: LauncherApp }) => {
+    const pinned = pins.includes(a.id);
+    return (
+      <li className={pinned ? 'is-pinned' : undefined}>
+        <Entry app={a} current={current} link={link(a)} onMenu={menu(a)}>
+          <AppTile app={a.tile ?? a.id} glyph={a.glyph} size={40} />
+          <span>{a.short}</span>
+        </Entry>
+        {ws.enabled ? (
+          <button type="button" className="fam-launcher__pin" aria-pressed={pinned} aria-label={pinned ? `Unpin ${a.short} from the bar` : `Pin ${a.short} to the bar`} title={pinned ? 'On the bar · unpin' : 'Pin to the bar'} onClick={(e) => { e.stopPropagation(); ws.pin(a.id); }}>
+            {pinned ? <PinOff size={14} strokeWidth={STROKE} aria-hidden /> : <Pin size={14} strokeWidth={STROKE} aria-hidden />}
+          </button>
+        ) : null}
+      </li>
+    );
+  };
 
   const close = useCallback((returnFocus: boolean) => {
     setOpen(false);
@@ -145,7 +175,7 @@ export default function AppLauncher({
       {open ? (
         <>
           <div className="fam-launcher__scrim" aria-hidden onClick={() => close(true)} />
-          <div ref={panel} id={panelId} className="fam-launcher__panel" role="dialog" aria-label={label} onKeyDown={onPanelKey}>
+          <div ref={panel} id={panelId} className="fam-launcher__panel" role="dialog" aria-label={label} onKeyDown={onPanelKey} style={{ position: 'absolute' }}>
             {yours.length ? (
               <>
                 <div className="fam-launcher__head">
@@ -154,16 +184,19 @@ export default function AppLauncher({
                     <X size={20} strokeWidth={STROKE} aria-hidden />
                   </button>
                 </div>
-                <ul className="fam-launcher__yours">
-                  {yours.map((a) => (
-                    <li key={a.id}>
-                      <Entry app={a} current={current} link={link(a)}>
-                        <AppTile app={a.tile ?? a.id} glyph={a.glyph} size={40} />
-                        <span>{a.short}</span>
-                      </Entry>
-                    </li>
-                  ))}
-                </ul>
+                {yoursGrouped ? (
+                  <>
+                    <p className="fam-launcher__pinhint">Pin the apps you use; the bar shows your pins, up to nine.</p>
+                    {yoursGrouped.map((g) => (
+                      <section key={g.id} aria-label={g.label}>
+                        <p className="fam-launcher__group">{g.label}</p>
+                        <ul className="fam-launcher__yours">{g.apps.map((a) => <Yours key={a.id} a={a} />)}</ul>
+                      </section>
+                    ))}
+                  </>
+                ) : (
+                  <ul className="fam-launcher__yours">{yours.map((a) => <Yours key={a.id} a={a} />)}</ul>
+                )}
               </>
             ) : null}
 
@@ -181,7 +214,7 @@ export default function AppLauncher({
                 <ul className="fam-launcher__list">
                   {g.apps.map((a) => (
                     <li key={a.id}>
-                      <Entry app={a} current={current} link={link(a)}>
+                      <Entry app={a} current={current} link={link(a)} onMenu={menu(a)}>
                         <AppTile app={a.tile ?? a.id} glyph={a.glyph} size={32} />
                         <span style={{ minWidth: 0 }}>
                           <span className="fam-launcher__name">{a.short}</span>
@@ -194,6 +227,28 @@ export default function AppLauncher({
                 </ul>
               </section>
             ))}
+
+            {menuFor ? (
+              <>
+                <div className="fam-launcher__menuscrim" onClick={() => setMenuFor(null)} onContextMenu={(e) => { e.preventDefault(); setMenuFor(null); }} aria-hidden />
+                <div className="fam-tilemenu" role="menu" style={{ left: Math.max(8, Math.min(menuFor.x - 90, 260)), top: menuFor.y + 6 }}>
+                  <div className="fam-tilemenu__who"><b>{menuFor.app.short}</b></div>
+                  {ownedSet.has(menuFor.app.id) ? (
+                    pins.includes(menuFor.app.id) ? (
+                      <button type="button" role="menuitem" onClick={() => { ws.pin(menuFor.app.id); setMenuFor(null); }}>Remove from the top row</button>
+                    ) : (
+                      <button type="button" role="menuitem" onClick={() => { ws.pin(menuFor.app.id); setMenuFor(null); }}>Add to the top row</button>
+                    )
+                  ) : (
+                    <>
+                      <span className="fam-tilemenu__line">Not in your plan yet.</span>
+                      {tryBase ? <a role="menuitem" href={`${tryBase}/${menuFor.app.id}`}>Try {menuFor.app.short}</a> : null}
+                      {snowai ? <a role="menuitem" href={`${snowai.replace(/\/+$/, '')}/account`}>Subscribe</a> : null}
+                    </>
+                  )}
+                </div>
+              </>
+            ) : null}
 
             {shelfHref ? (
               <a className="fam-launcher__all" href={shelfHref}>
@@ -211,13 +266,23 @@ export default function AppLauncher({
 /** One app in the panel: a link to its address (through the workspace when
  *  it is on), or, when it has none that answers yet, the same row as plain
  *  text. */
-function Entry({ app, current, link, children }: { app: LauncherApp; current?: string; link: WorkspaceLinkProps | null; children: React.ReactNode }) {
+function Entry({ app, current, link, children, onMenu }: { app: LauncherApp; current?: string; link: WorkspaceLinkProps | null; children: React.ReactNode; onMenu?: (e: React.MouseEvent) => void }) {
   if (!app.href) {
-    return <span className="fam-launcher__nolink">{children}</span>;
+    return <span className="fam-launcher__nolink" onContextMenu={onMenu}>{children}</span>;
   }
   return (
-    <a href={app.href} aria-current={app.id === current ? 'page' : undefined} {...link}>
+    <a
+      href={app.href}
+      aria-current={app.id === current ? 'page' : undefined}
+      draggable
+      onDragStart={(e) => { e.dataTransfer.setData(DRAG_TYPE, app.id); e.dataTransfer.effectAllowed = 'copy'; }}
+      onContextMenu={onMenu}
+      {...link}
+    >
       {children}
     </a>
   );
 }
+
+/** The drag's own type (T-3407): the bar accepts only this, so a dragged file or text never lands as an app. */
+export const DRAG_TYPE = 'application/x-snowai-app';

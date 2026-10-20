@@ -67,6 +67,7 @@ export type GlyphName =
   | 'clipboard-list'
   | 'contact'
   | 'door-open'
+  | 'radio-tower'
   | 'hand-coins'
   | 'users'
   | 'audio-lines'
@@ -148,6 +149,7 @@ export const APPS: FamilyApp[] = [
   /* Clients and conversation */
   { id: 'crm', name: 'Snow AI CRM', short: 'CRM', line: 'The client book: details, services, money, time, tasks and issues in one place.', group: 'clients', glyph: 'contact', env: 'NEXT_PUBLIC_CRM_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'voice', name: 'Snow AI Voice', short: 'Voice', line: 'Record a call, and get its words and a short summary, sealed.', group: 'clients', glyph: 'phone', env: 'NEXT_PUBLIC_VOICE_URL', brand: 'snowai', status: 'building', operatorOnly: false },
+  { id: 'engage', name: 'Snow AI Engage', short: 'Engage', line: 'Profiles, live segments, journeys and every channel: the engagement CRM for businesses with many customers.', group: 'clients', glyph: 'radio-tower', env: 'NEXT_PUBLIC_ENGAGE_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'portal', name: 'Snow AI Portal', short: 'Portal', line: 'One account for everything your agency does for you: health insurance, taxes and more.', group: 'clients', glyph: 'door-open', env: 'NEXT_PUBLIC_PORTAL_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'recovery', name: 'Snow AI Recovery', short: 'Recovery', line: 'The collections desk for agencies and the creditors they work for.', group: 'clients', glyph: 'hand-coins', env: 'NEXT_PUBLIC_RECOVERY_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'network', name: 'Snow AI Network', short: 'Network', line: 'One network: members ask and answer, and businesses offer what they do.', group: 'clients', glyph: 'users', env: 'NEXT_PUBLIC_NETWORK_URL', brand: 'snowai', status: 'building', operatorOnly: false, live: false },

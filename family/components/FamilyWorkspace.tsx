@@ -4,11 +4,12 @@
 import { createPortal } from 'react-dom';
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type AnchorHTMLAttributes, type MouseEvent, type ReactNode, type RefObject } from 'react';
 import { usePathname } from 'next/navigation';
-import { ArrowLeft, ExternalLink, Lock, X } from 'lucide-react';
+import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { appById } from '../apps';
 import { fetchEntitlements } from '../entitlements';
-import { HUB_ID, NEVER_FRAMED, embedHref, frameName, isFamilyOrigin, openFromSearch, readEmbedMessage, windowAddress, withOpen, workspaceTarget, type Holding } from '../embed';
+import { HUB_ID, NEVER_FRAMED, embedHref, frameName, isFamilyOrigin, openFromSearch, readEmbedMessage, withOpen, workspaceTarget, type Holding } from '../embed';
 import { STROKE } from '../glyphs';
+import { NO_PREFS, noteOpen as noteOpenOf, parsePrefs, togglePin, type LauncherPrefs } from '../launcher';
 
 /**
  * THE INTEGRATED WORKSPACE, THE HOST'S HALF (T-2223; embed.ts has the whole
@@ -40,10 +41,11 @@ import { STROKE } from '../glyphs';
 
 type Entry = { id: string; href: string; name: string };
 type Frame = { id: string; src: string; title: string; failed: boolean };
-type State = { holding: Holding; open: string | null; frames: Frame[]; owners: string[] };
+type State = { holding: Holding; open: string | null; frames: Frame[]; owners: string[]; /** The person's pins and recents (T-3403). */ prefs: LauncherPrefs };
 
 const KEEP = 4;
-const EMPTY: State = { holding: 'unknown', open: null, frames: [], owners: [] };
+const EMPTY: State = { holding: 'unknown', open: null, frames: [], owners: [], prefs: NO_PREFS };
+const PREFS_KEY = 'fam-launcher-prefs';
 let state: State = EMPTY;
 const listeners = new Set<() => void>();
 const apps = new Map<string, Entry>();
@@ -131,9 +133,44 @@ function followAddress() {
   if (!show(id)) window.history.replaceState(null, '', withOpen(here(), null));
 }
 
+/* THE PINS AND RECENTS (T-3403): read once from the front door's /api/launcher
+   with the family session; failing that, this browser's copy. A change is
+   shown at once, kept here, and sent to the front door. */
+function readLocalPrefs(): LauncherPrefs {
+  try { return parsePrefs(JSON.parse(localStorage.getItem(PREFS_KEY) ?? 'null')); } catch { return NO_PREFS; }
+}
+function keepPrefs(prefs: LauncherPrefs) {
+  update({ prefs });
+  try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch { /* storage refused */ }
+}
+function sendPrefs(body: Record<string, unknown>) {
+  if (!snowaiBase) return;
+  void fetch(`${snowaiBase.replace(/\/+$/, '')}/api/launcher`, { method: 'PUT', credentials: 'include', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive: true })
+    .then((r) => (r.ok ? r.json() : null)).then((j) => { if (j && typeof j === 'object' && 'pins' in j) keepPrefs(parsePrefs(j)); }).catch(() => undefined);
+}
+function askPrefs() {
+  update({ prefs: readLocalPrefs() });
+  void fetch(`${snowaiBase.replace(/\/+$/, '')}/api/launcher`, { credentials: 'include', cache: 'no-store', headers: { accept: 'application/json' } })
+    .then((r) => (r.ok ? r.json() : null)).then((j) => { if (j && typeof j === 'object' && 'pins' in j) keepPrefs(parsePrefs(j)); }).catch(() => undefined);
+}
+export function pinApp(id: string) {
+  keepPrefs({ ...state.prefs, pins: togglePin(state.prefs.pins, id) });
+  sendPrefs({ pin: id });
+}
+export function setPins(pins: string[]) {
+  const next = parsePrefs({ pins }).pins;
+  keepPrefs({ ...state.prefs, pins: next });
+  sendPrefs({ pins: next });
+}
+export function noteOpened(id: string) {
+  keepPrefs({ ...state.prefs, recent: noteOpenOf(state.prefs.recent, id) });
+  sendPrefs({ open: id });
+}
+
 function ask() {
   if (asked || !snowaiBase) return;
   asked = true;
+  askPrefs();
   void fetchEntitlements(`${snowaiBase.replace(/\/+$/, '')}/api/entitlements`).then((answer) => {
     let holding: Holding = 'unknown';
     if ('apps' in answer) holding = new Set(Object.entries(answer.apps).filter(([, e]) => e.usable).map(([id]) => id));
@@ -239,7 +276,7 @@ export function useFamilyWorkspace({
     }
   };
 
-  return { enabled, open: s.open, holding, linkProps, stage: owner ? <Stage state={s} /> : null };
+  return { enabled, open: s.open, holding, linkProps, prefs: s.prefs, pin: pinApp, setPins, noteOpen: noteOpened, stage: owner ? <Stage state={s} /> : null };
 }
 
 /**
@@ -311,8 +348,6 @@ function Stage({ state: s }: { state: State }) {
   const frames = useRef(new Map<string, HTMLIFrameElement>());
   const readyAt = useRef(new Map<string, number>());
   const loadedAt = useRef(new Map<string, number>());
-  /* Where each window is now, from its own `ready` message: the address bar follows it. */
-  const [at, setAt] = useState<Record<string, string>>({});
 
   /* Guests talk to the host: `top` loads a sign-in page in the whole window,
      `ready` says a page loaded in embed mode. Only the family, only from our
@@ -329,7 +364,6 @@ function Stage({ state: s }: { state: State }) {
         return;
       }
       readyAt.current.set(id, Date.now());
-      setAt((prev) => (prev[id] === m.url ? prev : { ...prev, [id]: m.url }));
       if (state.frames.find((f) => f.id === id)?.failed) update({ frames: state.frames.map((f) => (f.id === id ? { ...f, failed: false } : f)) });
     };
     window.addEventListener('message', onMessage);
@@ -388,7 +422,6 @@ function Stage({ state: s }: { state: State }) {
         const entry = apps.get(f.id);
         return (
           <div key={f.id} className="fam-workspace__pane" hidden={f.id !== open}>
-            <WindowBar title={f.title} url={at[f.id] ?? new URL(f.src, window.location.href).toString()} host={host} />
             <iframe
               ref={(el) => {
                 if (el) {
@@ -428,22 +461,6 @@ function Stage({ state: s }: { state: State }) {
   );
 }
 
-/** The window's own bar (T-3247): the app's address, a button that opens it
- *  fully in its own tab, and the way back to the host page. */
-function WindowBar({ title, url, host }: { title: string; url: string; host: string }) {
-  const addr = windowAddress(url);
-  return (
-    <div className="fam-window-bar">
-      <span className="fam-window-bar__addr" title={addr.full}>
-        <Lock size={14} strokeWidth={STROKE} aria-hidden />
-        <span className="fam-window-bar__text">{addr.shown}</span>
-      </span>
-      <a className="fam-btn fam-btn--ghost fam-window-bar__btn" href={addr.full} target="_blank" rel="noopener">
-        Open {title} in its own tab <ExternalLink size={16} strokeWidth={STROKE} aria-hidden />
-      </a>
-      <button type="button" className="fam-btn fam-btn--ghost fam-window-bar__btn" onClick={() => openInWorkspace(null)} aria-label={host ? `Close ${title} and go back to ${host}` : `Close ${title}`}>
-        <X size={16} strokeWidth={STROKE} aria-hidden /> {host ? `Back to ${host}` : 'Close'}
-      </button>
-    </div>
-  );
-}
+/* The window has no bar of its own (T-3419): no address, no "open in its own
+ * tab", no "back". The top row is the way between apps: the one that is open
+ * is underlined there, and the host is one press away on the same row. */

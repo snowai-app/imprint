@@ -164,7 +164,7 @@ describe('family kit', () => {
     for (const entry of list.filter((a) => APPS.find((x) => x.id === a.id)?.live !== false)) assert.equal(entry.href, `/${entry.id}`);
     /* And the launcher draws an empty address as plain text, never <a href="">. */
     const launcher = source('./components/AppLauncher.tsx');
-    assert.match(launcher, /if \(!app\.href\) \{\s*return <span className="fam-launcher__nolink">/);
+    assert.match(launcher, /if \(!app\.href\) \{\s*return <span className="fam-launcher__nolink"[^>]*>/);
     assert.doesNotMatch(launcher, /<a href=\{a\.href\}/, 'every app row goes through Entry');
   });
 
@@ -468,5 +468,34 @@ describe('family kit', () => {
       const css = source('./components.css');
       for (const sel of ['.fam-launcher', '.fam-ask', '.fam-cookiebar', '[data-fam-chrome]', 'header:has(.fam-launcher)']) assert.ok(css.includes(`:root[data-embed] ${sel}`), sel);
     });
+  });
+});
+
+/* THE BAR'S APPS AND THE PINS (family/launcher.ts, T-3403). */
+import { BAR_MAX, barApps, noteOpen, parsePrefs, togglePin } from './launcher.ts';
+
+describe('launcher', () => {
+  const held = ['documents', 'sign', 'invoice', 'compliance', 'verify', 'extract', 'render', 'agents', 'engage', 'crm', 'portal', 'voice'];
+  it('shows the pins first, in the order pinned, and only those the account holds', () => {
+    assert.deepEqual(barApps(held, { pins: ['crm', 'engage', 'nope'], recent: ['sign'] }, 'engage'), ['crm', 'engage']);
+  });
+  it('with no pins and more than nine apps, shows the last five opened', () => {
+    assert.deepEqual(barApps(held, { pins: [], recent: ['voice', 'crm', 'sign', 'portal', 'engage', 'documents'] }, 'engage'), ['voice', 'crm', 'sign', 'portal', 'engage']);
+  });
+  it('with nothing known, shows the first nine, and the current app is always on the bar', () => {
+    const shown = barApps(held, { pins: [], recent: [] }, 'voice');
+    assert.equal(shown.length, BAR_MAX);
+    assert.ok(shown.includes('voice'));
+    assert.deepEqual(barApps(['crm', 'sign'], { pins: [], recent: [] }, 'crm'), ['crm', 'sign']);
+  });
+  it('pins toggle and never pass nine; opening moves an app to the front of recents', () => {
+    assert.deepEqual(togglePin(['crm'], 'sign'), ['crm', 'sign']);
+    assert.deepEqual(togglePin(['crm', 'sign'], 'crm'), ['sign']);
+    assert.equal(togglePin(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'], 'j').length, BAR_MAX);
+    assert.deepEqual(noteOpen(['sign', 'crm'], 'crm'), ['crm', 'sign']);
+  });
+  it('parsePrefs keeps only app ids', () => {
+    assert.deepEqual(parsePrefs({ pins: ['crm', 'DROP TABLE', 7], recent: ['sign', 'sign'] }), { pins: ['crm'], recent: ['sign'] });
+    assert.deepEqual(parsePrefs(null), { pins: [], recent: [] });
   });
 });

@@ -295,6 +295,23 @@
   --surface: #1a212a;
   --surface-2: #282e37;
 }
+:root[data-app="engage"] {
+  --accent: #2584b2;
+  --accent-strong: #006f9c;
+  --accent-soft: #d8f3ff;
+  --accent-ink: #ffffff;
+  --ground: #f3f5f8;
+  --tile: #2584b2;
+}
+:root[data-app="engage"][data-theme="dark"] {
+  --accent: #7ec3eb;
+  --accent-strong: #7ec3eb;
+  --accent-soft: #304551;
+  --accent-ink: #11181d;
+  --ground: #11181d;
+  --surface: #1d252a;
+  --surface-2: #2b3237;
+}
 :root[data-app="recovery"] {
   --accent: #009fa8;
   --accent-strong: #007e85;
@@ -636,6 +653,7 @@
 [data-tile="portal"] { --tile: #008565; }
 [data-tile="crm"] { --tile: #439080; }
 [data-tile="voice"] { --tile: #3b5bdb; }
+[data-tile="engage"] { --tile: #2584b2; }
 [data-tile="recovery"] { --tile: #009fa8; }
 [data-tile="transcribe"] { --tile: #00787c; }
 [data-tile="compliance"] { --tile: #2193c4; }
