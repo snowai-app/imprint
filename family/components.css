@@ -512,8 +512,8 @@ a.fam-card:hover {
 :where([data-fam-chrome]) .fb-hide { font-size: 12px; opacity: .65; padding: 4px 6px; }
 :where([data-fam-chrome]) .fb-hide:hover { opacity: 1; text-decoration: underline; }
 :where([data-fam-chrome]) .fb-sep { width: 1px; align-self: center; height: 26px; background: rgba(255, 255, 255, .25); margin: 0 6px; }
-:where([data-fam-chrome]) .fb-right { display: flex; align-items: center; gap: 6px; flex: none; }
-:where([data-fam-chrome]) .fb-lang { font-size: 13px; color: rgba(255, 255, 255, .7); margin: 0 4px; white-space: nowrap; }
+:where([data-fam-chrome]) .fb-right { display: flex; align-items: center; gap: 14px; flex: none; padding-right: 8px; } /* room between Ask, the language and the account (T-3436) */
+:where([data-fam-chrome]) .fb-lang { font-size: 13px; color: rgba(255, 255, 255, .7); margin: 0 6px; white-space: nowrap; }
 :where([data-fam-chrome]) .fb-lang b { color: #fff; background: rgba(255, 255, 255, .16); padding: 2px 4px; border-radius: 4px; }
 :where([data-fam-chrome]) .fb-acct { position: relative; }
 :where([data-fam-chrome]) .fb-av { all: unset; cursor: pointer; width: 32px; height: 32px; border-radius: 6px; background: rgba(255, 255, 255, .88); color: var(--accent-strong); display: grid; place-items: center; font-weight: 600; }
