@@ -177,6 +177,11 @@ family measures.
     else the first nine. The row never says how many more there are and carries no plus: an app is added from the nine dots alone (T-3417). A press on an app goes to THE APP ITSELF, in this tab, at its signed-in home (`home` in `apps.ts`: `/dashboard` unless the app says otherwise, `""` for a publication), never at its public front page and never in a window under the bar: the address bar says the app's own name and the person arrives signed in on the family's one session (T-3420, T-3422). Pins and recents are
     kept on snowai.app (`/api/launcher`), so every app shows the same bar;
     while that cannot be read, the browser's own copy stands in.
+    Every other app mounts the two together with `<FamilyTopRow>` (T-3431):
+    one band above the app's own header, in the app's colours through the
+    kit's tokens, with `apps` from `launcherApps`, `email` from the app's
+    session and `company` where the app has one. The CRM, Engage and Sign
+    keep their own bands, restating the same bar in their own colours.
 
     ```tsx
     import FamilyBar from '@/family/components/FamilyBar';

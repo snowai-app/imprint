@@ -481,6 +481,15 @@ a.fam-card:hover {
   transform: translateY(var(--move-hover));
 }
 
+/* ---------------------------------------------------------- the top row */
+/* components/FamilyTopRow.tsx (T-3431): the band every app mounts above its
+   own header, in the app's colours through the kit's tokens. */
+.fam-row { height: 56px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 14px; background: linear-gradient(90deg, var(--accent-strong), var(--accent)); color: #fff; position: sticky; top: 0; z-index: 40; }
+.fam-row .fam-launcher__button { color: #fff; }
+.fam-row .fam-launcher__button:hover, .fam-row .fam-launcher__button[aria-expanded="true"] { background: rgba(255, 255, 255, .12); color: #fff; }
+.fam-row .fam-launcher__panel { color: var(--ink); }
+@media (max-width: 600px) { .fam-row { height: 48px; padding: 0 8px; } }
+
 /* --------------------------------------------------------- the family bar */
 /* components/FamilyBar.tsx (T-3403, T-3407): the base rules. An app's own
    stylesheet may restate the colours (the CRM's and Engage's do), scoped

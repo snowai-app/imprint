@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { StudioContext, useToast, type Studio } from './studio-context';
-import AppLauncher from '@/family/components/AppLauncher';
+import FamilyTopRow from '@/family/components/FamilyTopRow';
 import { FAMILY_LINKS } from '@/lib/links';
 import ThemeSwitch from '@/family/components/ThemeSwitch';
 import type { LauncherApp } from '@/family/apps';
@@ -50,8 +50,9 @@ export default function StudioShell({ email, counts, launcher, children }: { ema
 
   return (
     <StudioContext.Provider value={studio}>
+      {/* The family's top row above the band, as every app draws it (T-3431). */}
+      <FamilyTopRow apps={launcher.apps} current="imprint" shelfHref={launcher.shelfHref} snowai={FAMILY_LINKS.snowai} email={email} />
       <div className="band" role="region" aria-label="Studio bar">
-        <AppLauncher apps={launcher.apps} owned={['imprint']} current="imprint" shelfHref={launcher.shelfHref} snowai={FAMILY_LINKS.snowai} />
         <a className="name" href="/"><i aria-hidden="true" />Imprint <small>Studio</small></a>
         <div className="crumb" aria-live="polite"><b>{word}</b>{room}</div>
         <div className="acts">
