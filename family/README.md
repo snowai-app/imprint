@@ -174,7 +174,7 @@ family measures.
     apps the account holds in the middle, Ask, the language and the account
     on the right. Which apps show is `family/launcher.ts`: the person's pins
     first (a pin on each app in the nine dots), else the last five opened,
-    else the first nine. The row never says how many more there are and carries no plus: an app is added from the nine dots alone (T-3417). Pins and recents are
+    else the first nine. The row never says how many more there are and carries no plus: an app is added from the nine dots alone (T-3417). A held app opens at its signed-in home (`home` in `apps.ts`: `/dashboard` unless the app says otherwise, `""` for a publication), never at its public front page (T-3420). Pins and recents are
     kept on snowai.app (`/api/launcher`), so every app shows the same bar;
     while that cannot be read, the browser's own copy stands in.
 

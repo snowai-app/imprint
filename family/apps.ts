@@ -125,11 +125,35 @@ export type FamilyApp = {
   /** `true` for an app everyone has without a plan (Help, T-3255): the
    *  launcher draws it like any other, and it is never offered as a trial. */
   free?: true;
+  /** The signed-in home, as a path on the app's address (T-3420): where a
+   *  held app opens from the top row and the nine dots, because an app's
+   *  root is its public page and a signed-in person is never shown that.
+   *  Left out, it is the family's `/dashboard`; `''` for an app whose root
+   *  is the place (a publication, Help, Atlas). */
+  home?: string;
 };
+
+/** The family's signed-in home when an app names none. */
+export const DEFAULT_HOME = '/dashboard';
+
+/** The path a held app opens at (`/dashboard`, `/admin`, `/studio`, or `''`). */
+export function homeOf(id: string): string {
+  const app = appById(id);
+  return app?.home ?? DEFAULT_HOME;
+}
+
+/** An app's signed-in home as a full address: its address and its home path. */
+export function homeHref(href: string, id: string): string {
+  const home = homeOf(id);
+  if (!home) return href;
+  const [beforeHash, hash = ''] = href.split('#');
+  const [base, qs = ''] = beforeHash.split('?');
+  return `${base.replace(/\/+$/, '')}${home}${qs ? `?${qs}` : ''}${hash ? `#${hash}` : ''}`;
+}
 
 export const APPS: FamilyApp[] = [
   /* The front door itself: never on its own shelf, but it has a tile. */
-  { id: 'snowai', name: 'Snow AI', short: 'Snow AI', line: 'Every app in the family, on one login.', group: 'hub', glyph: 'snowflake', env: 'NEXT_PUBLIC_SNOWAI_URL', brand: 'snowai', status: 'open', operatorOnly: false },
+  { id: 'snowai', name: 'Snow AI', short: 'Snow AI', line: 'Every app in the family, on one login.', group: 'hub', glyph: 'snowflake', env: 'NEXT_PUBLIC_SNOWAI_URL', brand: 'snowai', status: 'open', operatorOnly: false, home: '' },
 
   /* Paperwork and billing */
   { id: 'documents', name: 'Snow AI Documents', short: 'Documents', line: 'Write, store and send every document a practice owes its clients.', group: 'paper', glyph: 'files', env: 'NEXT_PUBLIC_DOCUBASE_URL', brand: 'snowai', status: 'try', operatorOnly: false },
@@ -137,52 +161,52 @@ export const APPS: FamilyApp[] = [
   { id: 'invoice', name: 'Snow AI Invoice', short: 'Invoice', line: 'Create, send and keep invoices; clients pay by card or Zelle.', group: 'paper', glyph: 'receipt', env: 'NEXT_PUBLIC_INVOICE_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'compliance', name: 'Snow AI Compliance', short: 'Compliance', line: 'Readiness, evidence and an auditor view for SOC 2, HIPAA and the Safeguards Rule.', group: 'paper', glyph: 'shield-check', env: 'NEXT_PUBLIC_COMPLIANCE_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'verify', name: 'Snow AI Verify', short: 'Verify', line: 'Check an email list before it goes out, with the evidence for every address.', group: 'paper', glyph: 'mail-check', env: 'NEXT_PUBLIC_VERIFY_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'extract', name: 'Snow AI Extract', short: 'Extract', line: 'The words in a PDF, where each one sits, and a picture of every page.', group: 'paper', glyph: 'scan-text', env: 'NEXT_PUBLIC_READER_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'render', name: 'Snow AI Render', short: 'Render', line: 'Documents in, PDF or Word out.', group: 'paper', glyph: 'file-output', env: 'NEXT_PUBLIC_RENDER_URL', brand: 'snowai', status: 'building', operatorOnly: false },
+  { id: 'extract', name: 'Snow AI Extract', short: 'Extract', line: 'The words in a PDF, where each one sits, and a picture of every page.', group: 'paper', glyph: 'scan-text', env: 'NEXT_PUBLIC_READER_URL', brand: 'snowai', status: 'building', operatorOnly: false, home: '/admin' },
+  { id: 'render', name: 'Snow AI Render', short: 'Render', line: 'Documents in, PDF or Word out.', group: 'paper', glyph: 'file-output', env: 'NEXT_PUBLIC_RENDER_URL', brand: 'snowai', status: 'building', operatorOnly: false, home: '/admin' },
 
   /* Tax and planning */
-  { id: 'agents', name: 'Snow AI Agents', short: 'Agents', line: 'Scheduled agents that read your numbers and tell you what changed.', group: 'plan', glyph: 'calendar-clock', env: 'NEXT_PUBLIC_AGENTS_URL', brand: 'snowai', status: 'building', operatorOnly: false },
+  { id: 'agents', name: 'Snow AI Agents', short: 'Agents', line: 'Scheduled agents that read your numbers and tell you what changed.', group: 'plan', glyph: 'calendar-clock', env: 'NEXT_PUBLIC_AGENTS_URL', brand: 'snowai', status: 'building', operatorOnly: false, home: '/admin' },
   { id: 'tax', name: 'Snow AI Tax', short: 'Tax', line: 'Returns prepared by your tax firm or by you, federal and every state, with the reason for every number.', group: 'plan', glyph: 'landmark', env: 'NEXT_PUBLIC_TAX_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'model', name: 'Snow AI Model', short: 'Model', line: 'Income, expenses and filing, with the levers that change the outcome side by side.', group: 'plan', glyph: 'sliders-horizontal', env: 'NEXT_PUBLIC_MODEL_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'forms', name: 'Snow AI Forms', short: 'Forms', line: 'Forms and surveys, added to any Snow AI app.', group: 'plan', glyph: 'clipboard-list', env: 'NEXT_PUBLIC_FORMS_URL', brand: 'snowai', status: 'building', operatorOnly: false },
+  { id: 'model', name: 'Snow AI Model', short: 'Model', line: 'Income, expenses and filing, with the levers that change the outcome side by side.', group: 'plan', glyph: 'sliders-horizontal', env: 'NEXT_PUBLIC_MODEL_URL', brand: 'snowai', status: 'building', operatorOnly: false, home: '/studio' },
+  { id: 'forms', name: 'Snow AI Forms', short: 'Forms', line: 'Forms and surveys, added to any Snow AI app.', group: 'plan', glyph: 'clipboard-list', env: 'NEXT_PUBLIC_FORMS_URL', brand: 'snowai', status: 'building', operatorOnly: false, home: '/studio' },
 
   /* Clients and conversation */
   { id: 'crm', name: 'Snow AI CRM', short: 'CRM', line: 'The client book: details, services, money, time, tasks and issues in one place.', group: 'clients', glyph: 'contact', env: 'NEXT_PUBLIC_CRM_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'voice', name: 'Snow AI Voice', short: 'Voice', line: 'Record a call, and get its words and a short summary, sealed.', group: 'clients', glyph: 'phone', env: 'NEXT_PUBLIC_VOICE_URL', brand: 'snowai', status: 'building', operatorOnly: false },
   { id: 'engage', name: 'Snow AI Engage', short: 'Engage', line: 'Profiles, live segments, journeys and every channel: the engagement CRM for businesses with many customers.', group: 'clients', glyph: 'radio-tower', env: 'NEXT_PUBLIC_ENGAGE_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'portal', name: 'Snow AI Portal', short: 'Portal', line: 'One account for everything your agency does for you: health insurance, taxes and more.', group: 'clients', glyph: 'door-open', env: 'NEXT_PUBLIC_PORTAL_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'recovery', name: 'Snow AI Recovery', short: 'Recovery', line: 'The collections desk for agencies and the creditors they work for.', group: 'clients', glyph: 'hand-coins', env: 'NEXT_PUBLIC_RECOVERY_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'network', name: 'Snow AI Network', short: 'Network', line: 'One network: members ask and answer, and businesses offer what they do.', group: 'clients', glyph: 'users', env: 'NEXT_PUBLIC_NETWORK_URL', brand: 'snowai', status: 'building', operatorOnly: false, live: false },
+  { id: 'portal', name: 'Snow AI Portal', short: 'Portal', line: 'One account for everything your agency does for you: health insurance, taxes and more.', group: 'clients', glyph: 'door-open', env: 'NEXT_PUBLIC_PORTAL_URL', brand: 'snowai', status: 'building', operatorOnly: false, home: '/dashboard' },
+  { id: 'recovery', name: 'Snow AI Recovery', short: 'Recovery', line: 'The collections desk for agencies and the creditors they work for.', group: 'clients', glyph: 'hand-coins', env: 'NEXT_PUBLIC_RECOVERY_URL', brand: 'snowai', status: 'building', operatorOnly: false, home: '/accounts' },
+  { id: 'network', name: 'Snow AI Network', short: 'Network', line: 'One network: members ask and answer, and businesses offer what they do.', group: 'clients', glyph: 'users', env: 'NEXT_PUBLIC_NETWORK_URL', brand: 'snowai', status: 'building', operatorOnly: false, live: false, home: '' },
   { id: 'transcribe', name: 'Snow AI Transcribe', short: 'Transcribe', line: 'A recording in, its words and their timings out.', group: 'clients', glyph: 'audio-lines', env: 'NEXT_PUBLIC_TRANSCRIBE_URL', brand: 'snowai', status: 'building', operatorOnly: false },
 
   /* Outreach */
   { id: 'campaigns', name: 'Snow AI Campaigns', short: 'Campaigns', line: 'Lists, templates and campaigns: the engine every brand here sends through.', group: 'outreach', glyph: 'send', env: 'NEXT_PUBLIC_CAMPAIGNS_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'webinar', name: 'Snow AI Webinar', short: 'Webinar', line: 'Webinars and talks: the library, a page for each talk, and registration.', group: 'outreach', glyph: 'presentation', env: 'NEXT_PUBLIC_WEBINAR_URL', brand: 'snowai', status: 'building', operatorOnly: false },
+  { id: 'webinar', name: 'Snow AI Webinar', short: 'Webinar', line: 'Webinars and talks: the library, a page for each talk, and registration.', group: 'outreach', glyph: 'presentation', env: 'NEXT_PUBLIC_WEBINAR_URL', brand: 'snowai', status: 'building', operatorOnly: false, home: '/admin' },
   { id: 'video', name: 'Snow AI Video', short: 'Video', line: 'A video in; its poster, a playback copy and its captions out.', group: 'outreach', glyph: 'clapperboard', env: 'NEXT_PUBLIC_VIDEO_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'pitch', name: 'Snow AI Pitch', short: 'Pitch', line: 'Sales coaching: courses, practice and role-play.', group: 'outreach', glyph: 'target', env: 'NEXT_PUBLIC_PITCH_URL', brand: 'snowai', status: 'building', operatorOnly: false },
+  { id: 'pitch', name: 'Snow AI Pitch', short: 'Pitch', line: 'Sales coaching: courses, practice and role-play.', group: 'outreach', glyph: 'target', env: 'NEXT_PUBLIC_PITCH_URL', brand: 'snowai', status: 'building', operatorOnly: false, home: '/studio' },
 
   /* Answers and rewards */
   { id: 'ask', name: 'Snow AI Ask', short: 'Ask', line: 'Answers from everything your account holds, in every app.', group: 'answers', glyph: 'message-circle-question-mark', env: 'NEXT_PUBLIC_ASK_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'help', name: 'Snow AI Help', short: 'Help', line: 'How to use every Snow AI app.', group: 'answers', glyph: 'life-buoy', env: 'NEXT_PUBLIC_HELP_URL', brand: 'snowai', status: 'open', operatorOnly: false, free: true },
-  { id: 'atlas', name: 'Snow AI Atlas', short: 'Atlas', line: 'The Snow AI family in one search.', group: 'answers', glyph: 'compass', env: 'NEXT_PUBLIC_ATLAS_URL', brand: 'snowai', status: 'building', operatorOnly: false, live: false },
+  { id: 'help', name: 'Snow AI Help', short: 'Help', line: 'How to use every Snow AI app.', group: 'answers', glyph: 'life-buoy', env: 'NEXT_PUBLIC_HELP_URL', brand: 'snowai', status: 'open', operatorOnly: false, free: true, home: '' },
+  { id: 'atlas', name: 'Snow AI Atlas', short: 'Atlas', line: 'The Snow AI family in one search.', group: 'answers', glyph: 'compass', env: 'NEXT_PUBLIC_ATLAS_URL', brand: 'snowai', status: 'building', operatorOnly: false, live: false, home: '' },
   { id: 'story', name: 'Snow AI Story', short: 'Story', line: 'A customer’s story, written as an email, a post, a video script or a page.', group: 'answers', glyph: 'quote', env: 'NEXT_PUBLIC_STORY_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'rewards', name: 'Snow AI Rewards', short: 'Rewards', line: 'Clients earn points for surveys and forms, and spend them on rewards.', group: 'answers', glyph: 'gift', env: 'NEXT_PUBLIC_REWARDS_URL', brand: 'snowai', status: 'building', operatorOnly: false },
+  { id: 'rewards', name: 'Snow AI Rewards', short: 'Rewards', line: 'Clients earn points for surveys and forms, and spend them on rewards.', group: 'answers', glyph: 'gift', env: 'NEXT_PUBLIC_REWARDS_URL', brand: 'snowai', status: 'building', operatorOnly: false, home: '/admin' },
 
   /* Publications */
-  { id: 'playbook', name: 'Snow AI Playbook', short: 'Playbook', line: 'Business and health, explained for people who run their own.', group: 'pubs', glyph: 'newspaper', env: 'NEXT_PUBLIC_PLAYBOOK_URL', brand: 'snowai', status: 'building', operatorOnly: false, paper: true },
-  { id: 'byline', name: 'Snow AI Byline', short: 'Byline', line: 'Where articles are written and published, under your own name.', group: 'pubs', glyph: 'feather', env: 'NEXT_PUBLIC_BYLINE_URL', brand: 'snowai', status: 'building', operatorOnly: false, paper: true },
-  { id: 'imprint', name: 'Snow AI Imprint', short: 'Imprint', line: 'Where a book is written: idea, title, outline, chapters, then the file.', group: 'pubs', glyph: 'book-open', env: 'NEXT_PUBLIC_IMPRINT_URL', brand: 'snowai', status: 'building', operatorOnly: false, paper: true },
-  { id: 'foundry', name: 'Snow AI Foundry', short: 'Foundry', line: 'The student publication, for high schoolers and the college-bound.', group: 'pubs', glyph: 'graduation-cap', env: 'NEXT_PUBLIC_FOUNDRY_URL', brand: 'snowai', status: 'building', operatorOnly: false },
-  { id: 'metis', name: 'Snow AI Metis', short: 'Metis', line: 'Dedicated to women and open to everyone: career, academics and health.', group: 'pubs', glyph: 'sprout', env: 'NEXT_PUBLIC_METIS_URL', brand: 'snowai', status: 'building', operatorOnly: false },
+  { id: 'playbook', name: 'Snow AI Playbook', short: 'Playbook', line: 'Business and health, explained for people who run their own.', group: 'pubs', glyph: 'newspaper', env: 'NEXT_PUBLIC_PLAYBOOK_URL', brand: 'snowai', status: 'building', operatorOnly: false, paper: true, home: '' },
+  { id: 'byline', name: 'Snow AI Byline', short: 'Byline', line: 'Where articles are written and published, under your own name.', group: 'pubs', glyph: 'feather', env: 'NEXT_PUBLIC_BYLINE_URL', brand: 'snowai', status: 'building', operatorOnly: false, paper: true, home: '/studio' },
+  { id: 'imprint', name: 'Snow AI Imprint', short: 'Imprint', line: 'Where a book is written: idea, title, outline, chapters, then the file.', group: 'pubs', glyph: 'book-open', env: 'NEXT_PUBLIC_IMPRINT_URL', brand: 'snowai', status: 'building', operatorOnly: false, paper: true, home: '/studio' },
+  { id: 'foundry', name: 'Snow AI Foundry', short: 'Foundry', line: 'The student publication, for high schoolers and the college-bound.', group: 'pubs', glyph: 'graduation-cap', env: 'NEXT_PUBLIC_FOUNDRY_URL', brand: 'snowai', status: 'building', operatorOnly: false, home: '' },
+  { id: 'metis', name: 'Snow AI Metis', short: 'Metis', line: 'Dedicated to women and open to everyone: career, academics and health.', group: 'pubs', glyph: 'sprout', env: 'NEXT_PUBLIC_METIS_URL', brand: 'snowai', status: 'building', operatorOnly: false, home: '' },
 
   /* Insurance: GetCovered, its own master brand */
-  { id: 'getcovered', name: 'Get Covered', short: 'Get Covered', line: 'Health coverage end to end, for the agents who place it.', group: 'gc', glyph: 'heart-pulse', env: 'NEXT_PUBLIC_GETCOVERED_URL', brand: 'getcovered', status: 'building', operatorOnly: false },
+  { id: 'getcovered', name: 'Get Covered', short: 'Get Covered', line: 'Health coverage end to end, for the agents who place it.', group: 'gc', glyph: 'heart-pulse', env: 'NEXT_PUBLIC_GETCOVERED_URL', brand: 'getcovered', status: 'building', operatorOnly: false, home: '' },
 
   /* Company: the operator's own */
-  { id: 'studio', name: 'Snow AI Studio', short: 'Studio', line: 'Every capability in one place, beside the file it works on.', group: 'company', glyph: 'layout-dashboard', env: 'NEXT_PUBLIC_STUDIO_URL', brand: 'snowai', status: 'open', operatorOnly: true },
+  { id: 'studio', name: 'Snow AI Studio', short: 'Studio', line: 'Every capability in one place, beside the file it works on.', group: 'company', glyph: 'layout-dashboard', env: 'NEXT_PUBLIC_STUDIO_URL', brand: 'snowai', status: 'open', operatorOnly: true, home: '/admin' },
   /* The Workbench forwards: its tools moved to Studio and its public bench to Try (T-2174). */
-  { id: 'workbench', name: 'Snow AI Workbench', short: 'Workbench', line: 'Forwards to Try, on the front door, and to Studio.', group: 'company', glyph: 'flask-conical', env: 'NEXT_PUBLIC_WORKBENCH_URL', brand: 'snowai', status: 'open', operatorOnly: true, listed: false },
-  { id: 'data', name: 'Snow AI Data', short: 'Data', line: 'Leads from every site in the family, and the buyers who take them.', group: 'company', glyph: 'database', env: 'NEXT_PUBLIC_DATA_URL', brand: 'snowai', status: 'open', operatorOnly: true },
+  { id: 'workbench', name: 'Snow AI Workbench', short: 'Workbench', line: 'Forwards to Try, on the front door, and to Studio.', group: 'company', glyph: 'flask-conical', env: 'NEXT_PUBLIC_WORKBENCH_URL', brand: 'snowai', status: 'open', operatorOnly: true, listed: false, home: '' },
+  { id: 'data', name: 'Snow AI Data', short: 'Data', line: 'Leads from every site in the family, and the buyers who take them.', group: 'company', glyph: 'database', env: 'NEXT_PUBLIC_DATA_URL', brand: 'snowai', status: 'open', operatorOnly: true, home: '/admin' },
 ];
 
 /** One app by id. */

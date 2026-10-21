@@ -39,6 +39,8 @@
  */
 
 /** The query that asks a page for embed mode. */
+import { homeHref } from './apps.ts';
+
 export const EMBED_PARAM = 'embed';
 
 /** The host's query naming the product open beneath its bar. */
@@ -155,7 +157,8 @@ export function workspaceTarget(
   if (app.id === ctx.current) return { kind: 'current' };
   if (!app.href) return { kind: 'none' };
   if (NEVER_FRAMED.includes(app.id) || app.id === HUB_ID) return { kind: 'tab', href: app.href };
-  if (ctx.holding === 'unknown' || ctx.holding.has(app.id)) return { kind: 'frame', src: embedHref(app.href) };
+  /* A held app opens at its signed-in home (T-3420): its root is the public page. */
+  if (ctx.holding === 'unknown' || ctx.holding.has(app.id)) return { kind: 'frame', src: embedHref(homeHref(app.href, app.id)) };
   return { kind: 'frame', src: embedHref(ctx.tryBase ? `${ctx.tryBase.replace(/\/+$/, '')}/${encodeURIComponent(app.id)}` : app.href) };
 }
 

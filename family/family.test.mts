@@ -369,16 +369,18 @@ describe('family kit', () => {
     });
 
     it('a product opens in a window on the same page: a held one at its address, one not held at its try page (T-3247)', () => {
-      const held = new Set(['tax', 'getcovered', 'portal']);
+      const held = new Set(['tax', 'studio', 'playbook', 'getcovered', 'portal']);
       const ctx = { current: 'sign', holding: held, tryBase: 'https://snowai.app/try/' };
       assert.deepEqual(workspaceTarget({ id: 'sign', href: '/dashboard/home' }, ctx), { kind: 'current' });
-      assert.deepEqual(workspaceTarget({ id: 'tax', href: 'https://tax.snowai.app' }, ctx), { kind: 'frame', src: 'https://tax.snowai.app?embed=1' }, 'a held app opens in a window (T-3247)');
+      assert.deepEqual(workspaceTarget({ id: 'tax', href: 'https://tax.snowai.app' }, ctx), { kind: 'frame', src: 'https://tax.snowai.app/dashboard?embed=1' }, 'a held app opens in a window, at its signed-in home (T-3247, T-3420)');
+      assert.deepEqual(workspaceTarget({ id: 'studio', href: 'https://studio.snowai.app' }, ctx), { kind: 'frame', src: 'https://studio.snowai.app/admin?embed=1' }, 'an operator app at /admin');
+      assert.deepEqual(workspaceTarget({ id: 'playbook', href: 'https://playbook.snowai.app' }, ctx), { kind: 'frame', src: 'https://playbook.snowai.app?embed=1' }, 'a publication at its root');
       assert.deepEqual(workspaceTarget({ id: 'invoice', href: 'https://invoice.snowai.app' }, ctx), { kind: 'frame', src: 'https://snowai.app/try/invoice?embed=1' }, 'signing up happens in the window too');
       assert.deepEqual(workspaceTarget({ id: 'getcovered', href: 'https://getcovered.cloud' }, ctx), { kind: 'tab', href: 'https://getcovered.cloud' });
       assert.deepEqual(workspaceTarget({ id: 'snowai', href: 'https://snowai.app' }, ctx), { kind: 'tab', href: 'https://snowai.app' });
       assert.deepEqual(workspaceTarget({ id: 'network', href: '' }, ctx), { kind: 'none' });
       /* The answer could not be read: the product itself, in the window; it signs in if it must. */
-      assert.deepEqual(workspaceTarget({ id: 'tax', href: 'https://tax.snowai.app' }, { ...ctx, holding: 'unknown' }), { kind: 'frame', src: 'https://tax.snowai.app?embed=1' });
+      assert.deepEqual(workspaceTarget({ id: 'tax', href: 'https://tax.snowai.app' }, { ...ctx, holding: 'unknown' }), { kind: 'frame', src: 'https://tax.snowai.app/dashboard?embed=1' });
       assert.deepEqual(windowAddress('https://sign.snowai.app/dashboard?embed=1&x=2'), { shown: 'sign.snowai.app/dashboard?x=2', full: 'https://sign.snowai.app/dashboard?x=2' });
       assert.deepEqual(windowAddress('https://sign.snowai.app/?embed=1'), { shown: 'sign.snowai.app', full: 'https://sign.snowai.app/' });
       assert.ok(NEVER_FRAMED.includes('getcovered'));
