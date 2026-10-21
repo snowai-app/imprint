@@ -127,7 +127,8 @@ export type Holding = ReadonlySet<string> | 'unknown';
 /** What one click in the bar does. */
 export type WorkspaceTarget =
   | { kind: 'current' } /* back to the host page, as it was */
-  | { kind: 'frame'; src: string } /* beneath the bar, in this tab */
+  | { kind: 'go'; href: string } /* the app itself, in this tab (T-3422) */
+  | { kind: 'frame'; src: string } /* beneath the bar, in this tab: retired for a click (T-3422) */
   | { kind: 'tab'; href: string } /* a new tab */
   | { kind: 'none' }; /* no address yet: drawn without a link */
 
@@ -137,18 +138,18 @@ export type WorkspaceTarget =
  * - The host's own product: back to the host page.
  * - No address: nothing.
  * - Get Covered, Portal and the front door: their own address, in a new tab.
- * - Everything else opens in a window on the same page (operator, 17 October
- *   2026, T-3246, T-3247: "a window would open up. It will have the address
- *   bar in that window, which will say sign.snowai.app ... there will be an
- *   option to fully go to that particular tab"; "I don't want them to go to a
- *   second tab unless absolutely necessary"). The window shows the app's own
- *   address and a button that opens it fully in its own tab. This replaces
- *   T-3166's new tab, which was chosen because the host's address showed
- *   `?open=` instead of the app's.
- *   - Held, or the answer could not be read: the app itself (it sends a
- *     signed-out visitor to its sign-in in the whole window).
+ * - Everything else: THE APP ITSELF, IN THIS TAB, at its signed-in home
+ *   (operator, 21 October 2026, T-3422: "even if I'm in CRM and I decide to
+ *   go to Sign, I should be looking at the same layout as in Sign"; the
+ *   address bar must say sign.snowai.app, never crm.snowai.app?open=sign).
+ *   The family's one session covers every app, so the person arrives signed
+ *   in, and every app draws the same top row, so moving between them is one
+ *   press. This retires the window beneath the bar (T-3247) for a click; its
+ *   code stays for a later choice.
+ *   - Held, or the answer could not be read: the app's home (`home` in
+ *     family/apps.ts, T-3420).
  *   - Not held: its try page on snowai.app (`tryBase` is
- *     `${FAMILY_LINKS.snowai}/try`), so signing up happens in the window too.
+ *     `https://snowai.app/try`), in this tab too.
  */
 export function workspaceTarget(
   app: { id: string; href: string },
@@ -158,8 +159,8 @@ export function workspaceTarget(
   if (!app.href) return { kind: 'none' };
   if (NEVER_FRAMED.includes(app.id) || app.id === HUB_ID) return { kind: 'tab', href: app.href };
   /* A held app opens at its signed-in home (T-3420): its root is the public page. */
-  if (ctx.holding === 'unknown' || ctx.holding.has(app.id)) return { kind: 'frame', src: embedHref(homeHref(app.href, app.id)) };
-  return { kind: 'frame', src: embedHref(ctx.tryBase ? `${ctx.tryBase.replace(/\/+$/, '')}/${encodeURIComponent(app.id)}` : app.href) };
+  if (ctx.holding === 'unknown' || ctx.holding.has(app.id)) return { kind: 'go', href: homeHref(app.href, app.id) };
+  return { kind: 'go', href: ctx.tryBase ? `${ctx.tryBase.replace(/\/+$/, '')}/${encodeURIComponent(app.id)}` : app.href };
 }
 
 /** What the window's address bar shows for a framed page: its host and path,

@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type AnchorHTMLAttributes, type MouseEvent, type ReactNode, type RefObject } from 'react';
 import { usePathname } from 'next/navigation';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
-import { appById } from '../apps';
+import { appById, homeHref } from '../apps';
 import { fetchEntitlements } from '../entitlements';
 import { HUB_ID, NEVER_FRAMED, embedHref, frameName, isFamilyOrigin, openFromSearch, readEmbedMessage, withOpen, workspaceTarget, type Holding } from '../embed';
 import { STROKE } from '../glyphs';
@@ -68,6 +68,9 @@ function subscribe(l: () => void) {
 const snapshot = () => state;
 const serverSnapshot = () => EMPTY;
 
+/** The window beneath the bar is retired for a click (T-3422): an app opens at its own address. */
+const RETIRED_WINDOW = true;
+
 const tryBase = () => (snowaiBase ? `${snowaiBase.replace(/\/+$/, '')}/try` : undefined);
 const here = () => `${window.location.pathname}${window.location.search}${window.location.hash}`;
 
@@ -108,6 +111,8 @@ export function openInWorkspace(id: string | null) {
  * family's, or the app is one that always opens in its own tab.
  */
 export function openAddressInWorkspace(id: string, href: string, name?: string): boolean {
+  /* Retired (T-3422): nothing opens beneath the bar any more; the caller follows its link. */
+  if (RETIRED_WINDOW) return false;
   if (typeof window === 'undefined' || !snowaiBase) return false;
   let u: URL;
   try {
@@ -127,6 +132,14 @@ export function openAddressInWorkspace(id: string, href: string, name?: string):
 /** The address bar says which product is open: follow it (a reload, a back press, a link). */
 function followAddress() {
   const id = openFromSearch(window.location.search);
+  if (RETIRED_WINDOW) {
+    /* An address from before T-3422 (the host with `?open=<id>`): go where it meant, the app itself. */
+    if (!id || id === hostApp) return;
+    const app = apps.get(id);
+    if (app?.href && !NEVER_FRAMED.includes(id) && id !== HUB_ID) window.location.replace(homeHref(app.href, id));
+    else window.history.replaceState(null, '', withOpen(here(), null));
+    return;
+  }
   if (id === state.open) return;
   if (!id) return void show(null);
   if (!settled) return; /* followed again once the answer is in */
@@ -260,6 +273,9 @@ export function useFamilyWorkspace({
             after?.();
           },
         };
+      case 'go':
+        /* The app itself, in this tab (T-3422): a plain link, so the address bar says the app's own name. */
+        return { href: t.href, onClick: () => after?.() };
       case 'frame':
         return {
           href: app.href,
