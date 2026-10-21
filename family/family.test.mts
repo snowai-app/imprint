@@ -501,3 +501,16 @@ describe('launcher', () => {
     assert.deepEqual(parsePrefs(null), { pins: [], recent: [] });
   });
 });
+
+describe('Ask Snow greets a first-timer or someone long away, and keeps the person’s choice (T-3467)', () => {
+  it('decides by the memory', async () => {
+    const { greetThisVisit, readGreetMemory } = await import('./ask-snow.ts');
+    const now = new Date('2026-10-21T12:00:00Z');
+    assert.equal(greetThisVisit(readGreetMemory(null), now), true);
+    assert.equal(greetThisVisit(readGreetMemory('{"lastSeen":"2026-10-20T12:00:00Z"}'), now), false);
+    assert.equal(greetThisVisit(readGreetMemory('{"lastSeen":"2026-09-01T12:00:00Z"}'), now), true);
+    assert.equal(greetThisVisit(readGreetMemory('{"lastSeen":"2026-10-20T12:00:00Z","choice":"always"}'), now), true);
+    assert.equal(greetThisVisit(readGreetMemory('{"choice":"never"}'), now), false);
+    assert.equal(readGreetMemory('not json').choice, 'sometimes');
+  });
+});

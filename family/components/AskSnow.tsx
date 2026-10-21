@@ -16,6 +16,10 @@ import {
   fill,
   foundWords,
   greetNow,
+  greetKey,
+  greetThisVisit,
+  readGreetMemory,
+  type GreetChoice,
   hiddenOn,
   maskText,
   readGreetState,
@@ -99,6 +103,19 @@ function Guide({
   const t0 = useRef(0);
   const panelId = `fam-ask-${site}-panel`;
 
+  const [choice, setChoice] = useState<GreetChoice>('sometimes');
+  /** The across-visits memory (T-3467): when it was last shown, and the person's choice. */
+  const rememberGreet = (patch: Partial<{ lastSeen: string; choice: GreetChoice }>) => {
+    try {
+      const m = readGreetMemory(window.localStorage.getItem(greetKey(site)));
+      const next = { ...m, ...patch };
+      window.localStorage.setItem(greetKey(site), JSON.stringify(next));
+      setChoice(next.choice);
+    } catch {
+      if (patch.choice) setChoice(patch.choice);
+    }
+  };
+  const chooseGreet = (c: GreetChoice) => { rememberGreet({ choice: c }); closeGreeting(true); };
   const remember = (s: GreetState) => {
     setState(s);
     try {
@@ -142,6 +159,13 @@ function Guide({
       s = state;
     }
     setState(s);
+    // T-3467: a new visit greets only a first-timer, someone long away, or someone who asked for it every time.
+    if (s === 'none') {
+      let m = readGreetMemory(null);
+      try { m = readGreetMemory(window.localStorage.getItem(greetKey(site))); } catch { /* storage refused: treated as a first visit */ }
+      setChoice(m.choice);
+      if (!greetThisVisit(m)) { remember('closed'); return; }
+    }
     const decide = (elapsedMs: number, half: boolean) => greetNow({ state: s, phone, open, enabled: greet, elapsedMs, scrolledHalf: half });
     const now = decide(0, false);
     if (now === 'never') return;
@@ -158,6 +182,7 @@ function Guide({
       void loadPreset().then(() => {
         s = 'shown';
         remember('shown');
+        rememberGreet({ lastSeen: new Date().toISOString() });
         setGreeting('in');
       });
     };
@@ -261,6 +286,11 @@ function Guide({
               <span>{fill(L.protectedTyping, { what: foundWords(miniFound, L) })}</span>
             </div>
           ) : null}
+          <div className="fam-ask-gfoot">
+            <button type="button" className="fam-ask-glink" onClick={() => chooseGreet(choice === 'always' ? 'sometimes' : 'always')}>{choice === 'always' ? L.greetSometimes : L.greetAlways}</button>
+            <span aria-hidden>·</span>
+            <button type="button" className="fam-ask-glink" onClick={() => chooseGreet('never')}>{L.greetNever}</button>
+          </div>
         </div>
       ) : null}
       <AskSnowPanel

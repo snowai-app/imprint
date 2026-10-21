@@ -57,7 +57,9 @@ export type AskPreset = { site: string; greeting: string; choices: AskChoice[]; 
 
 /* ------------------------------------------------------------------- words */
 
-export type AskSnowLabels = typeof ASK_SNOW_EN;
+/** An app's own words. The three greeting choices (T-3467) are optional: an app without them gets the English. */
+type GreetChoiceWords = 'greetAlways' | 'greetNever' | 'greetSometimes';
+export type AskSnowLabels = Omit<typeof ASK_SNOW_EN, GreetChoiceWords> & Partial<Pick<typeof ASK_SNOW_EN, GreetChoiceWords>>;
 
 /** Every word Ask Snow shows, in English. A translated app passes its own. */
 export const ASK_SNOW_EN = {
@@ -75,6 +77,10 @@ export const ASK_SNOW_EN = {
   send: 'Send',
   close: 'Close',
   closeGreeting: 'Close the greeting',
+  /* T-3467: the greeting comes back only for a first-timer or after a long time away, unless the person chooses otherwise. */
+  greetAlways: 'Show this every time',
+  greetNever: 'Don’t show this again',
+  greetSometimes: 'Show it only when I’ve been away a while',
   open: 'Open Ask Snow',
   typing: 'Ask Snow is writing',
   conversation: 'Conversation',
@@ -230,6 +236,32 @@ export function greetNow(o: { state: GreetState; phone: boolean; open: boolean; 
   if (o.open) return 'wait';
   if (o.state === 'shown') return 'restore';
   return o.elapsedMs >= GREET_AFTER_MS || o.scrolledHalf ? 'show' : 'wait';
+}
+
+/* T-3467: across visits. The greeting is for a first-timer or someone back
+   after a long time away; otherwise the Ask Snow button is already there.
+   The person can choose "every time" or "never" instead. localStorage,
+   one key per site. */
+export const GREET_AGAIN_AFTER_DAYS = 30;
+export type GreetChoice = 'sometimes' | 'always' | 'never';
+export const greetKey = (site: string) => `ask-snow.greet.${site}`;
+export type GreetMemory = { lastSeen: string | null; choice: GreetChoice };
+export function readGreetMemory(raw: string | null | undefined): GreetMemory {
+  try {
+    const p = raw ? JSON.parse(raw) : {};
+    const choice: GreetChoice = p.choice === 'always' || p.choice === 'never' ? p.choice : 'sometimes';
+    const lastSeen = typeof p.lastSeen === 'string' && !Number.isNaN(Date.parse(p.lastSeen)) ? p.lastSeen : null;
+    return { lastSeen, choice };
+  } catch {
+    return { lastSeen: null, choice: 'sometimes' };
+  }
+}
+/** Whether a new visit may greet at all: never when the person said never; always when they said always; else only a first-timer or someone away GREET_AGAIN_AFTER_DAYS or more. */
+export function greetThisVisit(m: GreetMemory, now = new Date()): boolean {
+  if (m.choice === 'never') return false;
+  if (m.choice === 'always') return true;
+  if (!m.lastSeen) return true;
+  return now.getTime() - Date.parse(m.lastSeen) >= GREET_AGAIN_AFTER_DAYS * 86_400_000;
 }
 
 /** Half a scroll: the page has moved at least half of what it can. */

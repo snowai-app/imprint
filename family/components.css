@@ -813,6 +813,8 @@ a.fam-card:hover {
 }
 .fam-ask .fam-ask-chip:hover { background: var(--accent-soft); border-color: var(--accent-strong); }
 .fam-ask .fam-ask-chip:disabled { opacity: 0.5; cursor: default; }
+.fam-ask .fam-ask-gfoot { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; font-size: 12px; color: var(--ink-muted, var(--ink)); }
+.fam-ask .fam-ask-glink { border: 0; background: none; padding: 0; font: inherit; font-size: 12px; color: var(--accent-strong); text-decoration: underline; cursor: pointer; }
 .fam-ask .fam-ask-mini { display: flex; align-items: center; gap: 6px; margin-top: 12px; border: 1px solid var(--line-strong); border-radius: 12px; padding: 4px 4px 4px 12px; background: var(--surface); }
 .fam-ask .fam-ask-mini:focus-within,
 .fam-ask .fam-ask-form:focus-within { border-color: var(--accent-strong); box-shadow: 0 0 0 3px var(--accent-soft); }
