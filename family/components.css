@@ -493,44 +493,47 @@ a.fam-card:hover {
 /* --------------------------------------------------------- the family bar */
 /* components/FamilyBar.tsx (T-3403, T-3407): the base rules. An app's own
    stylesheet may restate the colours (the CRM's and Engage's do), scoped
-   under its root. */
-.fb { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; height: 100%; color: #fff; }
-.fb-org { display: flex; align-items: center; gap: 8px; max-width: 220px; font-weight: 500; white-space: nowrap; flex: none; }
-.fb-org b { width: 26px; height: 26px; border-radius: 6px; background: rgba(255, 255, 255, .16); display: grid; place-items: center; font-size: 11px; flex: none; }
-.fb-org span { overflow: hidden; text-overflow: ellipsis; }
-.fb-apps { flex: 1; min-width: 0; height: 100%; display: flex; justify-content: center; align-items: stretch; gap: 2px; overflow-x: auto; scrollbar-width: none; }
-.fb-app { display: grid; justify-items: center; align-content: center; gap: 3px; min-width: 70px; padding: 0 10px; color: #fff; font-size: 12px; font-weight: 400; white-space: nowrap; border-bottom: 2px solid transparent; text-decoration: none; }
-.fb-app:hover { background: rgba(255, 255, 255, .07); text-decoration: none; }
-.fb-app.is-on { border-bottom-color: #fff; }
-.fb-try { opacity: .8; }
-.fb-try__tile { border: 1px dashed rgba(255, 255, 255, .6); border-radius: 7px; padding: 1px; display: grid; }
-.fb-try em { font-style: normal; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
-.fb-hide { all: unset; cursor: pointer; color: #fff; align-self: center; white-space: nowrap; border-radius: 16px; }
-.fb-hide { font-size: 12px; opacity: .65; padding: 4px 6px; }
-.fb-hide:hover { opacity: 1; text-decoration: underline; }
-.fb-sep { width: 1px; align-self: center; height: 26px; background: rgba(255, 255, 255, .25); margin: 0 6px; }
-.fb-right { display: flex; align-items: center; gap: 6px; flex: none; }
-.fb-lang { font-size: 13px; color: rgba(255, 255, 255, .7); margin: 0 4px; white-space: nowrap; }
-.fb-lang b { color: #fff; background: rgba(255, 255, 255, .16); padding: 2px 4px; border-radius: 4px; }
-.fb-acct { position: relative; }
-.fb-av { all: unset; cursor: pointer; width: 32px; height: 32px; border-radius: 6px; background: rgba(255, 255, 255, .88); color: var(--accent-strong); display: grid; place-items: center; font-weight: 600; }
-.fb-scrim { position: fixed; inset: 0; z-index: 60; }
-.fb-menu { position: absolute; right: 0; top: 40px; z-index: 61; min-width: 240px; background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-radius: 12px; box-shadow: var(--elev-3); padding: 6px; }
-.fb-menu a { display: block; padding: 9px 12px; border-radius: 8px; color: var(--ink); font-weight: 400; text-decoration: none; }
-.fb-menu a:hover { background: var(--surface-2); }
-.fb-menu__who { padding: 8px 12px 10px; border-bottom: 1px solid var(--line); margin-bottom: 4px; display: grid; }
-.fb-menu__who span { color: var(--ink-3); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; }
+   under its root. Every rule is scoped to the band (`[data-fam-chrome]`,
+   with :where so it costs no specificity, T-3432): `.fb` is a short class
+   an app may use for something of its own (Studio's files browser does),
+   and these rules must never reach it. */
+:where([data-fam-chrome]) .fb { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; height: 100%; color: #fff; }
+:where([data-fam-chrome]) .fb-org { display: flex; align-items: center; gap: 8px; max-width: 220px; font-weight: 500; white-space: nowrap; flex: none; }
+:where([data-fam-chrome]) .fb-org b { width: 26px; height: 26px; border-radius: 6px; background: rgba(255, 255, 255, .16); display: grid; place-items: center; font-size: 11px; flex: none; }
+:where([data-fam-chrome]) .fb-org span { overflow: hidden; text-overflow: ellipsis; }
+:where([data-fam-chrome]) .fb-apps { flex: 1; min-width: 0; height: 100%; display: flex; justify-content: center; align-items: stretch; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+:where([data-fam-chrome]) .fb-app { display: grid; justify-items: center; align-content: center; gap: 3px; min-width: 70px; padding: 0 10px; color: #fff; font-size: 12px; font-weight: 400; white-space: nowrap; border-bottom: 2px solid transparent; text-decoration: none; }
+:where([data-fam-chrome]) .fb-app:hover { background: rgba(255, 255, 255, .07); text-decoration: none; }
+:where([data-fam-chrome]) .fb-app.is-on { border-bottom-color: #fff; }
+:where([data-fam-chrome]) .fb-try { opacity: .8; }
+:where([data-fam-chrome]) .fb-try__tile { border: 1px dashed rgba(255, 255, 255, .6); border-radius: 7px; padding: 1px; display: grid; }
+:where([data-fam-chrome]) .fb-try em { font-style: normal; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
+:where([data-fam-chrome]) .fb-hide { all: unset; cursor: pointer; color: #fff; align-self: center; white-space: nowrap; border-radius: 16px; }
+:where([data-fam-chrome]) .fb-hide { font-size: 12px; opacity: .65; padding: 4px 6px; }
+:where([data-fam-chrome]) .fb-hide:hover { opacity: 1; text-decoration: underline; }
+:where([data-fam-chrome]) .fb-sep { width: 1px; align-self: center; height: 26px; background: rgba(255, 255, 255, .25); margin: 0 6px; }
+:where([data-fam-chrome]) .fb-right { display: flex; align-items: center; gap: 6px; flex: none; }
+:where([data-fam-chrome]) .fb-lang { font-size: 13px; color: rgba(255, 255, 255, .7); margin: 0 4px; white-space: nowrap; }
+:where([data-fam-chrome]) .fb-lang b { color: #fff; background: rgba(255, 255, 255, .16); padding: 2px 4px; border-radius: 4px; }
+:where([data-fam-chrome]) .fb-acct { position: relative; }
+:where([data-fam-chrome]) .fb-av { all: unset; cursor: pointer; width: 32px; height: 32px; border-radius: 6px; background: rgba(255, 255, 255, .88); color: var(--accent-strong); display: grid; place-items: center; font-weight: 600; }
+:where([data-fam-chrome]) .fb-scrim { position: fixed; inset: 0; z-index: 60; }
+:where([data-fam-chrome]) .fb-menu { position: absolute; right: 0; top: 40px; z-index: 61; min-width: 240px; background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-radius: 12px; box-shadow: var(--elev-3); padding: 6px; }
+:where([data-fam-chrome]) .fb-menu a { display: block; padding: 9px 12px; border-radius: 8px; color: var(--ink); font-weight: 400; text-decoration: none; }
+:where([data-fam-chrome]) .fb-menu a:hover { background: var(--surface-2); }
+:where([data-fam-chrome]) .fb-menu__who { padding: 8px 12px 10px; border-bottom: 1px solid var(--line); margin-bottom: 4px; display: grid; }
+:where([data-fam-chrome]) .fb-menu__who span { color: var(--ink-3); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; }
 @media (max-width: 720px) { .fb-right .fb-lang { display: none; } }
 /* Drag and drop onto the bar (T-3407): the bar lights while an app is over it; a tile being dragged fades. */
-.fb-apps.is-over { outline: 2px dashed rgba(255, 255, 255, .7); outline-offset: -4px; border-radius: 10px; }
-.fb-app.is-dragging { opacity: .4; }
-.fb-app.is-before { box-shadow: inset 3px 0 0 #fff; }
-.fb-prompt { position: absolute; left: 50%; top: 60px; transform: translateX(-50%); z-index: 62; width: min(92vw, 420px); background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-radius: 12px; box-shadow: var(--elev-3); padding: 16px 18px; display: grid; gap: 10px; font-size: 14px; }
-.fb-prompt b { font-weight: 600; }
-.fb-prompt .fb-prompt__row { display: flex; gap: 8px; flex-wrap: wrap; }
-.fb-prompt a, .fb-prompt button { font: inherit; border-radius: 8px; padding: 8px 14px; cursor: pointer; text-decoration: none; }
-.fb-prompt .fb-prompt__pri { background: var(--accent-strong); color: var(--accent-ink); border: 0; }
-.fb-prompt .fb-prompt__sec { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
+:where([data-fam-chrome]) .fb-apps.is-over { outline: 2px dashed rgba(255, 255, 255, .7); outline-offset: -4px; border-radius: 10px; }
+:where([data-fam-chrome]) .fb-app.is-dragging { opacity: .4; }
+:where([data-fam-chrome]) .fb-app.is-before { box-shadow: inset 3px 0 0 #fff; }
+:where([data-fam-chrome]) .fb-prompt { position: absolute; left: 50%; top: 60px; transform: translateX(-50%); z-index: 62; width: min(92vw, 420px); background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-radius: 12px; box-shadow: var(--elev-3); padding: 16px 18px; display: grid; gap: 10px; font-size: 14px; }
+:where([data-fam-chrome]) .fb-prompt b { font-weight: 600; }
+:where([data-fam-chrome]) .fb-prompt .fb-prompt__row { display: flex; gap: 8px; flex-wrap: wrap; }
+:where([data-fam-chrome]) .fb-prompt a, :where([data-fam-chrome]) .fb-prompt button { font: inherit; border-radius: 8px; padding: 8px 14px; cursor: pointer; text-decoration: none; }
+:where([data-fam-chrome]) .fb-prompt .fb-prompt__pri { background: var(--accent-strong); color: var(--accent-ink); border: 0; }
+:where([data-fam-chrome]) .fb-prompt .fb-prompt__sec { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
 .fam-launcher__yours a[draggable="true"], .fam-launcher__list a[draggable="true"] { cursor: grab; }
 .fam-launcher__menuscrim { position: fixed; inset: 0; z-index: 1001; }
 .fam-tilemenu { position: absolute; z-index: 1002; min-width: 200px; background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-radius: 12px; box-shadow: var(--elev-3); padding: 6px; display: grid; }
@@ -538,9 +541,9 @@ a.fam-card:hover {
 .fam-tilemenu button:hover, .fam-tilemenu a:hover { background: var(--surface-2); }
 .fam-tilemenu__who { padding: 6px 12px 8px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
 .fam-tilemenu__line { display: block; padding: 6px 12px; color: var(--ink-3); font: var(--text-small); }
-.fb-tilemenu { position: absolute; top: 52px; z-index: 62; min-width: 200px; background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-radius: 12px; box-shadow: var(--elev-3); padding: 6px; display: grid; }
-.fb-tilemenu button { all: unset; cursor: pointer; display: block; padding: 9px 12px; border-radius: 8px; font: inherit; color: var(--ink); }
-.fb-tilemenu button:hover { background: var(--surface-2); }
+:where([data-fam-chrome]) .fb-tilemenu { position: absolute; top: 52px; z-index: 62; min-width: 200px; background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-radius: 12px; box-shadow: var(--elev-3); padding: 6px; display: grid; }
+:where([data-fam-chrome]) .fb-tilemenu button { all: unset; cursor: pointer; display: block; padding: 9px 12px; border-radius: 8px; font: inherit; color: var(--ink); }
+:where([data-fam-chrome]) .fb-tilemenu button:hover { background: var(--surface-2); }
 
 /* ------------------------------------------------------ the cookie bar */
 /* T-2143, after getcovered.cloud's approved front page (T-2133): the same
