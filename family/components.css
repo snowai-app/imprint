@@ -513,8 +513,12 @@ a.fam-card:hover {
 :where([data-fam-chrome]) .fb-hide:hover { opacity: 1; text-decoration: underline; }
 :where([data-fam-chrome]) .fb-sep { width: 1px; align-self: center; height: 26px; background: rgba(255, 255, 255, .25); margin: 0 6px; }
 :where([data-fam-chrome]) .fb-right { display: flex; align-items: center; gap: 14px; flex: none; padding-right: 8px; } /* room between Ask, the language and the account (T-3436) */
-:where([data-fam-chrome]) .fb-lang { font-size: 13px; color: rgba(255, 255, 255, .7); margin: 0 6px; white-space: nowrap; }
-:where([data-fam-chrome]) .fb-lang b { color: #fff; background: rgba(255, 255, 255, .16); padding: 2px 4px; border-radius: 4px; }
+:where([data-fam-chrome]) .fb-lang { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; margin: 0 6px; white-space: nowrap; }
+:where([data-fam-chrome]) .fb-lang__sep { color: rgba(255, 255, 255, .6); }
+:where([data-fam-chrome]) .fb-lang__b { border: 1px solid rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .14); color: #fff; font: inherit; font-size: 13px; font-weight: 600; letter-spacing: .02em; padding: 3px 8px; border-radius: 6px; cursor: pointer; line-height: 1.2; }
+:where([data-fam-chrome]) .fb-lang__b:hover { background: rgba(255, 255, 255, .26); }
+/* T-3460: the language in use is gold, the same gold a rail marks the page showing with. */
+:where([data-fam-chrome]) .fb-lang__b.is-on { background: #ffd84d; border-color: #ffd84d; color: #1f2d3a; }
 :where([data-fam-chrome]) .fb-acct { position: relative; }
 :where([data-fam-chrome]) .fb-av { all: unset; cursor: pointer; width: 32px; height: 32px; border-radius: 6px; background: rgba(255, 255, 255, .88); color: var(--accent-strong); display: grid; place-items: center; font-weight: 600; }
 :where([data-fam-chrome]) .fb-scrim { position: fixed; inset: 0; z-index: 60; }

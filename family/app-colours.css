@@ -262,21 +262,21 @@
   --surface-2: #2c3431;
 }
 :root[data-app="crm"] {
-  --accent: #439080;
-  --accent-strong: #287f6f;
-  --accent-soft: #ddf5ef;
+  --accent: #0f7f8e;
+  --accent-strong: #0b6673;
+  --accent-soft: #cdeef2;
   --accent-ink: #ffffff;
-  --ground: #fbf7f0;
-  --tile: #439080;
+  --ground: #f4f4f9;
+  --tile: #0f7f8e;
 }
 :root[data-app="crm"][data-theme="dark"] {
-  --accent: #85c7b8;
-  --accent-strong: #85c7b8;
-  --accent-soft: #334742;
-  --accent-ink: #141b19;
-  --ground: #141b19;
-  --surface: #1e2725;
-  --surface-2: #2c3432;
+  --accent: #8ddbe5;
+  --accent-strong: #8ddbe5;
+  --accent-soft: #354153;
+  --accent-ink: #15121f;
+  --ground: #15121f;
+  --surface: #1f1b2e;
+  --surface-2: #2c293b;
 }
 :root[data-app="voice"] {
   --accent: #3b5bdb;
@@ -296,21 +296,21 @@
   --surface-2: #282e37;
 }
 :root[data-app="engage"] {
-  --accent: #2584b2;
-  --accent-strong: #006f9c;
-  --accent-soft: #d8f3ff;
+  --accent: #5e2ced;
+  --accent-strong: #4a1fd0;
+  --accent-soft: #efe9ff;
   --accent-ink: #ffffff;
-  --ground: #f3f5f8;
-  --tile: #2584b2;
+  --ground: #f4f4f9;
+  --tile: #5e2ced;
 }
 :root[data-app="engage"][data-theme="dark"] {
-  --accent: #7ec3eb;
-  --accent-strong: #7ec3eb;
-  --accent-soft: #304551;
-  --accent-ink: #11181d;
-  --ground: #11181d;
-  --surface: #1d252a;
-  --surface-2: #2b3237;
+  --accent: #a88bff;
+  --accent-strong: #a88bff;
+  --accent-soft: #3a3158;
+  --accent-ink: #15121f;
+  --ground: #15121f;
+  --surface: #1f1b2e;
+  --surface-2: #2c293b;
 }
 :root[data-app="recovery"] {
   --accent: #009fa8;
@@ -634,9 +634,9 @@
 [data-tile="tax"] { --tile: #2f6b4a; }
 [data-tile="network"] { --tile: #3ca16f; }
 [data-tile="portal"] { --tile: #008565; }
-[data-tile="crm"] { --tile: #439080; }
+[data-tile="crm"] { --tile: #0f7f8e; }
 [data-tile="voice"] { --tile: #3b5bdb; }
-[data-tile="engage"] { --tile: #2584b2; }
+[data-tile="engage"] { --tile: #5e2ced; }
 [data-tile="recovery"] { --tile: #009fa8; }
 [data-tile="transcribe"] { --tile: #00787c; }
 [data-tile="compliance"] { --tile: #2193c4; }

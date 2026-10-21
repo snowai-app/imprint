@@ -243,19 +243,19 @@
    }
   },
   "crm": {
-   "accent": "#439080",
-   "strong": "#287f6f",
-   "soft": "#ddf5ef",
-   "ground": "#fbf7f0",
-   "dark": "#85c7b8",
-   "darkGround": "#141b19",
-   "darkSurface": "#1e2725",
+   "accent": "#0f7f8e",
+   "strong": "#0b6673",
+   "soft": "#cdeef2",
+   "ground": "#f4f4f9",
+   "dark": "#8ddbe5",
+   "darkGround": "#15121f",
+   "darkSurface": "#1f1b2e",
    "group": "clients",
    "contrast": {
-    "tileWhite": 3.79,
-    "textOnGround": 4.51,
-    "buttonWhite": 4.82,
-    "darkText": 9.04
+    "tileWhite": 4.72,
+    "textOnGround": 6.06,
+    "buttonWhite": 6.64,
+    "darkText": 11.77
    }
   },
   "voice": {
@@ -275,19 +275,19 @@
    }
   },
   "engage": {
-   "accent": "#2584b2",
-   "strong": "#006f9c",
-   "soft": "#d8f3ff",
-   "ground": "#f3f5f8",
-   "dark": "#7ec3eb",
-   "darkGround": "#11181d",
-   "darkSurface": "#1d252a",
+   "accent": "#5e2ced",
+   "strong": "#4a1fd0",
+   "soft": "#efe9ff",
+   "ground": "#f4f4f9",
+   "dark": "#a88bff",
+   "darkGround": "#15121f",
+   "darkSurface": "#1f1b2e",
    "group": "clients",
    "contrast": {
-    "tileWhite": 4.18,
-    "textOnGround": 5.12,
-    "buttonWhite": 5.59,
-    "darkText": 9.29
+    "tileWhite": 6.86,
+    "textOnGround": 7.99,
+    "buttonWhite": 8.76,
+    "darkText": 6.85
    }
   },
   "recovery": {

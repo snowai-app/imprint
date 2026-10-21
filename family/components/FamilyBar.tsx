@@ -42,6 +42,9 @@ export default function FamilyBar({
   ask,
   suggest = [],
   languageNote = 'Spanish is being added',
+  lang = 'en',
+  langCookie,
+  onLanguage,
 }: {
   apps: LauncherApp[];
   current: string;
@@ -52,6 +55,11 @@ export default function FamilyBar({
   /** Ids to offer as "Try" while the account holds fewer than four apps. */
   suggest?: string[];
   languageNote?: string;
+  /** The language in use (T-3460), gold on the switch; `onLanguage` is called with the one pressed. */
+  lang?: 'en' | 'es';
+  /** A server-rendered host names the cookie its pages read: a press writes it (a year, the whole site) and reloads. */
+  langCookie?: string;
+  onLanguage?: (code: 'en' | 'es') => void;
 }) {
   const anchor = useRef<HTMLDivElement>(null);
   const ws = useFamilyWorkspace({ snowai, current, register: apps.filter((a) => a.href).map((a) => ({ id: a.id, href: a.href, name: a.short })), anchor });
@@ -92,6 +100,14 @@ export default function FamilyBar({
   const dragId = (e: React.DragEvent) => e.dataTransfer.getData(DRAG_TYPE) || dragging;
   const accepts = (e: React.DragEvent) => e.dataTransfer.types.includes(DRAG_TYPE) || !!dragging;
 
+  const hasSpanish = !!(onLanguage || langCookie);
+  const chooseLanguage = (code: 'en' | 'es') => {
+    if (code === lang) return;
+    if (onLanguage) { onLanguage(code); return; }
+    if (!langCookie) return;
+    try { document.cookie = `${langCookie}=${code}; path=/; max-age=31536000; samesite=lax`; } catch { /* kept for this page only */ }
+    window.location.reload();
+  };
   return (
     <div className="fb" ref={anchor} data-fam-bar>
       <span className="fb-org" title={company}><b aria-hidden>{initials}</b><span>{company}</span></span>
@@ -139,7 +155,12 @@ export default function FamilyBar({
       </nav>
       <div className="fb-right">
         <AskSnowButton site={current} endpoint={ask} top="109px" className="fb-ask" />
-        <span className="fb-lang"><b>EN</b><span aria-hidden> | </span><span title={languageNote}>ES</span></span>
+        <span className="fb-lang" role="group" aria-label="Language">
+          {/* T-3460: the language in use is gold, the other one plain and readable. An app with Spanish passes `lang` and `onLanguage`; without them ES says it is being added. */}
+          <button type="button" className={`fb-lang__b${lang === 'en' ? ' is-on' : ''}`} aria-pressed={lang === 'en'} onClick={() => chooseLanguage('en')} title={lang === 'en' ? 'English, in use' : 'Switch to English'}>EN</button>
+          <span className="fb-lang__sep" aria-hidden>|</span>
+          <button type="button" className={`fb-lang__b${lang === 'es' ? ' is-on' : ''}`} aria-pressed={lang === 'es'} onClick={() => chooseLanguage('es')} title={hasSpanish ? (lang === 'es' ? 'Spanish, in use' : 'Switch to Spanish') : languageNote}>ES</button>
+        </span>
         <div className="fb-acct">
           <button type="button" className="fb-av" aria-haspopup="menu" aria-expanded={menu} onClick={() => setMenu((m) => !m)} title={email ?? 'Account'}>
             {(email ?? '?').slice(0, 1).toUpperCase()}

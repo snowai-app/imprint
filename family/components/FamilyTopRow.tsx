@@ -34,6 +34,8 @@ export default function FamilyTopRow({
   email = null,
   ask,
   suggest = [],
+  lang,
+  langCookie,
 }: {
   apps: LauncherApp[];
   current: string;
@@ -44,12 +46,15 @@ export default function FamilyTopRow({
   email?: string | null;
   ask?: string;
   suggest?: string[];
+  /** The language in use and the cookie a press writes (T-3460). */
+  lang?: 'en' | 'es';
+  langCookie?: string;
 }) {
   const name = company ?? (email ? email.split('@')[0] : 'Snow AI');
   return (
     <div className="fam-row" data-fam-chrome>
       <AppLauncher apps={apps} owned={owned} current={current} shelfHref={shelfHref} snowai={snowai} />
-      <FamilyBar apps={apps} current={current} snowai={snowai} company={name} email={email} ask={ask ?? askEndpointOf(apps) ?? ''} suggest={suggest} />
+      <FamilyBar apps={apps} current={current} snowai={snowai} company={name} email={email} ask={ask ?? askEndpointOf(apps) ?? ''} suggest={suggest} lang={lang} langCookie={langCookie} />
     </div>
   );
 }
