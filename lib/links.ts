@@ -57,7 +57,6 @@ const FAMILY_DEFAULTS: Record<string, string> = {
   metis: 'https://metis.snowai.app',
   getcovered: 'https://getcovered.cloud',
   studio: 'https://studio.snowai.app',
-  workbench: 'https://workbench.snowai.app',
   data: 'https://data.snowai.app',
   verify: 'https://verify.snowai.app',
   help: 'https://help.snowai.app',

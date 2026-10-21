@@ -584,23 +584,6 @@
   --surface: #1e2727;
   --surface-2: #2c3434;
 }
-:root[data-app="workbench"] {
-  --accent: #3c575f;
-  --accent-strong: #28444c;
-  --accent-soft: #e7f0f3;
-  --accent-ink: #ffffff;
-  --ground: #fbf7f0;
-  --tile: #3c575f;
-}
-:root[data-app="workbench"][data-theme="dark"] {
-  --accent: #9abec9;
-  --accent-strong: #9abec9;
-  --accent-soft: #37454a;
-  --accent-ink: #131b1d;
-  --ground: #131b1d;
-  --surface: #1e272a;
-  --surface-2: #2c3437;
-}
 :root[data-app="data"] {
   --accent: #576c7b;
   --accent-strong: #435868;
@@ -670,6 +653,5 @@
 [data-tile="metis"] { --tile: #875679; }
 [data-tile="byline"] { --tile: #aa647e; }
 [data-tile="studio"] { --tile: #466464; }
-[data-tile="workbench"] { --tile: #3c575f; }
 [data-tile="data"] { --tile: #576c7b; }
 [data-tile="snowai"] { --tile: #c96442; }

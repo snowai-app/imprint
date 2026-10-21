@@ -546,22 +546,6 @@
     "darkText": 8.88
    }
   },
-  "workbench": {
-   "accent": "#3c575f",
-   "strong": "#28444c",
-   "soft": "#e7f0f3",
-   "ground": "#fbf7f0",
-   "dark": "#9abec9",
-   "darkGround": "#131b1d",
-   "darkSurface": "#1e272a",
-   "group": "company",
-   "contrast": {
-    "tileWhite": 7.72,
-    "textOnGround": 9.73,
-    "buttonWhite": 10.39,
-    "darkText": 8.8
-   }
-  },
   "data": {
    "accent": "#576c7b",
    "strong": "#435868",

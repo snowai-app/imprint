@@ -117,10 +117,9 @@ export type FamilyApp = {
    *  family audit, T-2148). The launcher still shows the app with its status,
    *  but draws no link. Remove it the day the address is up. */
   live?: false;
-  /** `false` for an app whose address only forwards elsewhere now (the
-   *  Workbench, T-2174: to snowai.app/try and Studio). Its name and colours
-   *  stay for the forwarder; no launcher and no shelf draws it. Remove the
-   *  entry the day the app is retired. */
+  /** `false` for an app whose address only forwards elsewhere now: its name
+   *  and colours stay for the forwarder; no launcher and no shelf draws it.
+   *  Remove the entry the day the app is retired (the Workbench was, T-3428). */
   listed?: false;
   /** `true` for an app everyone has without a plan (Help, T-3255): the
    *  launcher draws it like any other, and it is never offered as a trial. */
@@ -205,7 +204,6 @@ export const APPS: FamilyApp[] = [
   /* Company: the operator's own */
   { id: 'studio', name: 'Snow AI Studio', short: 'Studio', line: 'Every capability in one place, beside the file it works on.', group: 'company', glyph: 'layout-dashboard', env: 'NEXT_PUBLIC_STUDIO_URL', brand: 'snowai', status: 'open', operatorOnly: true, home: '/admin' },
   /* The Workbench forwards: its tools moved to Studio and its public bench to Try (T-2174). */
-  { id: 'workbench', name: 'Snow AI Workbench', short: 'Workbench', line: 'Forwards to Try, on the front door, and to Studio.', group: 'company', glyph: 'flask-conical', env: 'NEXT_PUBLIC_WORKBENCH_URL', brand: 'snowai', status: 'open', operatorOnly: true, listed: false, home: '' },
   { id: 'data', name: 'Snow AI Data', short: 'Data', line: 'Leads from every site in the family, and the buyers who take them.', group: 'company', glyph: 'database', env: 'NEXT_PUBLIC_DATA_URL', brand: 'snowai', status: 'open', operatorOnly: true, home: '/admin' },
 ];
 

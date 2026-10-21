@@ -137,9 +137,9 @@ describe('family kit', () => {
     assert.ok(!launcherApps({ ...hrefs, sign: '' }, { operator: false }).some((a) => a.id === 'sign'), 'no address, no link');
   });
 
-  it('an app that only forwards elsewhere is in no launcher (the Workbench, T-2174)', () => {
+  it('an app that only forwards elsewhere is in no launcher (T-2174), and the Workbench is gone (T-3428)', () => {
     const hrefs = Object.fromEntries(APPS.map((a) => [a.id, `/${a.id}`]));
-    assert.equal(APPS.find((a) => a.id === 'workbench')?.listed, false, 'the Workbench is marked not listed');
+    assert.equal(APPS.find((a) => a.id === 'workbench'), undefined, 'the Workbench has no entry');
     for (const operator of [true, false]) {
       const list = launcherApps(hrefs, { operator });
       for (const app of APPS.filter((a) => a.listed === false)) assert.ok(!list.some((a) => a.id === app.id), `${app.id} is not in the launcher`);
